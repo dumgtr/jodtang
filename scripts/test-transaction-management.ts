@@ -9,7 +9,7 @@ import { handlePostbackEvent } from '../src/handlers/postback.handler';
 
 type Reply = {
   replyToken: string;
-  messages: Array<{ type: string; text?: string; altText?: string; contents?: any }>;
+  messages: Array<{ type: string; text?: string; altText?: string; contents?: any; quickReply?: any }>;
 };
 
 function createMockLineClient(replies: Reply[]) {
@@ -44,12 +44,12 @@ async function runTransactionManagementTests() {
       },
     });
     const result = await TransactionRepository.commitDraft(draft.id, userA.id);
-    return result.transaction;
+    return { transaction: result.transaction, draftId: draft.id };
   }
 
   // 1. Test Confirmed Transaction Edit Flow with Stale Target Assertions
   console.log('\n1. Testing Confirmed Transaction Edit Flow...');
-  const tx1 = await createConfirmedTx(4000, 'อาหารและเครื่องดื่ม', 'ดินเนอร์', 'ร้านบาร์บีคิว');
+  const { transaction: tx1, draftId: draftId1 } = await createConfirmedTx(4000, 'อาหารและเครื่องดื่ม', 'ดินเนอร์', 'ร้านบาร์บีคิว');
   assert.equal(Number(tx1.amount), 4000);
   assert.equal(tx1.merchant_id, 'ร้านบาร์บีคิว');
   assert.equal(tx1.status, 'confirmed');
@@ -110,9 +110,23 @@ async function runTransactionManagementTests() {
   assert.equal(editAuditRes.rowCount, 1);
   console.log('✅ Confirmed transaction edit flow verified.');
 
+  // 1B. Test Post-Confirmation Draft Button Tap Bridges to Confirmed Tx Flow
+  console.log('\n1B. Testing Post-Confirmation Draft Button Tap Bridges to Confirmed Tx Flow...');
+  const repliesPostConfirmEditBtn: Reply[] = [];
+  await handlePostbackEvent(
+    userA,
+    `action=edit&draft_id=${draftId1}`,
+    'token-old-draft-edit-btn',
+    createMockLineClient(repliesPostConfirmEditBtn)
+  );
+  assert.equal(repliesPostConfirmEditBtn.length, 1);
+  assert(repliesPostConfirmEditBtn[0].messages[0].text?.includes('ต้องการแก้ไขข้อมูลส่วนไหน'));
+  assert.equal(ConversationService.getState(userA.id)?.targetType, 'transaction');
+  ConversationService.clearState(userA.id);
+
   // 2. Data Integrity: Deterministic Field Preservation Tests
   console.log('\n2. Testing Deterministic Field Preservation (merchant_id protection)...');
-  const baseTx = await createConfirmedTx(1000, 'อาหารและเครื่องดื่ม', 'ก๋วยเตี๋ยว', 'ร้านลุงอ้วน');
+  const { transaction: baseTx } = await createConfirmedTx(1000, 'อาหารและเครื่องดื่ม', 'ก๋วยเตี๋ยว', 'ร้านลุงอ้วน');
 
   // 2A. Edit Amount only -> merchant_id preserved
   const txAfterAmount = await TransactionRepository.updateTransaction(baseTx.id, userA.id, {
@@ -154,8 +168,8 @@ async function runTransactionManagementTests() {
 
   // 3. Stale Edit State / Target Mismatch Rejection Tests
   console.log('\n3. Testing Stale State & Target Mismatch Rejection...');
-  const txA = await createConfirmedTx(500, 'อาหารและเครื่องดื่ม', 'ข้าวแกง', 'ร้าน A');
-  const txB = await createConfirmedTx(800, 'อาหารและเครื่องดื่ม', 'สุกี้', 'ร้าน B');
+  const { transaction: txA } = await createConfirmedTx(500, 'อาหารและเครื่องดื่ม', 'ข้าวแกง', 'ร้าน A');
+  const { transaction: txB } = await createConfirmedTx(800, 'อาหารและเครื่องดื่ม', 'สุกี้', 'ร้าน B');
 
   // Set pending edits for txA in ConversationService
   ConversationService.setState(userA.id, {
@@ -188,7 +202,7 @@ async function runTransactionManagementTests() {
 
   // 4. Test Confirmed Transaction Void Flow
   console.log('\n4. Testing Confirmed Transaction Void Flow...');
-  const tx2 = await createConfirmedTx(2000, 'ช้อปปิ้ง/ของใช้/อุปกรณ์', 'เสื้อเชิ้ต');
+  const { transaction: tx2, draftId: draftId2 } = await createConfirmedTx(2000, 'ช้อปปิ้ง/ของใช้/อุปกรณ์', 'เสื้อเชิ้ต');
   assert.equal(tx2.status, 'confirmed');
 
   // Step 4a: Select tx to void -> shows confirmation bubble
@@ -226,9 +240,22 @@ async function runTransactionManagementTests() {
   assert.equal(voidAuditRes.rowCount, 1);
   console.log('✅ Confirmed transaction void flow verified.');
 
+  // 4B. Test Post-Confirmation Draft Cancel Button Tap Bridges to Confirmed Tx Void Prompt
+  console.log('\n4B. Testing Post-Confirmation Draft Cancel Button Tap Bridges to Confirmed Tx Void...');
+  const { transaction: txToVoidViaDraft, draftId: draftToVoid } = await createConfirmedTx(300, 'อาหารและเครื่องดื่ม', 'กาแฟสด');
+  const repliesPostConfirmCancelBtn: Reply[] = [];
+  await handlePostbackEvent(
+    userA,
+    `action=cancel&draft_id=${draftToVoid}`,
+    'token-old-draft-cancel-btn',
+    createMockLineClient(repliesPostConfirmCancelBtn)
+  );
+  assert.equal(repliesPostConfirmCancelBtn.length, 1);
+  assert.equal(repliesPostConfirmCancelBtn[0].messages[0].type, 'flex'); // Displays void confirmation card
+
   // 5. Test Ownership Enforcement (User B cannot edit or void User A transaction)
   console.log('\n5. Testing Cross-User Attack Rejection...');
-  const tx3 = await createConfirmedTx(1500, 'สุขภาพ/ความงาม', 'ค่ายา');
+  const { transaction: tx3 } = await createConfirmedTx(1500, 'สุขภาพ/ความงาม', 'ค่ายา');
 
   // User B tries to void User A transaction
   let crossUserVoidFailed = false;
@@ -278,13 +305,14 @@ async function runTransactionManagementTests() {
   assert.equal(editVoidedFailed, true, 'Cannot edit a voided transaction');
   console.log('✅ Voided transaction invariants passed.');
 
-  // 7. Test Command Intent Triggers
-  console.log('\n7. Testing Natural Language Command Intent Triggers...');
+  // 7. Test Command Intent Triggers with Emojis and Natural Phrases
+  console.log('\n7. Testing Natural Language Command Intent Triggers (with Emojis)...');
+  await query("UPDATE transaction_drafts SET status = 'cancelled' WHERE user_id = $1 AND status = 'pending_confirmation';", [userA.id]);
   const repliesEditCommand: Reply[] = [];
   await handleTextMessage(
     userA.line_user_id,
-    'ขอแก้ไขรายการ',
-    'token-edit-cmd',
+    '✏️ ขอแก้ไขรายการ',
+    'token-edit-cmd-emoji',
     createMockLineClient(repliesEditCommand)
   );
   assert.equal(repliesEditCommand.length, 1);
@@ -293,17 +321,48 @@ async function runTransactionManagementTests() {
   const repliesVoidCommand: Reply[] = [];
   await handleTextMessage(
     userA.line_user_id,
-    'ขอลบรายการ',
-    'token-void-cmd',
+    '❌ ยกเลิกรายการ',
+    'token-void-cmd-emoji',
     createMockLineClient(repliesVoidCommand)
   );
   assert.equal(repliesVoidCommand.length, 1);
   assert.equal(repliesVoidCommand[0].messages[0].type, 'flex');
-  console.log('✅ Natural language command intent triggers passed.');
+  console.log('✅ Natural language command intent triggers (with emojis) passed.');
 
-  // 8. Test Atomic Rollback on Invalid Edit
-  console.log('\n8. Testing Atomic Rollback on Invalid Edit...');
-  const tx4 = await createConfirmedTx(500, 'การเดินทาง/ยานพาหนะ', 'ค่าแท็กซี่');
+  // 8. Test Draft Precedence: Active Draft Edit Takes Precedence
+  console.log('\n8. Testing Active Pending Draft Precedence...');
+  const pendingDraft = await DraftRepository.createDraft({
+    userId: userA.id,
+    source: 'test',
+    rawInput: 'กินข้าวหมูกรอบ 65',
+    extractedData: {
+      type: 'expense',
+      amount: 65,
+      category_id: 'อาหารและเครื่องดื่ม',
+      description: 'ข้าวหมูกรอบ',
+    },
+  });
+
+  // When user types "ขอแก้ไขรายการ" while having a pending draft -> prompts draft edit
+  const repliesDraftEditCmd: Reply[] = [];
+  await handleTextMessage(
+    userA.line_user_id,
+    'ขอแก้ไขรายการ',
+    'token-edit-pending-draft',
+    createMockLineClient(repliesDraftEditCmd)
+  );
+  assert.equal(repliesDraftEditCmd.length, 1);
+  assert(repliesDraftEditCmd[0].messages[0].text?.includes('รายการที่รอยืนยัน'));
+  assert.equal(ConversationService.getState(userA.id)?.targetType, 'draft');
+
+  // Cancel the pending draft
+  await DraftRepository.cancelDraft(pendingDraft.id, userA.id);
+  ConversationService.clearState(userA.id);
+  console.log('✅ Active pending draft precedence verified.');
+
+  // 9. Test Atomic Rollback on Invalid Edit
+  console.log('\n9. Testing Atomic Rollback on Invalid Edit...');
+  const { transaction: tx4 } = await createConfirmedTx(500, 'การเดินทาง/ยานพาหนะ', 'ค่าแท็กซี่');
   let invalidEditFailed = false;
   try {
     await TransactionRepository.updateTransaction(tx4.id, userA.id, {

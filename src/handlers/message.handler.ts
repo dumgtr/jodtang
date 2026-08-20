@@ -15,9 +15,27 @@ import { isValidPositiveAmount } from '../utils/amount';
 import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
 
 /**
+ * Deterministically checks if input text is an edit command (stripping emojis, symbols, and variation selectors).
+ */
+function isEditCommand(text: string): boolean {
+  if (/\d/.test(text)) return false; // Contains digits -> financial input, not a command
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return /^(ขอ)?(แก้ไข|แก้)(รายการ)?$/u.test(normalized) || normalized === 'edit';
+}
+
+/**
+ * Deterministically checks if input text is a void/delete command (stripping emojis, symbols, and variation selectors).
+ */
+function isVoidCommand(text: string): boolean {
+  if (/\d/.test(text)) return false; // Contains digits -> financial input, not a command
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return /^(ขอ)?(ลบ|ยกเลิก)(รายการ)?$/u.test(normalized) || normalized === 'delete' || normalized === 'void';
+}
+
+/**
  * Handles incoming LINE text message events.
  * 1. Checks if user is in an active edit conversation state (draft or confirmed transaction).
- * 2. Checks if user sent a management command (e.g. "ขอแก้ไขรายการ", "ขอลบรายการ").
+ * 2. Checks if user sent a management command (e.g. "ขอแก้ไขรายการ", "ขอลบรายการ", with or without emojis).
  * 3. Otherwise, checks financial intent and extracts transactions via AI.
  * 4. Responds with friendly greeting if input is non-financial (no 0-baht draft).
  */
@@ -199,11 +217,72 @@ export async function handleTextMessage(
       return;
     }
 
-    // 3. Command Intent Checks for Confirmed Transactions
-    const editCommandPattern = /^(ขอ)?แก้ไขรายการ|แก้รายการ|แก้ไข$/i;
-    const voidCommandPattern = /^(ขอ)?(ลบ|ยกเลิก)รายการ|ลบรายการ|ขอลบ$/i;
+    // 3. Command Intent Checks (Supports emojis like ✏️, 🗑️, ❌, and natural variants)
+    if (isEditCommand(trimmedText)) {
+      // 3A. Check if user has an active pending draft first
+      const pendingDraft = await DraftRepository.findLatestPendingByUser(user.id);
+      if (pendingDraft) {
+        ConversationService.setState(user.id, {
+          targetType: 'draft',
+          draftId: pendingDraft.id,
+          step: 'select_field',
+        });
 
-    if (editCommandPattern.test(trimmedText)) {
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: 'ต้องการแก้ไขข้อมูลส่วนไหนของรายการที่รอยืนยันครับ?',
+                quickReply: {
+                  items: [
+                    {
+                      type: 'action',
+                      action: {
+                        type: 'postback',
+                        label: 'จำนวนเงิน',
+                        data: `action=set_field&field=amount&draft_id=${pendingDraft.id}`,
+                        displayText: 'แก้ไข: จำนวนเงิน',
+                      },
+                    },
+                    {
+                      type: 'action',
+                      action: {
+                        type: 'postback',
+                        label: 'หมวดหมู่',
+                        data: `action=set_field&field=category&draft_id=${pendingDraft.id}`,
+                        displayText: 'แก้ไข: หมวดหมู่',
+                      },
+                    },
+                    {
+                      type: 'action',
+                      action: {
+                        type: 'postback',
+                        label: 'วันที่',
+                        data: `action=set_field&field=date&draft_id=${pendingDraft.id}`,
+                        displayText: 'แก้ไข: วันที่',
+                      },
+                    },
+                    {
+                      type: 'action',
+                      action: {
+                        type: 'postback',
+                        label: 'รายละเอียด',
+                        data: `action=set_field&field=description&draft_id=${pendingDraft.id}`,
+                        displayText: 'แก้ไข: รายละเอียด',
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          });
+        }
+        return;
+      }
+
+      // 3B. Otherwise, find recent active confirmed transactions
       const recentTxs = await TransactionRepository.findRecentByUser(user.id, 5);
       if (recentTxs.length === 0) {
         if (replyToken) {
@@ -230,7 +309,28 @@ export async function handleTextMessage(
       return;
     }
 
-    if (voidCommandPattern.test(trimmedText)) {
+    if (isVoidCommand(trimmedText)) {
+      // 3C. Check if user has an active pending draft first -> Cancel it
+      const pendingDraft = await DraftRepository.findLatestPendingByUser(user.id);
+      if (pendingDraft) {
+        await DraftRepository.cancelDraft(pendingDraft.id, user.id);
+        ConversationService.clearState(user.id);
+
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: '🗑️ ยกเลิกรายการที่รอยืนยันแล้วครับ',
+              },
+            ],
+          });
+        }
+        return;
+      }
+
+      // 3D. Otherwise, find recent active confirmed transactions to void
       const recentTxs = await TransactionRepository.findRecentByUser(user.id, 5);
       if (recentTxs.length === 0) {
         if (replyToken) {

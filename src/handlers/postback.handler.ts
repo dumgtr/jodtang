@@ -352,9 +352,26 @@ export async function handlePostbackEvent(
     return;
   }
 
-  // B2. Cancel action: Mark draft as cancelled with audit logging
+  // B2. Cancel action: Mark draft as cancelled with audit logging (or void confirmed tx if already committed)
   if (action === 'cancel') {
     try {
+      const draft = await DraftRepository.findById(draftId, user.id);
+
+      // If draft was already confirmed and has transaction_id, show void confirmation flex for that transaction
+      if (draft && draft.status === 'confirmed' && draft.transaction_id) {
+        const tx = await TransactionRepository.findByIdAndUser(draft.transaction_id, user.id);
+        if (tx && tx.status === 'confirmed') {
+          const confirmFlex = buildTxVoidConfirmFlex(tx);
+          if (replyToken) {
+            await lineClient.replyMessage({
+              replyToken,
+              messages: [confirmFlex],
+            });
+          }
+          return;
+        }
+      }
+
       await DraftRepository.cancelDraft(draftId, user.id);
       ConversationService.clearState(user.id);
 
@@ -380,6 +397,72 @@ export async function handlePostbackEvent(
   if (action === 'edit') {
     try {
       const draft = await DraftRepository.findById(draftId, user.id);
+
+      // If draft was already confirmed and has transaction_id, seamlessly open confirmed transaction edit flow
+      if (draft && draft.status === 'confirmed' && draft.transaction_id) {
+        const tx = await TransactionRepository.findByIdAndUser(draft.transaction_id, user.id);
+        if (tx && tx.status === 'confirmed') {
+          ConversationService.setState(user.id, {
+            targetType: 'transaction',
+            transactionId: tx.id,
+            step: 'select_tx_field',
+          });
+
+          if (replyToken) {
+            await lineClient.replyMessage({
+              replyToken,
+              messages: [
+                {
+                  type: 'text',
+                  text: 'ต้องการแก้ไขข้อมูลส่วนไหนของรายการนี้ครับ?',
+                  quickReply: {
+                    items: [
+                      {
+                        type: 'action',
+                        action: {
+                          type: 'postback',
+                          label: 'จำนวนเงิน',
+                          data: `action=set_tx_field&field=amount&tx_id=${tx.id}`,
+                          displayText: 'แก้ไข: จำนวนเงิน',
+                        },
+                      },
+                      {
+                        type: 'action',
+                        action: {
+                          type: 'postback',
+                          label: 'หมวดหมู่',
+                          data: `action=set_tx_field&field=category&tx_id=${tx.id}`,
+                          displayText: 'แก้ไข: หมวดหมู่',
+                        },
+                      },
+                      {
+                        type: 'action',
+                        action: {
+                          type: 'postback',
+                          label: 'วันที่',
+                          data: `action=set_tx_field&field=date&tx_id=${tx.id}`,
+                          displayText: 'แก้ไข: วันที่',
+                        },
+                      },
+                      {
+                        type: 'action',
+                        action: {
+                          type: 'postback',
+                          label: 'รายละเอียด',
+                          data: `action=set_tx_field&field=description&tx_id=${tx.id}`,
+                          displayText: 'แก้ไข: รายละเอียด',
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            });
+          }
+          return;
+        }
+      }
+
       if (!draft || draft.status !== 'pending_confirmation') {
         if (replyToken) {
           await lineClient.replyMessage({

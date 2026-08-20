@@ -65,6 +65,25 @@ export class DraftRepository {
   }
 
   /**
+   * Find latest active pending draft for a user.
+   */
+  static async findLatestPendingByUser(
+    userId: string,
+    client?: PoolClient
+  ): Promise<TransactionDraft | null> {
+    const q = `
+      SELECT * FROM transaction_drafts
+      WHERE user_id = $1 AND status = 'pending_confirmation' AND expires_at > NOW()
+      ORDER BY created_at DESC
+      LIMIT 1;
+    `;
+    const res = client
+      ? await client.query<TransactionDraft>(q, [userId])
+      : await query<TransactionDraft>(q, [userId]);
+    return res.rows[0] || null;
+  }
+
+  /**
    * Update draft status with strict user ownership verification.
    */
   static async updateStatus(
