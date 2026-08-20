@@ -33,7 +33,7 @@ export const pool = new Pool({
   ssl: useSSL ? { rejectUnauthorized: env.DATABASE_SSL_REJECT_UNAUTHORIZED } : false,
 });
 
-pool.on('error', (err) => {
+pool.on('error', (err: Error) => {
   logInternalError('[PostgreSQL] Unexpected error on idle client', err);
 });
 
@@ -66,7 +66,7 @@ export async function withTransaction<T>(
     const result = await callback(client);
     await client.query('COMMIT');
     return result;
-  } catch (error) {
+  } catch (error: any) {
     await client.query('ROLLBACK');
     throw error;
   } finally {
