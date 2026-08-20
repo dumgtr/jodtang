@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Production build output
+dist/
+
+# Local Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# Database persistence (Docker)
+postgres_data/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/

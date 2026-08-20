@@ -1,0 +1,45 @@
+{
+  "name": "jodtang-backend",
+  "version": "1.0.0",
+  "description": "จดตัง (JodTang) - Personal finance and expense tracking assistant LINE Bot",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "migrate": "tsx src/db/migrate.ts",
+    "migrate:prod": "node dist/db/migrate.js",
+    "test:webhook": "tsx scripts/simulate-webhook.ts",
+    "test:extraction": "tsx scripts/test-extraction.ts",
+    "test:slip": "tsx scripts/test-slip-pipeline.ts",
+    "test:security": "tsx scripts/test-security-hardening.ts",
+    "test": "npm run test:extraction && npm run test:slip && npm run test:security"
+  },
+  "keywords": [
+    "line-bot",
+    "finance",
+    "expense-tracker",
+    "postgresql",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@line/bot-sdk": "^9.5.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsqr": "^1.4.0",
+    "openai": "^7.5.0",
+    "pg": "^8.13.1",
+    "sharp": "^0.35.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.1",
+    "@types/pg": "^8.11.10",
+    "@types/sharp": "^0.31.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
