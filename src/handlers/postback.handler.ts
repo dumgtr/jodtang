@@ -124,13 +124,17 @@ export async function handlePostbackEvent(
   if (action === 'set_tx_field' && txId) {
     const selectedField = params.get('field') || 'amount';
     const currentState = ConversationService.getState(user.id);
+    const pendingEdits =
+      currentState?.targetType === 'transaction' && currentState?.transactionId === txId
+        ? currentState.pendingEdits || {}
+        : {};
 
     ConversationService.setState(user.id, {
       targetType: 'transaction',
       transactionId: txId,
       step: 'waiting_for_tx_input',
       fieldToEdit: selectedField,
-      pendingEdits: currentState?.pendingEdits || {},
+      pendingEdits,
     });
 
     if (replyToken) {
@@ -147,12 +151,34 @@ export async function handlePostbackEvent(
     return;
   }
 
-  // A3. Confirm Transaction Edit -> Atomic Update
+  // A3. Confirm Transaction Edit -> Atomic Update with Stale State Assertion
   if (action === 'confirm_tx_edit' && txId) {
     try {
       const state = ConversationService.getState(user.id);
-      const pendingEdits = state?.pendingEdits || {};
 
+      // Verify stored pending edit target matches confirmation target
+      if (
+        !state ||
+        state.targetType !== 'transaction' ||
+        !state.transactionId ||
+        state.transactionId !== txId
+      ) {
+        ConversationService.clearState(user.id);
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: '⚠️ ข้อมูลการแก้ไขไม่ถูกต้องหรือหมดอายุแล้ว กรุณาเลือกรายการที่ต้องการแก้ไขใหม่อีกครั้งครับ',
+              },
+            ],
+          });
+        }
+        return;
+      }
+
+      const pendingEdits = state.pendingEdits || {};
       const updatedTx = await TransactionRepository.updateTransaction(txId, user.id, pendingEdits);
       ConversationService.clearState(user.id);
 

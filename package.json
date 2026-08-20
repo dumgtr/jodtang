@@ -14,6 +14,7 @@
     "test:slip": "tsx scripts/test-slip-pipeline.ts",
     "test:security": "tsx scripts/test-security-hardening.ts",
     "test:tx-mgmt": "tsx scripts/test-transaction-management.ts",
+    "test:migration-gate": "tsx scripts/test-disposable-migration-gate.ts",
     "test": "npm run test:extraction && npm run test:slip && npm run test:security && npm run test:tx-mgmt"
   },
   "keywords": [

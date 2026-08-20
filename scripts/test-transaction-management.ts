@@ -3,6 +3,7 @@ import { pool, query } from '../src/db/client';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { DraftRepository } from '../src/modules/draft/draft.repository';
 import { TransactionRepository } from '../src/modules/transaction/transaction.repository';
+import { ConversationService } from '../src/services/conversation.service';
 import { handleTextMessage } from '../src/handlers/message.handler';
 import { handlePostbackEvent } from '../src/handlers/postback.handler';
 
@@ -28,7 +29,7 @@ async function runTransactionManagementTests() {
   const userB = await UserRepository.findOrCreateByLineUserId('U_TEST_TX_MGMT_BBB');
 
   // Helper to create a confirmed transaction
-  async function createConfirmedTx(amount: number, category: string, description: string) {
+  async function createConfirmedTx(amount: number, category: string, description: string, merchant: string = 'ร้านตั้งต้น') {
     const draft = await DraftRepository.createDraft({
       userId: userA.id,
       source: 'test',
@@ -37,6 +38,7 @@ async function runTransactionManagementTests() {
         type: 'expense',
         amount,
         category_id: category,
+        merchant_id: merchant,
         description,
         occurred_at: '2026-08-20',
       },
@@ -45,10 +47,11 @@ async function runTransactionManagementTests() {
     return result.transaction;
   }
 
-  // 1. Test Confirmed Transaction Edit Flow
+  // 1. Test Confirmed Transaction Edit Flow with Stale Target Assertions
   console.log('\n1. Testing Confirmed Transaction Edit Flow...');
-  const tx1 = await createConfirmedTx(4000, 'อาหารและเครื่องดื่ม', 'ดินเนอร์');
+  const tx1 = await createConfirmedTx(4000, 'อาหารและเครื่องดื่ม', 'ดินเนอร์', 'ร้านบาร์บีคิว');
   assert.equal(Number(tx1.amount), 4000);
+  assert.equal(tx1.merchant_id, 'ร้านบาร์บีคิว');
   assert.equal(tx1.status, 'confirmed');
 
   // Step 1a: Select field to edit
@@ -81,7 +84,7 @@ async function runTransactionManagementTests() {
   assert.equal(repliesInput.length, 1);
   assert(repliesInput[0].messages[0].type === 'flex');
 
-  // Step 1d: Confirm edit
+  // Step 1d: Confirm edit with correct target
   const repliesConfirmEdit: Reply[] = [];
   await handlePostbackEvent(
     userA,
@@ -96,6 +99,7 @@ async function runTransactionManagementTests() {
   const updatedTxRes = await query(`SELECT * FROM transactions WHERE id = $1;`, [tx1.id]);
   const updatedTx = updatedTxRes.rows[0];
   assert.equal(Number(updatedTx.amount), 4500);
+  assert.equal(updatedTx.merchant_id, 'ร้านบาร์บีคิว', 'merchant_id must be preserved when editing amount');
   assert.equal(updatedTx.status, 'confirmed');
 
   // Verify Audit Log for EDIT_TRANSACTION
@@ -106,12 +110,88 @@ async function runTransactionManagementTests() {
   assert.equal(editAuditRes.rowCount, 1);
   console.log('✅ Confirmed transaction edit flow verified.');
 
-  // 2. Test Confirmed Transaction Void Flow
-  console.log('\n2. Testing Confirmed Transaction Void Flow...');
+  // 2. Data Integrity: Deterministic Field Preservation Tests
+  console.log('\n2. Testing Deterministic Field Preservation (merchant_id protection)...');
+  const baseTx = await createConfirmedTx(1000, 'อาหารและเครื่องดื่ม', 'ก๋วยเตี๋ยว', 'ร้านลุงอ้วน');
+
+  // 2A. Edit Amount only -> merchant_id preserved
+  const txAfterAmount = await TransactionRepository.updateTransaction(baseTx.id, userA.id, {
+    amount: 1200,
+  });
+  assert.equal(Number(txAfterAmount.amount), 1200);
+  assert.equal(txAfterAmount.merchant_id, 'ร้านลุงอ้วน', 'merchant_id must remain unchanged on amount edit');
+  assert.equal(txAfterAmount.category_id, 'อาหารและเครื่องดื่ม');
+  assert.equal(txAfterAmount.description, 'ก๋วยเตี๋ยว');
+
+  // 2B. Edit Category only -> merchant_id preserved
+  const txAfterCatResult = await TransactionRepository.updateTransaction(baseTx.id, userA.id, {
+    category_id: 'ช้อปปิ้ง',
+  });
+  assert.equal(txAfterCatResult.category_id, 'ช้อปปิ้ง');
+  assert.equal(txAfterCatResult.merchant_id, 'ร้านลุงอ้วน', 'merchant_id must remain unchanged on category edit');
+  assert.equal(Number(txAfterCatResult.amount), 1200);
+
+  // 2C. Edit Date only -> merchant_id preserved
+  const txAfterDate = await TransactionRepository.updateTransaction(baseTx.id, userA.id, {
+    occurred_at: '2026-08-25',
+  });
+  assert.equal(new Date(txAfterDate.occurred_at).toISOString().startsWith('2026-08-25'), true);
+  assert.equal(txAfterDate.merchant_id, 'ร้านลุงอ้วน', 'merchant_id must remain unchanged on date edit');
+
+  // 2D. Edit Description only -> merchant_id preserved (NO description leak into merchant_id!)
+  const txAfterDesc = await TransactionRepository.updateTransaction(baseTx.id, userA.id, {
+    description: 'ก๋วยเตี๋ยวต้มยำพิเศษ',
+  });
+  assert.equal(txAfterDesc.description, 'ก๋วยเตี๋ยวต้มยำพิเศษ');
+  assert.equal(txAfterDesc.merchant_id, 'ร้านลุงอ้วน', 'merchant_id must remain unchanged on description edit');
+
+  // 2E. Explicit merchant_id update -> changes merchant_id
+  const txAfterMerchant = await TransactionRepository.updateTransaction(baseTx.id, userA.id, {
+    merchant_id: 'ร้านป้าสมใจ',
+  });
+  assert.equal(txAfterMerchant.merchant_id, 'ร้านป้าสมใจ');
+  console.log('✅ Deterministic field preservation verified.');
+
+  // 3. Stale Edit State / Target Mismatch Rejection Tests
+  console.log('\n3. Testing Stale State & Target Mismatch Rejection...');
+  const txA = await createConfirmedTx(500, 'อาหารและเครื่องดื่ม', 'ข้าวแกง', 'ร้าน A');
+  const txB = await createConfirmedTx(800, 'อาหารและเครื่องดื่ม', 'สุกี้', 'ร้าน B');
+
+  // Set pending edits for txA in ConversationService
+  ConversationService.setState(userA.id, {
+    targetType: 'transaction',
+    transactionId: txA.id,
+    step: 'select_tx_field',
+    pendingEdits: { amount: 9999 },
+  });
+
+  // User taps confirm button for txB while state is set for txA (Mismatch!)
+  const repliesMismatch: Reply[] = [];
+  await handlePostbackEvent(
+    userA,
+    `action=confirm_tx_edit&tx_id=${txB.id}`,
+    'token-mismatch',
+    createMockLineClient(repliesMismatch)
+  );
+  assert.equal(repliesMismatch.length, 1);
+  assert(repliesMismatch[0].messages[0].text?.includes('ข้อมูลการแก้ไขไม่ถูกต้อง'));
+
+  // Verify txA and txB were NOT mutated
+  const checkTxA = await TransactionRepository.findByIdAndUser(txA.id, userA.id);
+  const checkTxB = await TransactionRepository.findByIdAndUser(txB.id, userA.id);
+  assert.equal(Number(checkTxA?.amount), 500, 'txA must not be mutated on target mismatch');
+  assert.equal(Number(checkTxB?.amount), 800, 'txB must not be mutated on target mismatch');
+
+  // Verify conversation state was cleared
+  assert.equal(ConversationService.getState(userA.id), undefined);
+  console.log('✅ Stale target mismatch rejection verified.');
+
+  // 4. Test Confirmed Transaction Void Flow
+  console.log('\n4. Testing Confirmed Transaction Void Flow...');
   const tx2 = await createConfirmedTx(2000, 'ช้อปปิ้ง/ของใช้/อุปกรณ์', 'เสื้อเชิ้ต');
   assert.equal(tx2.status, 'confirmed');
 
-  // Step 2a: Select tx to void -> shows confirmation bubble
+  // Step 4a: Select tx to void -> shows confirmation bubble
   const repliesVoidPrompt: Reply[] = [];
   await handlePostbackEvent(
     userA,
@@ -122,7 +202,7 @@ async function runTransactionManagementTests() {
   assert.equal(repliesVoidPrompt.length, 1);
   assert.equal(repliesVoidPrompt[0].messages[0].type, 'flex');
 
-  // Step 2b: Confirm void
+  // Step 4b: Confirm void
   const repliesConfirmVoid: Reply[] = [];
   await handlePostbackEvent(
     userA,
@@ -146,8 +226,8 @@ async function runTransactionManagementTests() {
   assert.equal(voidAuditRes.rowCount, 1);
   console.log('✅ Confirmed transaction void flow verified.');
 
-  // 3. Test Ownership Enforcement (User B cannot edit or void User A transaction)
-  console.log('\n3. Testing Cross-User Attack Rejection...');
+  // 5. Test Ownership Enforcement (User B cannot edit or void User A transaction)
+  console.log('\n5. Testing Cross-User Attack Rejection...');
   const tx3 = await createConfirmedTx(1500, 'สุขภาพ/ความงาม', 'ค่ายา');
 
   // User B tries to void User A transaction
@@ -173,8 +253,8 @@ async function runTransactionManagementTests() {
   assert.equal(crossUserEditFailed, true, 'User B must not be able to edit User A transaction');
   console.log('✅ Cross-user security assertions passed.');
 
-  // 4. Test Idempotency & Invariant on Voided Transaction
-  console.log('\n4. Testing Voided Transaction Invariants...');
+  // 6. Test Idempotency & Invariant on Voided Transaction
+  console.log('\n6. Testing Voided Transaction Invariants...');
   // Cannot void an already voided transaction
   let doubleVoidFailed = false;
   try {
@@ -198,8 +278,8 @@ async function runTransactionManagementTests() {
   assert.equal(editVoidedFailed, true, 'Cannot edit a voided transaction');
   console.log('✅ Voided transaction invariants passed.');
 
-  // 5. Test Command Intent Triggers
-  console.log('\n5. Testing Natural Language Command Intent Triggers...');
+  // 7. Test Command Intent Triggers
+  console.log('\n7. Testing Natural Language Command Intent Triggers...');
   const repliesEditCommand: Reply[] = [];
   await handleTextMessage(
     userA.line_user_id,
@@ -221,8 +301,8 @@ async function runTransactionManagementTests() {
   assert.equal(repliesVoidCommand[0].messages[0].type, 'flex');
   console.log('✅ Natural language command intent triggers passed.');
 
-  // 6. Test Atomic Rollback on Invalid Edit
-  console.log('\n6. Testing Atomic Rollback on Invalid Edit...');
+  // 8. Test Atomic Rollback on Invalid Edit
+  console.log('\n8. Testing Atomic Rollback on Invalid Edit...');
   const tx4 = await createConfirmedTx(500, 'การเดินทาง/ยานพาหนะ', 'ค่าแท็กซี่');
   let invalidEditFailed = false;
   try {
@@ -237,7 +317,7 @@ async function runTransactionManagementTests() {
   assert.equal(Number(checkTx4Res.rows[0].amount), 500, 'Amount must remain unchanged after rollback');
   console.log('✅ Atomic rollback on invalid edit passed.');
 
-  console.log('\n🎉 ALL POST-COMMIT TRANSACTION TESTS PASSED SUCCESSFULLY!\n');
+  console.log('\n🎉 ALL HARDENED POST-COMMIT TRANSACTION TESTS PASSED SUCCESSFULLY!\n');
 }
 
 runTransactionManagementTests()

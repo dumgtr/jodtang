@@ -220,6 +220,7 @@ export class TransactionRepository {
 
   /**
    * Atomically updates a confirmed transaction with audit trail.
+   * Preserves all unmodified fields without accidental field overwriting.
    */
   static async updateTransaction(
     transactionId: string,
@@ -256,25 +257,31 @@ export class TransactionRepository {
         }
       }
 
+      const newAmount = updates.amount !== undefined ? updates.amount : prevTx.amount;
+      const newCategory = updates.category_id !== undefined ? updates.category_id : prevTx.category_id;
+      const newDesc = updates.description !== undefined ? updates.description : prevTx.description;
+      const newMerchant = updates.merchant_id !== undefined ? updates.merchant_id : prevTx.merchant_id;
+      const newOccurredAt = occurredAt !== undefined ? occurredAt : prevTx.occurred_at;
+
       const updateRes = await client.query<Transaction>(
         `UPDATE transactions
          SET
-           amount = COALESCE($3, amount),
-           category_id = COALESCE($4, category_id),
-           description = COALESCE($5, description),
-           merchant_id = COALESCE($6, merchant_id),
-           occurred_at = COALESCE($7, occurred_at),
+           amount = $3,
+           category_id = $4,
+           description = $5,
+           merchant_id = $6,
+           occurred_at = $7,
            updated_at = NOW()
          WHERE id = $1 AND user_id = $2
          RETURNING *;`,
         [
           transactionId,
           userId,
-          updates.amount ?? null,
-          updates.category_id ?? null,
-          updates.description ?? null,
-          updates.merchant_id ?? updates.description ?? null,
-          occurredAt ?? null,
+          newAmount,
+          newCategory,
+          newDesc,
+          newMerchant,
+          newOccurredAt,
         ]
       );
       const updatedTx = updateRes.rows[0];
