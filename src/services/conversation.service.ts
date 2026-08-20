@@ -1,7 +1,23 @@
+export type ConversationStep =
+  | 'select_field' // Draft edit
+  | 'waiting_for_input' // Draft edit value
+  | 'select_transaction_to_edit' // Select confirmed tx to edit
+  | 'select_transaction_to_void' // Select confirmed tx to void
+  | 'select_tx_field' // Select field on confirmed tx
+  | 'waiting_for_tx_input'; // Provide value for confirmed tx field
+
 export interface ConversationState {
-  draftId: string;
-  step: 'select_field' | 'waiting_for_input';
+  targetType?: 'draft' | 'transaction';
+  draftId?: string;
+  transactionId?: string;
+  step: ConversationStep;
   fieldToEdit?: string;
+  pendingEdits?: {
+    amount?: number;
+    category_id?: string;
+    description?: string;
+    occurred_at?: string;
+  };
 }
 
 /**

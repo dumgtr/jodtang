@@ -32,6 +32,7 @@ export interface TransactionDraft {
 }
 
 export type TransactionType = 'expense' | 'income' | 'transfer';
+export type TransactionStatus = 'confirmed' | 'voided';
 
 export interface Transaction {
   id: string; // UUID
@@ -42,8 +43,10 @@ export interface Transaction {
   merchant_id: string | null;
   account_id: string | null;
   description: string | null;
+  status: TransactionStatus;
   occurred_at: Date;
   created_at: Date;
+  updated_at?: Date;
 }
 
 export interface AuditLog {

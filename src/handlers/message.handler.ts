@@ -1,16 +1,23 @@
 import { messagingApi } from '@line/bot-sdk';
 import { UserRepository } from '../modules/user/user.repository';
 import { DraftRepository } from '../modules/draft/draft.repository';
+import { TransactionRepository } from '../modules/transaction/transaction.repository';
 import { ConversationService } from '../services/conversation.service';
 import * as aiService from '../services/ai.service';
-import { buildDraftConfirmFlex, buildDraftsConfirmCarousel, DraftConfirmItem } from '../utils/flex.builder';
+import {
+  buildDraftConfirmFlex,
+  buildDraftsConfirmCarousel,
+  buildTxSelectionFlex,
+  buildTxEditConfirmFlex,
+  DraftConfirmItem,
+} from '../utils/flex.builder';
 import { isValidPositiveAmount } from '../utils/amount';
 import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
 
 /**
  * Handles incoming LINE text message events.
- * 1. Checks if user is in an active edit conversation state (with user ownership).
- * 2. If editing, updates the existing draft and sends the updated Flex confirmation.
+ * 1. Checks if user is in an active edit conversation state (draft or confirmed transaction).
+ * 2. Checks if user sent a management command (e.g. "ขอแก้ไขรายการ", "ขอลบรายการ").
  * 3. Otherwise, checks financial intent and extracts transactions via AI.
  * 4. Responds with friendly greeting if input is non-financial (no 0-baht draft).
  */
@@ -23,9 +30,98 @@ export async function handleTextMessage(
   try {
     // 1. Ensure user exists
     const user = await UserRepository.findOrCreateByLineUserId(lineUserId);
+    const trimmedText = text.trim();
 
-    // 2. Check Conversation State (Edit Flow with user ownership)
+    // 2. Check Conversation State
     const state = ConversationService.getState(user.id);
+
+    // 2A. Confirmed Transaction Edit Input
+    if (
+      state &&
+      state.targetType === 'transaction' &&
+      state.step === 'waiting_for_tx_input' &&
+      state.transactionId
+    ) {
+      const tx = await TransactionRepository.findByIdAndUser(state.transactionId, user.id);
+      if (!tx || tx.status !== 'confirmed') {
+        ConversationService.clearState(user.id);
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: '⚠️ ไม่พบรายการที่ต้องการแก้ไข หรือรายการถูกยกเลิกไปแล้วครับ',
+              },
+            ],
+          });
+        }
+        return;
+      }
+
+      const pendingEdits = { ...(state.pendingEdits || {}) };
+      const field = state.fieldToEdit || 'amount';
+
+      if (field === 'amount') {
+        const parsedAmount = aiService.parseCleanAmount(trimmedText);
+        if (!isValidPositiveAmount(parsedAmount)) {
+          if (replyToken) {
+            await lineClient.replyMessage({
+              replyToken,
+              messages: [
+                {
+                  type: 'text',
+                  text: '⚠️ จำนวนเงินต้องมากกว่า 0 บาท กรุณาพิมพ์ระบุจำนวนเงินใหม่อีกครั้งครับ',
+                },
+              ],
+            });
+          }
+          return;
+        }
+        pendingEdits.amount = parsedAmount;
+      } else if (field === 'category') {
+        pendingEdits.category_id = trimmedText;
+      } else if (field === 'date') {
+        const parsedDate = new Date(trimmedText);
+        if (isNaN(parsedDate.getTime())) {
+          if (replyToken) {
+            await lineClient.replyMessage({
+              replyToken,
+              messages: [
+                {
+                  type: 'text',
+                  text: '⚠️ รูปแบบวันที่ไม่ถูกต้อง กรุณาระบุในรูปแบบ YYYY-MM-DD เช่น 2026-08-20',
+                },
+              ],
+            });
+          }
+          return;
+        }
+        pendingEdits.occurred_at = trimmedText;
+      } else if (field === 'description') {
+        pendingEdits.description = trimmedText;
+      }
+
+      // Update in-memory state with pending changes
+      ConversationService.setState(user.id, {
+        targetType: 'transaction',
+        transactionId: state.transactionId,
+        step: 'select_tx_field',
+        pendingEdits,
+      });
+
+      // Send preview confirmation card
+      if (replyToken) {
+        const previewFlex = buildTxEditConfirmFlex(state.transactionId, tx, pendingEdits);
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [previewFlex],
+        });
+      }
+      return;
+    }
+
+    // 2B. Draft Edit Input (Existing Draft Flow)
     if (state && state.step === 'waiting_for_input' && state.draftId) {
       const draft = await DraftRepository.findById(state.draftId, user.id);
 
@@ -49,7 +145,7 @@ export async function handleTextMessage(
       const field = state.fieldToEdit || 'amount';
 
       if (field === 'amount') {
-        const parsedAmount = aiService.parseCleanAmount(text);
+        const parsedAmount = aiService.parseCleanAmount(trimmedText);
         if (!isValidPositiveAmount(parsedAmount)) {
           if (replyToken) {
             await lineClient.replyMessage({
@@ -66,12 +162,12 @@ export async function handleTextMessage(
         }
         updatedExtractedData.amount = parsedAmount;
       } else if (field === 'category') {
-        updatedExtractedData.category_id = text.trim();
+        updatedExtractedData.category_id = trimmedText;
       } else if (field === 'date') {
-        updatedExtractedData.occurred_at = text.trim();
+        updatedExtractedData.occurred_at = trimmedText;
       } else if (field === 'description') {
-        updatedExtractedData.description = text.trim();
-        updatedExtractedData.merchant_id = text.trim();
+        updatedExtractedData.description = trimmedText;
+        updatedExtractedData.merchant_id = trimmedText;
       }
 
       // Update draft in PostgreSQL with ownership verification
@@ -103,7 +199,65 @@ export async function handleTextMessage(
       return;
     }
 
-    // 3. Normal Flow: AI Extraction
+    // 3. Command Intent Checks for Confirmed Transactions
+    const editCommandPattern = /^(ขอ)?แก้ไขรายการ|แก้รายการ|แก้ไข$/i;
+    const voidCommandPattern = /^(ขอ)?(ลบ|ยกเลิก)รายการ|ลบรายการ|ขอลบ$/i;
+
+    if (editCommandPattern.test(trimmedText)) {
+      const recentTxs = await TransactionRepository.findRecentByUser(user.id, 5);
+      if (recentTxs.length === 0) {
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: '⚠️ ยังไม่มีรายการที่บันทึกไว้ในระบบครับ',
+              },
+            ],
+          });
+        }
+        return;
+      }
+
+      if (replyToken) {
+        const selectionFlex = buildTxSelectionFlex(recentTxs, 'edit');
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [selectionFlex],
+        });
+      }
+      return;
+    }
+
+    if (voidCommandPattern.test(trimmedText)) {
+      const recentTxs = await TransactionRepository.findRecentByUser(user.id, 5);
+      if (recentTxs.length === 0) {
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: '⚠️ ยังไม่มีรายการที่บันทึกไว้ในระบบครับ',
+              },
+            ],
+          });
+        }
+        return;
+      }
+
+      if (replyToken) {
+        const selectionFlex = buildTxSelectionFlex(recentTxs, 'void');
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [selectionFlex],
+        });
+      }
+      return;
+    }
+
+    // 4. Normal Flow: AI Extraction
     const currentDate = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Asia/Bangkok',
       year: 'numeric',
@@ -111,7 +265,7 @@ export async function handleTextMessage(
       day: '2-digit',
     }).format(new Date());
 
-    const transactions = await aiService.extractTransactions(text, currentDate);
+    const transactions = await aiService.extractTransactions(trimmedText, currentDate);
 
     // If input is non-financial (no valid positive transactions), reply with a helpful guide
     if (!transactions || transactions.length === 0) {
@@ -129,7 +283,7 @@ export async function handleTextMessage(
       return;
     }
 
-    // 4. Save a draft record in PostgreSQL for each extracted transaction
+    // 5. Save a draft record in PostgreSQL for each extracted transaction
     const draftItems: DraftConfirmItem[] = [];
 
     for (const item of transactions) {
@@ -138,7 +292,7 @@ export async function handleTextMessage(
       const draft = await DraftRepository.createDraft({
         userId: user.id,
         source: 'line_text',
-        rawInput: text,
+        rawInput: trimmedText,
         extractedData: {
           type: item.type.toLowerCase() === 'income'
             ? 'income'
@@ -178,7 +332,7 @@ export async function handleTextMessage(
       return;
     }
 
-    // 5. Send Flex Carousel (or Single Bubble)
+    // 6. Send Flex Carousel (or Single Bubble)
     if (replyToken) {
       const carouselMessage = buildDraftsConfirmCarousel(draftItems);
 

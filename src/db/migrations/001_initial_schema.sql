@@ -20,8 +20,10 @@ CREATE TABLE IF NOT EXISTS transactions (
     merchant_id VARCHAR(100),
     account_id VARCHAR(100),
     description TEXT,
+    status VARCHAR(50) NOT NULL DEFAULT 'confirmed',
     occurred_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 3. Transaction Drafts Table
@@ -54,4 +56,5 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 CREATE INDEX IF NOT EXISTS idx_users_line_user_id ON users(line_user_id);
 CREATE INDEX IF NOT EXISTS idx_drafts_user_status ON transaction_drafts(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_transactions_user_occurred ON transactions(user_id, occurred_at DESC);
+CREATE INDEX IF NOT EXISTS idx_transactions_user_status_occurred ON transactions(user_id, status, occurred_at DESC);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_entity ON audit_logs(entity_type, entity_id);

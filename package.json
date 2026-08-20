@@ -13,7 +13,8 @@
     "test:extraction": "tsx scripts/test-extraction.ts",
     "test:slip": "tsx scripts/test-slip-pipeline.ts",
     "test:security": "tsx scripts/test-security-hardening.ts",
-    "test": "npm run test:extraction && npm run test:slip && npm run test:security"
+    "test:tx-mgmt": "tsx scripts/test-transaction-management.ts",
+    "test": "npm run test:extraction && npm run test:slip && npm run test:security && npm run test:tx-mgmt"
   },
   "keywords": [
     "line-bot",
