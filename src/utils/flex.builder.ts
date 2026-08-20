@@ -84,6 +84,7 @@ export function buildDraftConfirmBubble(
             type: 'postback',
             label: '✅ ยืนยัน',
             data: `action=confirm&draft_id=${draftId}`,
+            displayText: '✅ ยืนยันรายการ',
           },
         },
         {
@@ -93,6 +94,7 @@ export function buildDraftConfirmBubble(
             type: 'postback',
             label: '✏️ แก้ไข',
             data: `action=edit&draft_id=${draftId}`,
+            displayText: '✏️ ขอแก้ไขรายการ',
           },
         },
         {
@@ -103,6 +105,7 @@ export function buildDraftConfirmBubble(
             type: 'postback',
             label: '❌ ยกเลิก',
             data: `action=cancel&draft_id=${draftId}`,
+            displayText: '❌ ยกเลิกรายการ',
           },
         },
       ],
