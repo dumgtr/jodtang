@@ -16,8 +16,15 @@
     "test:date": "tsx scripts/test-date-parser.ts",
     "test:tx-mgmt": "tsx scripts/test-transaction-management.ts",
     "test:migration-gate": "tsx scripts/test-disposable-migration-gate.ts",
-    "test": "npm run test:extraction && npm run test:slip && npm run test:security && npm run test:date && npm run test:tx-mgmt",
-    "benchmark:ai": "tsx scripts/benchmark-ai.ts"
+    "test:query-contract": "tsx scripts/test-query-intent-contract.ts",
+    "test:query-engine": "tsx scripts/test-query-engine.ts",
+    "test:query-formatter": "tsx scripts/test-query-formatter.ts",
+    "test:query-golden": "tsx scripts/test-query-golden-dataset.ts",
+    "test:integration": "tsx scripts/test-realworld-integration.ts",
+    "test:ux-menu": "tsx scripts/test-ux-menu.ts",
+    "test": "npm run test:extraction && npm run test:slip && npm run test:security && npm run test:date && npm run test:tx-mgmt && npm run test:query-contract && npm run test:query-engine && npm run test:query-formatter && npm run test:query-golden && npm run test:integration && npm run test:ux-menu",
+    "benchmark:ai": "tsx scripts/benchmark-ai.ts",
+    "benchmark:query": "tsx scripts/test-query-golden-dataset.ts"
   },
   "keywords": [
     "line-bot",

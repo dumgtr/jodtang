@@ -14,6 +14,10 @@ import {
 import { isValidPositiveAmount } from '../utils/amount';
 import { parseNaturalThaiDate } from '../utils/date';
 import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
+import { parseQueryIntent } from '../services/query-parser.service';
+import { QueryEngineService } from '../services/query-engine.service';
+import { formatQueryResult } from '../services/query-formatter.service';
+import { buildQuickSummaryQuickReply, buildSlipUploadQuickReply } from '../utils/menu.builder';
 
 /**
  * Deterministically checks if input text is an edit command (stripping emojis, symbols, and variation selectors).
@@ -31,6 +35,24 @@ function isVoidCommand(text: string): boolean {
   if (/\d/.test(text)) return false; // Contains digits -> financial input, not a command
   const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
   return /^(ขอ)?(ลบ|ยกเลิก)(รายการ)?$/u.test(normalized) || normalized === 'delete' || normalized === 'void';
+}
+
+/**
+ * Deterministically checks if input text is a Quick Summary menu request.
+ */
+function isSummaryMenuCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return /^(สรุป|สรุปยอด|เมนูสรุป|รายงาน)$/u.test(normalized);
+}
+
+/**
+ * Deterministically checks if input text is an Image/Slip upload menu request.
+ */
+function isSlipUploadMenuCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return /^(เพิ่มรูป|เพิ่มรูปภาพ|เพิ่มสลิป|เพิ่มรูปภาพสลิป|อัปโหลดรูป|แนบสลิป|ส่งรูป)$/u.test(normalized);
 }
 
 /**
@@ -373,7 +395,41 @@ export async function handleTextMessage(
       return;
     }
 
-    // 4. Normal Flow: AI Extraction
+    // 3B. Quick Summary Menu Command (Q6 UX)
+    if (isSummaryMenuCommand(trimmedText)) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: '📊 เลือกช่วงเวลาหรือหมวดหมู่ที่ต้องการดูสรุปได้เลยครับ หรือพิมพ์คำถามที่ต้องการถามได้ทันที ✨',
+              quickReply: buildQuickSummaryQuickReply(),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    // 3C. Slip / Image Upload Entrypoint Command (Q6 UX)
+    if (isSlipUploadMenuCommand(trimmedText)) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: '📷 คุณสามารถถ่ายรูปหรือเลือกภาพสลิป/ใบเสร็จจากอัลบั้มเพื่อส่งให้จดตังได้เลยครับ ✨',
+              quickReply: buildSlipUploadQuickReply(),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    // 4. Timezone-aware Reference Date (Asia/Bangkok)
     const currentDate = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Asia/Bangkok',
       year: 'numeric',
@@ -381,6 +437,23 @@ export async function handleTextMessage(
       day: '2-digit',
     }).format(new Date());
 
+    // 5. Query Flow: READ-ONLY Intent Classification -> Engine -> Formatter
+    const queryIntent = await parseQueryIntent(trimmedText, currentDate);
+
+    if (queryIntent) {
+      const queryResult = await QueryEngineService.executeQuery(user.id, queryIntent, currentDate);
+      const formattedReply = formatQueryResult(queryResult);
+
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [{ type: 'text', text: formattedReply }],
+        });
+      }
+      return;
+    }
+
+    // 6. Write Path: AI Extraction for new transactions
     const transactions = await aiService.extractTransactions(trimmedText, currentDate);
 
     // If input is non-financial (no valid positive transactions), reply with a helpful guide
