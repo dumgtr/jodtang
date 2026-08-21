@@ -166,6 +166,79 @@ async function runTransactionManagementTests() {
   assert.equal(txAfterMerchant.merchant_id, 'ร้านป้าสมใจ');
   console.log('✅ Deterministic field preservation verified.');
 
+  // 2F. Exact Production Scenario: Edit only amount "999" -> "777" and natural date "เมื่อวาน"
+  console.log('\n2F. Testing Exact Production Field-Preservation & Natural Date Regression...');
+  const { transaction: txProd } = await createConfirmedTx(999, 'โอนเงิน/ทั่วไป', 'ทดสอบ', 'ทดสอบ');
+  assert.equal(Number(txProd.amount), 999);
+  assert.equal(txProd.category_id, 'โอนเงิน/ทั่วไป');
+  assert.equal(txProd.description, 'ทดสอบ');
+  assert.equal(txProd.merchant_id, 'ทดสอบ');
+
+  // User selects "แก้ไข: จำนวนเงิน"
+  await handlePostbackEvent(
+    userA,
+    `action=set_tx_field&field=amount&tx_id=${txProd.id}`,
+    'token-prod-field-amount',
+    createMockLineClient([])
+  );
+
+  // User sends "777"
+  const repliesProdAmount: Reply[] = [];
+  await handleTextMessage(
+    userA.line_user_id,
+    '777',
+    'token-prod-input-777',
+    createMockLineClient(repliesProdAmount)
+  );
+  assert.equal(repliesProdAmount.length, 1);
+  assert.equal(repliesProdAmount[0].messages[0].type, 'flex');
+
+  // User confirms edit
+  await handlePostbackEvent(
+    userA,
+    `action=confirm_tx_edit&tx_id=${txProd.id}`,
+    'token-prod-confirm-amount',
+    createMockLineClient([])
+  );
+
+  // Assert in DB: ONLY amount changed to 777, all other fields preserved byte-for-byte!
+  const txProdAfterAmount = await TransactionRepository.findByIdAndUser(txProd.id, userA.id);
+  assert(txProdAfterAmount);
+  assert.equal(Number(txProdAfterAmount.amount), 777, 'Amount must be updated to 777');
+  assert.equal(txProdAfterAmount.category_id, 'โอนเงิน/ทั่วไป', 'Category must strictly remain โอนเงิน/ทั่วไป');
+  assert.equal(txProdAfterAmount.description, 'ทดสอบ', 'Description must strictly remain ทดสอบ');
+  assert.equal(txProdAfterAmount.merchant_id, 'ทดสอบ', 'Merchant must strictly remain ทดสอบ');
+  assert.equal(new Date(txProdAfterAmount.occurred_at).toISOString().startsWith('2026-08-20'), true, 'Date must strictly remain 2026-08-20');
+
+  // User selects "แก้ไข: วันที่" and enters natural Thai date "เมื่อวาน"
+  await handlePostbackEvent(
+    userA,
+    `action=set_tx_field&field=date&tx_id=${txProd.id}`,
+    'token-prod-field-date',
+    createMockLineClient([])
+  );
+  await handleTextMessage(
+    userA.line_user_id,
+    'เมื่อวาน',
+    'token-prod-input-yesterday',
+    createMockLineClient([])
+  );
+  await handlePostbackEvent(
+    userA,
+    `action=confirm_tx_edit&tx_id=${txProd.id}`,
+    'token-prod-confirm-date',
+    createMockLineClient([])
+  );
+
+  // Assert in DB: ONLY date changed to yesterday, amount remains 777, category/description/merchant preserved!
+  const txProdAfterDate = await TransactionRepository.findByIdAndUser(txProd.id, userA.id);
+  assert(txProdAfterDate);
+  assert.equal(Number(txProdAfterDate.amount), 777, 'Amount must remain 777');
+  assert.equal(txProdAfterDate.category_id, 'โอนเงิน/ทั่วไป', 'Category must remain โอนเงิน/ทั่วไป');
+  assert.equal(txProdAfterDate.description, 'ทดสอบ', 'Description must remain ทดสอบ');
+  assert.equal(txProdAfterDate.merchant_id, 'ทดสอบ', 'Merchant must remain ทดสอบ');
+  console.log('✅ Exact production field-preservation & natural date regression passed.');
+
   // 3. Stale Edit State / Target Mismatch Rejection Tests
   console.log('\n3. Testing Stale State & Target Mismatch Rejection...');
   const { transaction: txA } = await createConfirmedTx(500, 'อาหารและเครื่องดื่ม', 'ข้าวแกง', 'ร้าน A');

@@ -12,6 +12,7 @@ import {
   DraftConfirmItem,
 } from '../utils/flex.builder';
 import { isValidPositiveAmount } from '../utils/amount';
+import { parseNaturalThaiDate } from '../utils/date';
 import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
 
 /**
@@ -100,22 +101,22 @@ export async function handleTextMessage(
       } else if (field === 'category') {
         pendingEdits.category_id = trimmedText;
       } else if (field === 'date') {
-        const parsedDate = new Date(trimmedText);
-        if (isNaN(parsedDate.getTime())) {
+        const parsedDate = parseNaturalThaiDate(trimmedText);
+        if (!parsedDate) {
           if (replyToken) {
             await lineClient.replyMessage({
               replyToken,
               messages: [
                 {
                   type: 'text',
-                  text: '⚠️ รูปแบบวันที่ไม่ถูกต้อง กรุณาระบุในรูปแบบ YYYY-MM-DD เช่น 2026-08-20',
+                  text: '⚠️ รูปแบบวันที่ไม่ถูกต้อง กรุณาระบุ เช่น "วันนี้", "เมื่อวาน", "20/08/2569" หรือ "2026-08-20"',
                 },
               ],
             });
           }
           return;
         }
-        pendingEdits.occurred_at = trimmedText;
+        pendingEdits.occurred_at = parsedDate;
       } else if (field === 'description') {
         pendingEdits.description = trimmedText;
       }
@@ -182,7 +183,22 @@ export async function handleTextMessage(
       } else if (field === 'category') {
         updatedExtractedData.category_id = trimmedText;
       } else if (field === 'date') {
-        updatedExtractedData.occurred_at = trimmedText;
+        const parsedDate = parseNaturalThaiDate(trimmedText);
+        if (!parsedDate) {
+          if (replyToken) {
+            await lineClient.replyMessage({
+              replyToken,
+              messages: [
+                {
+                  type: 'text',
+                  text: '⚠️ รูปแบบวันที่ไม่ถูกต้อง กรุณาระบุ เช่น "วันนี้", "เมื่อวาน", "20/08/2569" หรือ "2026-08-20"',
+                },
+              ],
+            });
+          }
+          return;
+        }
+        updatedExtractedData.occurred_at = parsedDate;
       } else if (field === 'description') {
         updatedExtractedData.description = trimmedText;
         updatedExtractedData.merchant_id = trimmedText;
