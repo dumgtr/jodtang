@@ -262,22 +262,49 @@ async function runTransactionManagementTests() {
   assert.equal(new Date(txProdAfterThaiDate.occurred_at).toISOString().startsWith('2026-08-17'), true, 'Date must be 2026-08-17');
   assert.equal(Number(txProdAfterThaiDate.amount), 777, 'Amount must remain 777');
 
-  // User edits date with bare day "วันที่ 17" -> Must reject with conversational help message
+  // User edits date with "วันที่ 19" -> Uses current month (August) and current year (2026)
   await handlePostbackEvent(
     userA,
     `action=set_tx_field&field=date&tx_id=${txProd.id}`,
-    'token-prod-field-date-invalid',
+    'token-prod-field-date-day19',
     createMockLineClient([])
   );
-  const repliesInvalidDate: Reply[] = [];
   await handleTextMessage(
     userA.line_user_id,
-    'วันที่ 17',
-    'token-prod-input-bare-day',
-    createMockLineClient(repliesInvalidDate)
+    'วันที่ 19',
+    'token-prod-input-day19',
+    createMockLineClient([])
   );
-  assert.equal(repliesInvalidDate.length, 1);
-  assert(repliesInvalidDate[0].messages[0].text?.includes('ผมยังไม่เข้าใจวันที่ครับ'));
+  await handlePostbackEvent(
+    userA,
+    `action=confirm_tx_edit&tx_id=${txProd.id}`,
+    'token-prod-confirm-day19',
+    createMockLineClient([])
+  );
+  const txProdAfterDay19 = await TransactionRepository.findByIdAndUser(txProd.id, userA.id);
+  assert(txProdAfterDay19);
+  assert.equal(new Date(txProdAfterDay19.occurred_at).toISOString().startsWith('2026-08-19'), true, 'Date must be 2026-08-19');
+  assert.equal(Number(txProdAfterDay19.amount), 777, 'Amount must remain 777');
+  assert.equal(txProdAfterDay19.category_id, 'โอนเงิน/ทั่วไป', 'Category must remain โอนเงิน/ทั่วไป');
+  assert.equal(txProdAfterDay19.description, 'ทดสอบ', 'Description must remain ทดสอบ');
+  assert.equal(txProdAfterDay19.merchant_id, 'ทดสอบ', 'Merchant must remain ทดสอบ');
+
+  // User edits date with bare number "19" (no "วันที่" prefix) -> Must reject to avoid money/number ambiguity
+  await handlePostbackEvent(
+    userA,
+    `action=set_tx_field&field=date&tx_id=${txProd.id}`,
+    'token-prod-field-date-bare19',
+    createMockLineClient([])
+  );
+  const repliesBare19: Reply[] = [];
+  await handleTextMessage(
+    userA.line_user_id,
+    '19',
+    'token-prod-input-bare19',
+    createMockLineClient(repliesBare19)
+  );
+  assert.equal(repliesBare19.length, 1);
+  assert(repliesBare19[0].messages[0].text?.includes('ผมยังไม่เข้าใจวันที่ครับ'));
   console.log('✅ Exact production field-preservation & natural date regression passed.');
 
   // 3. Stale Edit State / Target Mismatch Rejection Tests

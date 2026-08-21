@@ -36,10 +36,11 @@ const SORTED_MONTH_NAMES = Object.keys(MONTH_MAP).sort((a, b) => b.length - a.le
  * Deterministically parses natural and conversational Thai/English date inputs.
  * Supports:
  * - Relative: "วันนี้", "เมื่อวาน", "เมื่อวานนี้", "พรุ่งนี้", "today", "yesterday", "tomorrow"
+ * - Date prefix + day: "วันที่ 19", "วันที่ 1", "วันที่ 31" (uses current month and year)
  * - Numeric without year: "17/8", "17-8", "17/08", "17-08" (uses current year)
  * - Thai month without year: "17 สิงหาคม", "17 สิงหา", "17 ส.ค.", "วันที่ 17 สิงหาคม" (uses current year)
  * - With explicit year: "17/8/2026", "17/8/2569", "17/8/26", "17/8/69", "17 สิงหาคม 2569", "17 สิงหาคม 69", "YYYY-MM-DD"
- * - Reject ambiguous or invalid inputs: "วันที่ 17", "32/8", "31/2", "13/13"
+ * - Reject ambiguous or invalid inputs: "19" (bare number), "32/8", "31/2", "วันที่ 32", "วันที่ 0"
  *
  * Returns ISO date string "YYYY-MM-DD" or null if unparseable/invalid.
  */
@@ -50,6 +51,7 @@ export function parseNaturalThaiDate(input: string, referenceDate: Date = new Da
 
   const trimmed = input.trim().toLowerCase();
   const defaultYear = getCurrentBangkokYear(referenceDate);
+  const defaultMonth = getCurrentBangkokMonth(referenceDate);
 
   // 1. Relative Thai & English keywords
   if (trimmed === 'วันนี้' || trimmed === 'today') {
@@ -67,15 +69,25 @@ export function parseNaturalThaiDate(input: string, referenceDate: Date = new Da
     return formatDateIso(d);
   }
 
-  // Strip leading prefixes like "วันที่", "วัน", "date"
-  let cleaned = trimmed.replace(/^(วันที่|วัน|date)\s*/iu, '').trim();
-
-  // Guard: bare day without month (e.g. "17" or "วันที่ 17") must be rejected
-  if (/^\d{1,2}$/.test(cleaned)) {
+  // 2. Format: "วันที่ + วัน" with explicit prefix (e.g. "วันที่ 19", "วันที่ 1", "วันที่ 31") -> current month & current year
+  const bareDayWithPrefixMatch = trimmed.match(/^(?:วันที่|วัน|date)\s*(\d{1,2})$/iu);
+  if (bareDayWithPrefixMatch) {
+    const day = parseInt(bareDayWithPrefixMatch[1], 10);
+    if (day >= 1 && isValidDateComponents(defaultYear, defaultMonth, day)) {
+      return formatYmd(defaultYear, defaultMonth, day);
+    }
     return null;
   }
 
-  // 2. Format: YYYY-MM-DD or YYYY/MM/DD (4-digit year first)
+  // Guard: bare number without "วันที่" prefix (e.g. "19", "17") must be rejected to prevent ambiguity with amounts
+  if (/^\d{1,2}$/.test(trimmed)) {
+    return null;
+  }
+
+  // Strip leading prefixes like "วันที่", "วัน", "date" for subsequent multi-token patterns
+  const cleaned = trimmed.replace(/^(วันที่|วัน|date)\s*/iu, '').trim();
+
+  // 3. Format: YYYY-MM-DD or YYYY/MM/DD (4-digit year first)
   const ymdMatch = cleaned.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
   if (ymdMatch) {
     const year = normalizeYear(ymdMatch[1], defaultYear);
@@ -87,9 +99,8 @@ export function parseNaturalThaiDate(input: string, referenceDate: Date = new Da
     return null;
   }
 
-  // 3. Format: Text Month matching (e.g. "17 สิงหาคม 2569", "17 สิงหา", "17 ส.ค. 69", "17 ส.ค.", "17-ส.ค.-2569")
+  // 4. Format: Text Month matching (e.g. "17 สิงหาคม 2569", "17 สิงหา", "17 ส.ค. 69", "17 ส.ค.", "17-ส.ค.-2569")
   for (const monthName of SORTED_MONTH_NAMES) {
-    // Check if cleaned contains this month name
     const monthIndex = cleaned.indexOf(monthName);
     if (monthIndex !== -1) {
       const beforeMonth = cleaned.substring(0, monthIndex).trim().replace(/[-\/\.\s]+$/, '');
@@ -119,7 +130,7 @@ export function parseNaturalThaiDate(input: string, referenceDate: Date = new Da
     }
   }
 
-  // 4. Format: DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY (4-digit year last)
+  // 5. Format: DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY (4-digit year last)
   const dmy4Match = cleaned.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})$/);
   if (dmy4Match) {
     const day = parseInt(dmy4Match[1], 10);
@@ -131,7 +142,7 @@ export function parseNaturalThaiDate(input: string, referenceDate: Date = new Da
     return null;
   }
 
-  // 5. Format: DD/MM/YY or DD-MM-YY or DD.MM.YY (2-digit year last, e.g. 17/8/26, 17/8/69)
+  // 6. Format: DD/MM/YY or DD-MM-YY or DD.MM.YY (2-digit year last, e.g. 17/8/26, 17/8/69)
   const dmy2Match = cleaned.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{2})$/);
   if (dmy2Match) {
     const day = parseInt(dmy2Match[1], 10);
@@ -143,7 +154,7 @@ export function parseNaturalThaiDate(input: string, referenceDate: Date = new Da
     return null;
   }
 
-  // 6. Format: DD/MM or D/M or DD-MM or D-M or DD.MM (Numeric without year -> current year)
+  // 7. Format: DD/MM or D/M or DD-MM or D-M or DD.MM (Numeric without year -> current year)
   const dmMatch = cleaned.match(/^(\d{1,2})[-\/\.](\d{1,2})$/);
   if (dmMatch) {
     const day = parseInt(dmMatch[1], 10);
@@ -233,4 +244,12 @@ function getCurrentBangkokYear(referenceDate: Date): number {
     year: 'numeric',
   });
   return parseInt(bangkokYearFormatter.format(referenceDate), 10);
+}
+
+function getCurrentBangkokMonth(referenceDate: Date): number {
+  const bangkokMonthFormatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Bangkok',
+    month: 'numeric',
+  });
+  return parseInt(bangkokMonthFormatter.format(referenceDate), 10);
 }
