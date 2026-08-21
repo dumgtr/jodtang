@@ -1,0 +1,757 @@
+import fs from 'fs';
+import path from 'path';
+import { QueryIntentType, DateRangeType, TransactionFilterType } from '../src/types/query';
+
+export interface QueryGoldenCase {
+  id: string;
+  tier: string;
+  query: string;
+  referenceDate: string; // e.g. "2026-08-21"
+  expectedIntent: {
+    intent: QueryIntentType;
+    dateRangeType: DateRangeType;
+    transactionType: TransactionFilterType;
+    category?: string | null;
+    merchant?: string | null;
+    groupBy?: 'CATEGORY' | 'MERCHANT' | 'NONE';
+    aggregation: 'SUM' | 'COUNT' | 'AVG' | 'NONE';
+  } | null; // null if not a query
+  expectedResult: {
+    totalAmount?: number;
+    count?: number;
+    topName?: string;
+    isEmpty?: boolean;
+  };
+  description: string;
+}
+
+const cases: QueryGoldenCase[] = [
+  // --------------------------------------------------------------------------
+  // Tier A: Core Period Summaries (SUM)
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_A_001',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'เดือนนี้ใช้เงินไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 5579, count: 7 },
+    description: 'Current month total expense summary',
+  },
+  {
+    id: 'Q_A_002',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'สรุปค่าใช้จ่ายเดือนนี้',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 5579, count: 7 },
+    description: 'Paraphrase: Monthly expense summary',
+  },
+  {
+    id: 'Q_A_003',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'เดือนนี้หมดเงินไปกี่บาท',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 5579, count: 7 },
+    description: 'Paraphrase: Colloquial total spent',
+  },
+  {
+    id: 'Q_A_004',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'ยอดใช้จ่ายเดือนนี้กี่บาท',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 5579, count: 7 },
+    description: 'Paraphrase: Monthly spending inquiry',
+  },
+  {
+    id: 'Q_A_005',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'เมื่อวานใช้เงินเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'YESTERDAY',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1250, count: 1 },
+    description: 'Yesterday expense summary',
+  },
+  {
+    id: 'Q_A_006',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'วันนี้ใช้เงินไปกี่บาท',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'TODAY',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 780, count: 1 },
+    description: 'Today expense summary',
+  },
+  {
+    id: 'Q_A_007',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'อาทิตย์นี้ใช้เงินเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'THIS_WEEK',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 3429, count: 4 },
+    description: 'This week expense summary (17-23 Aug)',
+  },
+  {
+    id: 'Q_A_008',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'สัปดาห์นี้ใช้เงินไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'THIS_WEEK',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 3429, count: 4 },
+    description: 'Paraphrase: Weekly spending summary',
+  },
+  {
+    id: 'Q_A_009',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'เดือนที่แล้วใช้เงินเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'LAST_MONTH',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 6500, count: 2 },
+    description: 'Last month expense summary (July 2026)',
+  },
+  {
+    id: 'Q_A_010',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'เดือนก่อนใช้เงินไปกี่บาท',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'LAST_MONTH',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 6500, count: 2 },
+    description: 'Paraphrase: Previous month total',
+  },
+  {
+    id: 'Q_A_011',
+    tier: 'A_SUMMARY_PERIOD',
+    query: 'ปีนี้ใช้เงินไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'THIS_YEAR',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 12079, count: 9 },
+    description: 'Year to date total spending',
+  },
+
+  // --------------------------------------------------------------------------
+  // Tier B: Category-Filtered Queries
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_B_001',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'เดือนนี้กินข้าวไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      category: 'อาหารและเครื่องดื่ม',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1879, count: 4 },
+    description: 'Food and dining category monthly sum',
+  },
+  {
+    id: 'Q_B_002',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'เดือนนี้ค่าอาหารเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      category: 'อาหารและเครื่องดื่ม',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1879, count: 4 },
+    description: 'Paraphrase: Food expense total',
+  },
+  {
+    id: 'Q_B_003',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'เดือนนี้เติมน้ำมันไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      category: 'การเดินทาง/ยานพาหนะ',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1000, count: 1 },
+    description: 'Transportation & fuel monthly total',
+  },
+  {
+    id: 'Q_B_004',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'เดือนนี้ค่าน้ำมันเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      category: 'การเดินทาง/ยานพาหนะ',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1000, count: 1 },
+    description: 'Paraphrase: Fuel cost total',
+  },
+  {
+    id: 'Q_B_005',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'สัปดาห์นี้ค่าช้อปปิ้งเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'THIS_WEEK',
+      transactionType: 'EXPENSE',
+      category: 'ช้อปปิ้ง/ของใช้/อุปกรณ์',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1250, count: 1 },
+    description: 'Shopping category weekly sum',
+  },
+  {
+    id: 'Q_B_006',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'เดือนนี้จ่ายค่าไฟไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      category: 'บิล/ค่าใช้จ่าย/สาธารณูปโภค',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1450, count: 1 },
+    description: 'Utility bills monthly total',
+  },
+  {
+    id: 'Q_B_007',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'เมื่อวานกินข้าวไปกี่บาท',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'YESTERDAY',
+      transactionType: 'EXPENSE',
+      category: 'อาหารและเครื่องดื่ม',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 0, count: 0, isEmpty: true },
+    description: 'Yesterday food expense (Lotus was shopping, food was 0)',
+  },
+  {
+    id: 'Q_B_008',
+    tier: 'B_CATEGORY_FILTER',
+    query: 'เดือนก่อนค่าอาหารเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'LAST_MONTH',
+      transactionType: 'EXPENSE',
+      category: 'อาหารและเครื่องดื่ม',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 4500, count: 1 },
+    description: 'Last month food expense total',
+  },
+
+  // --------------------------------------------------------------------------
+  // Tier C: Merchant-Filtered Queries
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_C_001',
+    tier: 'C_MERCHANT_FILTER',
+    query: 'เดือนนี้จ่ายให้ Lotus เท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      merchant: 'Lotus',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1250, count: 1 },
+    description: 'Specific merchant Lotus spending',
+  },
+  {
+    id: 'Q_C_002',
+    tier: 'C_MERCHANT_FILTER',
+    query: 'เดือนนี้ซื้อของที่ MK เท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      merchant: 'MK',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1280, count: 2 },
+    description: 'Specific merchant MK spending across 2 tx (780 + 500)',
+  },
+  {
+    id: 'Q_C_003',
+    tier: 'C_MERCHANT_FILTER',
+    query: 'เดือนนี้เติมน้ำมัน ปตท ไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      merchant: 'ปตท',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1000, count: 1 },
+    description: 'Specific merchant PTT spending',
+  },
+  {
+    id: 'Q_C_004',
+    tier: 'C_MERCHANT_FILTER',
+    query: 'เดือนนี้จ่ายให้ การไฟฟ้านครหลวง ไปกี่บาท',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      merchant: 'การไฟฟ้านครหลวง',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1450, count: 1 },
+    description: 'Specific merchant MEA spending',
+  },
+
+  // --------------------------------------------------------------------------
+  // Tier D: Ranking & Top Spenders (RANKING)
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_D_001',
+    tier: 'D_RANKING',
+    query: 'เดือนนี้ร้านไหนใช้เงินเยอะที่สุด',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'RANKING',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      groupBy: 'MERCHANT',
+      aggregation: 'SUM',
+    },
+    expectedResult: { topName: 'การไฟฟ้านครหลวง', totalAmount: 1450 },
+    description: 'Top spending merchant in current month (MEA ฿1,450)',
+  },
+  {
+    id: 'Q_D_002',
+    tier: 'D_RANKING',
+    query: 'ร้านที่เราใช้เงินมากที่สุดเดือนนี้',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'RANKING',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      groupBy: 'MERCHANT',
+      aggregation: 'SUM',
+    },
+    expectedResult: { topName: 'การไฟฟ้านครหลวง' },
+    description: 'Paraphrase: Top merchant spending',
+  },
+  {
+    id: 'Q_D_003',
+    tier: 'D_RANKING',
+    query: '5 อันดับร้านค้าที่จ่ายเงินเยอะที่สุด',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'RANKING',
+      dateRangeType: 'ALL_TIME',
+      transactionType: 'EXPENSE',
+      groupBy: 'MERCHANT',
+      aggregation: 'SUM',
+    },
+    expectedResult: { count: 5, topName: 'MK' },
+    description: 'Top 5 merchants ranking (All-time MK is #1 with ฿5,780)',
+  },
+  {
+    id: 'Q_D_004',
+    tier: 'D_RANKING',
+    query: 'หมวดไหนใช้เงินเยอะที่สุดเดือนนี้',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'RANKING',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      groupBy: 'CATEGORY',
+      aggregation: 'SUM',
+    },
+    expectedResult: { topName: 'อาหารและเครื่องดื่ม', totalAmount: 1879 },
+    description: 'Top spending category (Food ฿1,879)',
+  },
+  {
+    id: 'Q_D_005',
+    tier: 'D_RANKING',
+    query: 'หมวดหมู่ที่ใช้เงินมากที่สุด',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'RANKING',
+      dateRangeType: 'ALL_TIME',
+      transactionType: 'EXPENSE',
+      groupBy: 'CATEGORY',
+      aggregation: 'SUM',
+    },
+    expectedResult: { topName: 'อาหารและเครื่องดื่ม' },
+    description: 'Paraphrase: Top category',
+  },
+  {
+    id: 'Q_D_006',
+    tier: 'D_RANKING',
+    query: 'ร้านไหนใช้เงินเยอะที่สุดในสัปดาห์นี้',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'RANKING',
+      dateRangeType: 'THIS_WEEK',
+      transactionType: 'EXPENSE',
+      groupBy: 'MERCHANT',
+      aggregation: 'SUM',
+    },
+    expectedResult: { topName: 'Lotus', totalAmount: 1250 },
+    description: 'Top merchant in current week (Lotus ฿1,250)',
+  },
+
+  // --------------------------------------------------------------------------
+  // Tier E: Listing & Itemized Queries (LISTING)
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_E_001',
+    tier: 'E_LISTING',
+    query: 'อาทิตย์นี้มีค่าใช้จ่ายอะไรบ้าง',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'LISTING',
+      dateRangeType: 'THIS_WEEK',
+      transactionType: 'EXPENSE',
+      aggregation: 'NONE',
+    },
+    expectedResult: { count: 4, totalAmount: 3429 },
+    description: 'Itemized list of this week expenses',
+  },
+  {
+    id: 'Q_E_002',
+    tier: 'E_LISTING',
+    query: 'เดือนนี้มีรายการอะไรบ้าง',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'LISTING',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'ALL',
+      aggregation: 'NONE',
+    },
+    expectedResult: { count: 9 },
+    description: 'Itemized list of all monthly transactions (7 expenses + 1 income + 1 transfer = 9)',
+  },
+  {
+    id: 'Q_E_003',
+    tier: 'E_LISTING',
+    query: 'เมื่อวานใช้เงินอะไรไปบ้าง',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'LISTING',
+      dateRangeType: 'YESTERDAY',
+      transactionType: 'EXPENSE',
+      aggregation: 'NONE',
+    },
+    expectedResult: { count: 1, totalAmount: 1250 },
+    description: 'Yesterday itemized expenses',
+  },
+  {
+    id: 'Q_E_004',
+    tier: 'E_LISTING',
+    query: 'วันนี้มีรายการอะไรบ้าง',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'LISTING',
+      dateRangeType: 'TODAY',
+      transactionType: 'ALL',
+      aggregation: 'NONE',
+    },
+    expectedResult: { count: 3 },
+    description: 'Today all transactions (1 expense + 1 income + 1 transfer = 3)',
+  },
+  {
+    id: 'Q_E_005',
+    tier: 'E_LISTING',
+    query: 'ดูรายการสัปดาห์นี้',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'LISTING',
+      dateRangeType: 'THIS_WEEK',
+      transactionType: 'ALL',
+      aggregation: 'NONE',
+    },
+    expectedResult: { count: 6 },
+    description: 'Paraphrase: View weekly transactions (4 expenses + 1 income + 1 transfer = 6)',
+  },
+
+  // --------------------------------------------------------------------------
+  // Tier F: Count Queries (COUNT)
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_F_001',
+    tier: 'F_COUNT',
+    query: 'เดือนนี้มีรายจ่ายกี่รายการ',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'COUNT',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      aggregation: 'COUNT',
+    },
+    expectedResult: { count: 7 },
+    description: 'Monthly expense transaction count',
+  },
+  {
+    id: 'Q_F_002',
+    tier: 'F_COUNT',
+    query: 'วันนี้มีกี่รายการ',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'COUNT',
+      dateRangeType: 'TODAY',
+      transactionType: 'ALL',
+      aggregation: 'COUNT',
+    },
+    expectedResult: { count: 3 },
+    description: 'Today transaction count (ALL types: 1 expense + 1 income + 1 transfer = 3)',
+  },
+  {
+    id: 'Q_F_003',
+    tier: 'F_COUNT',
+    query: 'สัปดาห์นี้มีค่าใช้จ่ายกี่ครั้ง',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'COUNT',
+      dateRangeType: 'THIS_WEEK',
+      transactionType: 'EXPENSE',
+      aggregation: 'COUNT',
+    },
+    expectedResult: { count: 4 },
+    description: 'Weekly transaction count',
+  },
+  {
+    id: 'Q_F_004',
+    tier: 'F_COUNT',
+    query: 'เดือนนี้ซื้อของที่ MK กี่ครั้ง',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'COUNT',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      merchant: 'MK',
+      aggregation: 'COUNT',
+    },
+    expectedResult: { count: 2 },
+    description: 'Specific merchant visit count',
+  },
+
+  // --------------------------------------------------------------------------
+  // Tier G: Income & Transfer Queries
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_G_001',
+    tier: 'G_INCOME_TRANSFER',
+    query: 'เดือนนี้มีรายรับเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'INCOME',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 35000, count: 1 },
+    description: 'Monthly income summary',
+  },
+  {
+    id: 'Q_G_002',
+    tier: 'G_INCOME_TRANSFER',
+    query: 'สรุปรายได้เดือนนี้',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'INCOME',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 35000, count: 1 },
+    description: 'Paraphrase: Income summary',
+  },
+  {
+    id: 'Q_G_003',
+    tier: 'G_INCOME_TRANSFER',
+    query: 'เดือนนี้โอนเงินไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'TRANSFER',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 3000, count: 1 },
+    description: 'Monthly transfer summary',
+  },
+  {
+    id: 'Q_G_004',
+    tier: 'G_INCOME_TRANSFER',
+    query: 'สรุปการโอนเงินเดือนนี้',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'TRANSFER',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 3000, count: 1 },
+    description: 'Paraphrase: Transfer summary',
+  },
+
+  // --------------------------------------------------------------------------
+  // Tier H: Natural Thai Dates, Boundaries & Edge Cases (Empty, Non-queries)
+  // --------------------------------------------------------------------------
+  {
+    id: 'Q_H_001',
+    tier: 'H_EDGE_DATES_EMPTY',
+    query: '17 สิงหา ใช้เงินเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'SPECIFIC_DATE',
+      transactionType: 'EXPENSE',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 1000, count: 1 },
+    description: 'Specific date "17 สิงหา" (PTT fuel ฿1,000)',
+  },
+  {
+    id: 'Q_H_002',
+    tier: 'H_EDGE_DATES_EMPTY',
+    query: 'วันที่ 19 กินข้าวไปเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'SPECIFIC_DATE',
+      transactionType: 'EXPENSE',
+      category: 'อาหารและเครื่องดื่ม',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 399, count: 1 },
+    description: 'Specific date "วันที่ 19" (Shabu ฿399)',
+  },
+  {
+    id: 'Q_H_003',
+    tier: 'H_EDGE_DATES_EMPTY',
+    query: 'เดือนนี้ค่ารักษาพยาบาลเท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      category: 'สุขภาพ/ความงาม',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 0, count: 0, isEmpty: true },
+    description: 'Empty result for category with 0 transactions',
+  },
+  {
+    id: 'Q_H_004',
+    tier: 'H_EDGE_DATES_EMPTY',
+    query: 'เดือนนี้ซื้อของที่ Apple เท่าไร',
+    referenceDate: '2026-08-21',
+    expectedIntent: {
+      intent: 'SUMMARY',
+      dateRangeType: 'CURRENT_MONTH',
+      transactionType: 'EXPENSE',
+      merchant: 'Apple',
+      aggregation: 'SUM',
+    },
+    expectedResult: { totalAmount: 0, count: 0, isEmpty: true },
+    description: 'Voided transaction exclusion: Apple iPhone was voided -> must return 0',
+  },
+  {
+    id: 'Q_H_005',
+    tier: 'H_EDGE_DATES_EMPTY',
+    query: 'สวัสดีครับ',
+    referenceDate: '2026-08-21',
+    expectedIntent: null,
+    expectedResult: { isEmpty: true },
+    description: 'Non-query greeting must return null (do not query DB)',
+  },
+  {
+    id: 'Q_H_006',
+    tier: 'H_EDGE_DATES_EMPTY',
+    query: 'กินข้าว 50',
+    referenceDate: '2026-08-21',
+    expectedIntent: null,
+    expectedResult: { isEmpty: true },
+    description: 'Standard transaction input must return null (routed to extraction, not query)',
+  },
+  {
+    id: 'Q_H_007',
+    tier: 'H_EDGE_DATES_EMPTY',
+    query: 'เติมน้ำมัน 500',
+    referenceDate: '2026-08-21',
+    expectedIntent: null,
+    expectedResult: { isEmpty: true },
+    description: 'Standard fuel transaction input must return null',
+  },
+];
+
+const outputPath = path.resolve(__dirname, 'query-golden-dataset.json');
+fs.writeFileSync(outputPath, JSON.stringify(cases, null, 2), 'utf-8');
+console.log(`✅ Generated ${cases.length} Query Golden Cases at: ${outputPath}`);
