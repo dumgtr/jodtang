@@ -126,14 +126,82 @@ export async function parseQueryIntent(
     }
 
     const parsed = JSON.parse(cleanJson);
-    if (parsed.intent === 'UNKNOWN') {
+    if (!parsed || typeof parsed !== 'object') {
+      return parseDeterministicQueryIntentFallback(trimmed, referenceDate);
+    }
+
+    const intentStr = String(parsed.intent || 'SUMMARY').toUpperCase().trim();
+    const intent = ['SUMMARY', 'RANKING', 'LISTING', 'COUNT', 'UNKNOWN'].includes(intentStr)
+      ? intentStr
+      : 'SUMMARY';
+
+    if (intent === 'UNKNOWN') {
       return null;
     }
 
-    const validated = QueryIntentSchema.safeParse(parsed);
+    // Normalize date range
+    const rawDateRange = parsed.date_range || {};
+    let dateType = String(rawDateRange.type || 'CURRENT_MONTH').toUpperCase().trim();
+    if (dateType === 'THIS_MONTH' || dateType === 'MONTH' || dateType === 'MONTHLY') dateType = 'CURRENT_MONTH';
+    if (dateType === 'PREVIOUS_MONTH' || dateType === 'LASTMONTH') dateType = 'LAST_MONTH';
+    if (dateType === 'WEEK' || dateType === 'THISWEEK') dateType = 'THIS_WEEK';
+
+    const validDateTypes = [
+      'TODAY', 'YESTERDAY', 'THIS_WEEK', 'LAST_WEEK',
+      'CURRENT_MONTH', 'LAST_MONTH', 'THIS_YEAR', 'LAST_YEAR',
+      'SPECIFIC_DATE', 'CUSTOM_RANGE', 'ALL_TIME',
+    ];
+    if (!validDateTypes.includes(dateType)) dateType = 'CURRENT_MONTH';
+
+    // Normalize transaction type
+    let txType = String(parsed.transaction_type || 'EXPENSE').toUpperCase().trim();
+    if (!['EXPENSE', 'INCOME', 'TRANSFER', 'ALL'].includes(txType)) txType = 'EXPENSE';
+
+    // Normalize group_by
+    let groupBy = parsed.group_by ? String(parsed.group_by).toUpperCase().trim() : 'NONE';
+    if (!['CATEGORY', 'MERCHANT', 'DATE', 'TYPE', 'NONE'].includes(groupBy)) groupBy = 'NONE';
+
+    // Normalize aggregation
+    let agg = String(parsed.aggregation || 'SUM').toUpperCase().trim();
+    if (!['SUM', 'COUNT', 'AVG', 'NONE'].includes(agg)) agg = 'SUM';
+
+    // Normalize sort_by
+    let sortBy = parsed.sort_by ? String(parsed.sort_by).toUpperCase().trim() : 'AMOUNT';
+    if (!['AMOUNT', 'DATE', 'COUNT', 'NONE'].includes(sortBy)) sortBy = 'AMOUNT';
+
+    // Normalize sort_order
+    let sortOrder = parsed.sort_order ? String(parsed.sort_order).toUpperCase().trim() : 'DESC';
+    if (!['ASC', 'DESC', 'NONE'].includes(sortOrder)) sortOrder = 'DESC';
+
+    // Normalize limit
+    let limit: number | null = null;
+    if (parsed.limit !== undefined && parsed.limit !== null) {
+      const num = Number(parsed.limit);
+      if (!isNaN(num) && num >= 0) limit = Math.floor(num);
+    }
+
+    const normalized = {
+      intent,
+      date_range: {
+        type: dateType,
+        specific_date: rawDateRange.specific_date ? String(rawDateRange.specific_date).trim() : null,
+        start_date: rawDateRange.start_date ? String(rawDateRange.start_date).trim() : null,
+        end_date: rawDateRange.end_date ? String(rawDateRange.end_date).trim() : null,
+      },
+      transaction_type: txType,
+      category: parsed.category ? String(parsed.category).trim() : null,
+      merchant: parsed.merchant ? String(parsed.merchant).trim() : null,
+      group_by: groupBy,
+      aggregation: agg,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      limit,
+    };
+
+    const validated = QueryIntentSchema.safeParse(normalized);
     if (!validated.success) {
-      console.error('[QueryParser] Schema validation failed:', validated.error);
-      return null;
+      console.warn('[QueryParser] Schema validation warning; falling back to deterministic parser:', validated.error);
+      return parseDeterministicQueryIntentFallback(trimmed, referenceDate);
     }
 
     return validated.data as QueryIntent;
