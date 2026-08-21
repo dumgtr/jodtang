@@ -16,14 +16,58 @@ export interface ExtractedTransaction {
 let _openai: OpenAI | null = null;
 function getOpenAIClient(): OpenAI | null {
   if (!_openai) {
-    if (!env.OPENAI_API_KEY || env.OPENAI_API_KEY.startsWith('mock_') || env.OPENAI_API_KEY === 'dummy_key') {
+    const apiKey =
+      env.OPENAI_API_KEY && !env.OPENAI_API_KEY.startsWith('mock_') && env.OPENAI_API_KEY !== 'dummy_key'
+        ? env.OPENAI_API_KEY
+        : env.OPENROUTER_API_KEY || env.DEEPSEEK_API_KEY;
+
+    if (!apiKey || apiKey.startsWith('mock_') || apiKey === 'dummy_key') {
       return null;
     }
     _openai = new OpenAI({
-      apiKey: env.OPENAI_API_KEY,
+      apiKey,
+      baseURL: env.OPENAI_BASE_URL || undefined,
     });
   }
   return _openai;
+}
+
+/**
+ * Returns the exact production system prompt for financial transaction extraction.
+ */
+export function getSystemPrompt(currentDate: string): string {
+  return `You are an expert Thai financial transaction parser for the "จดตัง" app.
+Current Date: ${currentDate}
+
+Allowed Categories:
+- อาหารและเครื่องดื่ม
+- การเดินทาง/ยานพาหนะ
+- ช้อปปิ้ง/ของใช้/อุปกรณ์
+- บิล/ค่าใช้จ่าย/สาธารณูปโภค
+- สุขภาพ/ความงาม
+- ความบันเทิง/สังสรรค์
+- โอนเงิน/ทั่วไป
+- รายรับ/เงินเดือน/ธุรกิจ
+
+CRITICAL RULES:
+1. Parse numbers with commas (e.g. "30,000" or "1,500.50") as full numbers (30000 or 1500.50). NEVER drop digits after a comma.
+2. If multiple transactions are mentioned (e.g. "กินข้าว 200 \\n ล้างรถ 300" or "กาแฟ 60 ข้าวมันไก่ 50"), extract EACH one as a separate item in the "transactions" array.
+3. Determine if each item is an EXPENSE, INCOME, or TRANSFER.
+4. Output strict JSON only matching the schema below. No explanations or markdown.
+
+JSON Schema:
+{
+  "transactions": [
+    {
+      "type": "EXPENSE",
+      "amount": number,
+      "merchant": string,
+      "category": string,
+      "description": string,
+      "date": "YYYY-MM-DD"
+    }
+  ]
+}`;
 }
 
 /**
@@ -176,38 +220,7 @@ export async function extractTransactions(
   }
 
   try {
-    const systemPrompt = `You are an expert Thai financial transaction parser for the "จดตัง" app.
-Current Date: ${currentDate}
-
-Allowed Categories:
-- อาหารและเครื่องดื่ม
-- การเดินทาง/ยานพาหนะ
-- ช้อปปิ้ง/ของใช้/อุปกรณ์
-- บิล/ค่าใช้จ่าย/สาธารณูปโภค
-- สุขภาพ/ความงาม
-- ความบันเทิง/สังสรรค์
-- โอนเงิน/ทั่วไป
-- รายรับ/เงินเดือน/ธุรกิจ
-
-CRITICAL RULES:
-1. Parse numbers with commas (e.g. "30,000" or "1,500.50") as full numbers (30000 or 1500.50). NEVER drop digits after a comma.
-2. If multiple transactions are mentioned (e.g. "กินข้าว 200 \n ล้างรถ 300" or "กาแฟ 60 ข้าวมันไก่ 50"), extract EACH one as a separate item in the "transactions" array.
-3. Determine if each item is an EXPENSE, INCOME, or TRANSFER.
-4. Output strict JSON only matching the schema below. No explanations or markdown.
-
-JSON Schema:
-{
-  "transactions": [
-    {
-      "type": "EXPENSE",
-      "amount": number,
-      "merchant": string,
-      "category": string,
-      "description": string,
-      "date": "YYYY-MM-DD"
-    }
-  ]
-}`;
+    const systemPrompt = getSystemPrompt(currentDate);
 
     const response = await client.chat.completions.create({
       model: env.OPENAI_MODEL,

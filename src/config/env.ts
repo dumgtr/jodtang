@@ -12,7 +12,10 @@ const envSchema = z.object({
   LINE_CHANNEL_ACCESS_TOKEN: z.string().default(''),
   LINE_CHANNEL_SECRET: z.string().default(''),
   OPENAI_API_KEY: z.string().optional(),
+  OPENAI_BASE_URL: z.string().optional(),
   OPENAI_MODEL: z.string().default('gpt-4o-mini'),
+  OPENROUTER_API_KEY: z.string().optional(),
+  DEEPSEEK_API_KEY: z.string().optional(),
   DATABASE_SSL_REJECT_UNAUTHORIZED: z
     .enum(['true', 'false'])
     .default('true')

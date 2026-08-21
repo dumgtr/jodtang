@@ -1,0 +1,4875 @@
+[
+  {
+    "id": "TC_A_001",
+    "tier": "A_SIMPLE",
+    "input": "กาแฟ 65",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 65,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กาแฟ",
+        "description": "กาแฟ 65",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_002",
+    "tier": "A_SIMPLE",
+    "input": "ข้าวมันไก่ 50",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 50,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ข้าวมันไก่",
+        "description": "ข้าวมันไก่ 50",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_003",
+    "tier": "A_SIMPLE",
+    "input": "ก๋วยเตี๋ยว 60",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ก๋วยเตี๋ยว",
+        "description": "ก๋วยเตี๋ยว 60",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_004",
+    "tier": "A_SIMPLE",
+    "input": "ข้าวผัดกะเพรา 70",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 70,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ข้าวผัดกะเพรา",
+        "description": "ข้าวผัดกะเพรา 70",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_005",
+    "tier": "A_SIMPLE",
+    "input": "ชาไทย 45",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 45,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ชาไทย",
+        "description": "ชาไทย 45",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_006",
+    "tier": "A_SIMPLE",
+    "input": "ชานมไข่มุก 55",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 55,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ชานมไข่มุก",
+        "description": "ชานมไข่มุก 55",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_007",
+    "tier": "A_SIMPLE",
+    "input": "ส้มตำ 80",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 80,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ส้มตำ",
+        "description": "ส้มตำ 80",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_008",
+    "tier": "A_SIMPLE",
+    "input": "ขนมปัง 35",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 35,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ขนมปัง",
+        "description": "ขนมปัง 35",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_009",
+    "tier": "A_SIMPLE",
+    "input": "ข้าวเหนียวหมูปิ้ง 40",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 40,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ข้าวเหนียวหมูปิ้ง",
+        "description": "ข้าวเหนียวหมูปิ้ง 40",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_010",
+    "tier": "A_SIMPLE",
+    "input": "ข้าวแกง 50",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 50,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ข้าวแกง",
+        "description": "ข้าวแกง 50",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_011",
+    "tier": "A_SIMPLE",
+    "input": "น้ำเปล่า 10",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 10,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "น้ำเปล่า",
+        "description": "น้ำเปล่า 10",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_012",
+    "tier": "A_SIMPLE",
+    "input": "ไอศกรีม 25",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 25,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ไอศกรีม",
+        "description": "ไอศกรีม 25",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_013",
+    "tier": "A_SIMPLE",
+    "input": "สเต๊ก 189",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 189,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "สเต๊ก",
+        "description": "สเต๊ก 189",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_014",
+    "tier": "A_SIMPLE",
+    "input": "พิซซ่า 399",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 399,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "พิซซ่า",
+        "description": "พิซซ่า 399",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_015",
+    "tier": "A_SIMPLE",
+    "input": "ราเมง 220",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 220,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ราเมง",
+        "description": "ราเมง 220",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_016",
+    "tier": "A_SIMPLE",
+    "input": "ซูชิ 350",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซูชิ",
+        "description": "ซูชิ 350",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_017",
+    "tier": "A_SIMPLE",
+    "input": "บุฟเฟ่ต์ชาบู 499",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 499,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "บุฟเฟ่ต์ชาบู",
+        "description": "บุฟเฟ่ต์ชาบู 499",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_018",
+    "tier": "A_SIMPLE",
+    "input": "หมูกระทะ 299",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 299,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "หมูกระทะ",
+        "description": "หมูกระทะ 299",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_019",
+    "tier": "A_SIMPLE",
+    "input": "ลาบหมู 75",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 75,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ลาบหมู",
+        "description": "ลาบหมู 75",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_020",
+    "tier": "A_SIMPLE",
+    "input": "ต้มยำกุ้ง 150",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 150,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ต้มยำกุ้ง",
+        "description": "ต้มยำกุ้ง 150",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_021",
+    "tier": "A_SIMPLE",
+    "input": "เติมน้ำมัน 800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 800,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เติมน้ำมัน",
+        "description": "เติมน้ำมัน 800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_022",
+    "tier": "A_SIMPLE",
+    "input": "ค่าน้ำมัน 1,000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1000,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่าน้ำมัน",
+        "description": "ค่าน้ำมัน 1,000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_023",
+    "tier": "A_SIMPLE",
+    "input": "ค่าแท็กซี่ 150",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 150,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่าแท็กซี่",
+        "description": "ค่าแท็กซี่ 150",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_024",
+    "tier": "A_SIMPLE",
+    "input": "วินมอเตอร์ไซค์ 30",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 30,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "วินมอเตอร์ไซค์",
+        "description": "วินมอเตอร์ไซค์ 30",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_025",
+    "tier": "A_SIMPLE",
+    "input": "ค่า BTS 44",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 44,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่า BTS",
+        "description": "ค่า BTS 44",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_026",
+    "tier": "A_SIMPLE",
+    "input": "ค่า MRT 38",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 38,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่า MRT",
+        "description": "ค่า MRT 38",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_027",
+    "tier": "A_SIMPLE",
+    "input": "ทางด่วน 50",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 50,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ทางด่วน",
+        "description": "ทางด่วน 50",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_028",
+    "tier": "A_SIMPLE",
+    "input": "ค่าจอดรถ 40",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 40,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่าจอดรถ",
+        "description": "ค่าจอดรถ 40",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_029",
+    "tier": "A_SIMPLE",
+    "input": "Grab 120",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 120,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "Grab",
+        "description": "Grab 120",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_030",
+    "tier": "A_SIMPLE",
+    "input": "ล้างรถ 200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 200,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ล้างรถ",
+        "description": "ล้างรถ 200",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_031",
+    "tier": "A_SIMPLE",
+    "input": "เปลี่ยนน้ำมันเครื่อง 1200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1200,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เปลี่ยนน้ำมันเครื่อง",
+        "description": "เปลี่ยนน้ำมันเครื่อง 1200",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_032",
+    "tier": "A_SIMPLE",
+    "input": "ปะยาง 100",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 100,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ปะยาง",
+        "description": "ปะยาง 100",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_033",
+    "tier": "A_SIMPLE",
+    "input": "ค่าไฟ 1200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1200,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าไฟ",
+        "description": "ค่าไฟ 1200",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_034",
+    "tier": "A_SIMPLE",
+    "input": "ค่าน้ำ 180",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 180,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าน้ำ",
+        "description": "ค่าน้ำ 180",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_035",
+    "tier": "A_SIMPLE",
+    "input": "ค่าเน็ต 599",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 599,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าเน็ต",
+        "description": "ค่าเน็ต 599",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_036",
+    "tier": "A_SIMPLE",
+    "input": "ค่าห้อง 4500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 4500,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าห้อง",
+        "description": "ค่าห้อง 4500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_037",
+    "tier": "A_SIMPLE",
+    "input": "ค่าส่วนกลาง 850",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 850,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าส่วนกลาง",
+        "description": "ค่าส่วนกลาง 850",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_038",
+    "tier": "A_SIMPLE",
+    "input": "ค่าโทรศัพท์ 499",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 499,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าโทรศัพท์",
+        "description": "ค่าโทรศัพท์ 499",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_039",
+    "tier": "A_SIMPLE",
+    "input": "ประกันรถยนต์ 15000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 15000,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ประกันรถยนต์",
+        "description": "ประกันรถยนต์ 15000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_040",
+    "tier": "A_SIMPLE",
+    "input": "ประกันสุขภาพ 2800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2800,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ประกันสุขภาพ",
+        "description": "ประกันสุขภาพ 2800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_041",
+    "tier": "A_SIMPLE",
+    "input": "ซื้อของ 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อของ",
+        "description": "ซื้อของ 500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_042",
+    "tier": "A_SIMPLE",
+    "input": "เสื้อยืด 250",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 250,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "เสื้อยืด",
+        "description": "เสื้อยืด 250",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_043",
+    "tier": "A_SIMPLE",
+    "input": "กางเกงยีนส์ 990",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 990,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "กางเกงยีนส์",
+        "description": "กางเกงยีนส์ 990",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_044",
+    "tier": "A_SIMPLE",
+    "input": "รองเท้าผ้าใบ 1800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1800,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "รองเท้าผ้าใบ",
+        "description": "รองเท้าผ้าใบ 1800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_045",
+    "tier": "A_SIMPLE",
+    "input": "กระเป๋า 650",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 650,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "กระเป๋า",
+        "description": "กระเป๋า 650",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_046",
+    "tier": "A_SIMPLE",
+    "input": "หูฟัง 890",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 890,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "หูฟัง",
+        "description": "หูฟัง 890",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_047",
+    "tier": "A_SIMPLE",
+    "input": "คีย์บอร์ด 1500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1500,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "คีย์บอร์ด",
+        "description": "คีย์บอร์ด 1500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_048",
+    "tier": "A_SIMPLE",
+    "input": "เมาส์ 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "เมาส์",
+        "description": "เมาส์ 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_049",
+    "tier": "A_SIMPLE",
+    "input": "สายชาร์จ 199",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 199,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "สายชาร์จ",
+        "description": "สายชาร์จ 199",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_050",
+    "tier": "A_SIMPLE",
+    "input": "ซื้อหนังสือ 320",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 320,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อหนังสือ",
+        "description": "ซื้อหนังสือ 320",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_051",
+    "tier": "A_SIMPLE",
+    "input": "ค่ายา 120",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 120,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ค่ายา",
+        "description": "ค่ายา 120",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_052",
+    "tier": "A_SIMPLE",
+    "input": "หาหมอ 800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 800,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "หาหมอ",
+        "description": "หาหมอ 800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_053",
+    "tier": "A_SIMPLE",
+    "input": "ค่าฟิตเนส 1200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1200,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ค่าฟิตเนส",
+        "description": "ค่าฟิตเนส 1200",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_054",
+    "tier": "A_SIMPLE",
+    "input": "ตัดผม 300",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 300,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ตัดผม",
+        "description": "ตัดผม 300",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_055",
+    "tier": "A_SIMPLE",
+    "input": "นวดแผนไทย 400",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 400,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "นวดแผนไทย",
+        "description": "นวดแผนไทย 400",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_056",
+    "tier": "A_SIMPLE",
+    "input": "ครีมทาหน้า 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ครีมทาหน้า",
+        "description": "ครีมทาหน้า 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_057",
+    "tier": "A_SIMPLE",
+    "input": "ดูหนัง 240",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 240,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "ดูหนัง",
+        "description": "ดูหนัง 240",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_058",
+    "tier": "A_SIMPLE",
+    "input": "คอนเสิร์ต 2500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2500,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "คอนเสิร์ต",
+        "description": "คอนเสิร์ต 2500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_059",
+    "tier": "A_SIMPLE",
+    "input": "เบียร์ 180",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 180,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "เบียร์",
+        "description": "เบียร์ 180",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_060",
+    "tier": "A_SIMPLE",
+    "input": "ร้องเกะ 600",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 600,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "ร้องเกะ",
+        "description": "ร้องเกะ 600",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_061",
+    "tier": "A_SIMPLE",
+    "input": "เติมเกม 300",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 300,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "เติมเกม",
+        "description": "เติมเกม 300",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_062",
+    "tier": "A_SIMPLE",
+    "input": "โอนเงิน 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 500,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนเงิน",
+        "description": "โอนเงิน 500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_063",
+    "tier": "A_SIMPLE",
+    "input": "เงินเดือน 35000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 35000,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "เงินเดือน",
+        "description": "เงินเดือน 35000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_064",
+    "tier": "A_SIMPLE",
+    "input": "ได้เงินเดือน 40,000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 40000,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "เงินเดือน",
+        "description": "ได้เงินเดือน 40,000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_A_065",
+    "tier": "A_SIMPLE",
+    "input": "ขายของได้ 1500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 1500,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ขายของ",
+        "description": "ขายของได้ 1500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_001",
+    "tier": "B_COLLOQUIAL",
+    "input": "เมื่อกี้กินข้าวไป 250",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 250,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "เมื่อกี้กินข้าวไป",
+        "description": "เมื่อกี้กินข้าวไป 250",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_002",
+    "tier": "B_COLLOQUIAL",
+    "input": "แวะซื้อกาแฟ 75 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 75,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "แวะซื้อกาแฟ  บาท",
+        "description": "แวะซื้อกาแฟ 75 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_003",
+    "tier": "B_COLLOQUIAL",
+    "input": "กินเตี๋ยวเรือไป 85 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 85,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "กินเตี๋ยวเรือไป  บาท",
+        "description": "กินเตี๋ยวเรือไป 85 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_004",
+    "tier": "B_COLLOQUIAL",
+    "input": "วันนี้เติมน้ำมันไป 800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 800,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "วันนี้เติมน้ำมันไป",
+        "description": "วันนี้เติมน้ำมันไป 800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_005",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าไฟไป 1,250",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1250,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "จ่ายค่าไฟไป",
+        "description": "จ่ายค่าไฟไป 1,250",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_006",
+    "tier": "B_COLLOQUIAL",
+    "input": "โอนเงินให้แม่ 3000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 3000,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนเงินให้แม่",
+        "description": "โอนเงินให้แม่ 3000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_007",
+    "tier": "B_COLLOQUIAL",
+    "input": "โอนคืนเพื่อน 500 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 500,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนคืนเพื่อน  บาท",
+        "description": "โอนคืนเพื่อน 500 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_008",
+    "tier": "B_COLLOQUIAL",
+    "input": "เมื่อเช้าแวะซื้อกาแฟ 65",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 65,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "เมื่อเช้าแวะซื้อกาแฟ",
+        "description": "เมื่อเช้าแวะซื้อกาแฟ 65",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_009",
+    "tier": "B_COLLOQUIAL",
+    "input": "กินข้าวเที่ยงไป 60 บาทถ้วน",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กินข้าวเที่ยงไป  บาทถ้วน",
+        "description": "กินข้าวเที่ยงไป 60 บาทถ้วน",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_010",
+    "tier": "B_COLLOQUIAL",
+    "input": "สั่งข้าวหมูกรอบมาส่ง 95 บ.",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 95,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "สั่งข้าวหมูกรอบมาส่ง  บ.",
+        "description": "สั่งข้าวหมูกรอบมาส่ง 95 บ.",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_011",
+    "tier": "B_COLLOQUIAL",
+    "input": "จัดหมูกระทะชุดใหญ่ 599 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 599,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "จัดหมูกระทะชุดใหญ่  บาท",
+        "description": "จัดหมูกระทะชุดใหญ่ 599 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_012",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อชาบูมากินที่ห้อง 350",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อชาบูมากินที่ห้อง",
+        "description": "ซื้อชาบูมากินที่ห้อง 350",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_013",
+    "tier": "B_COLLOQUIAL",
+    "input": "นั่งวินไปบีทีเอส 25 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 25,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "นั่งวินไปบีทีเอส  บาท",
+        "description": "นั่งวินไปบีทีเอส 25 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_014",
+    "tier": "B_COLLOQUIAL",
+    "input": "เรียก Grab กลับบ้าน 185",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 185,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เรียก Grab กลับบ้าน",
+        "description": "เรียก Grab กลับบ้าน 185",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_015",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าทางด่วนด่านพระราม 9 ไป 50",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 9,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "จ่ายค่าทางด่วนด่านพระราม  ไป",
+        "description": "จ่ายค่าทางด่วนด่านพระราม 9 ไป 50",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_016",
+    "tier": "B_COLLOQUIAL",
+    "input": "เอารถไปล้างเคลือบเงา 350 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "เอารถไปล้างเคลือบเงา  บาท",
+        "description": "เอารถไปล้างเคลือบเงา 350 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_017",
+    "tier": "B_COLLOQUIAL",
+    "input": "ช้อปปิ้งเสื้อผ้าออนไลน์ 890 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 890,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ช้อปปิ้งเสื้อผ้าออนไลน์  บาท",
+        "description": "ช้อปปิ้งเสื้อผ้าออนไลน์ 890 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_018",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อของเข้าตู้เย็น 650",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 650,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อของเข้าตู้เย็น",
+        "description": "ซื้อของเข้าตู้เย็น 650",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_019",
+    "tier": "B_COLLOQUIAL",
+    "input": "กดสั่งเคสมือถือในเน็ต 159",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 159,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "กดสั่งเคสมือถือในเน็ต",
+        "description": "กดสั่งเคสมือถือในเน็ต 159",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_020",
+    "tier": "B_COLLOQUIAL",
+    "input": "โอนจ่ายค่าหอพักเดือนนี้ 4,800 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 4800,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "โอนจ่ายค่าหอพักเดือนนี้  บาท",
+        "description": "โอนจ่ายค่าหอพักเดือนนี้ 4,800 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_021",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าน้ำประปาไป 150 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 150,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "จ่ายค่าน้ำประปาไป  บาท",
+        "description": "จ่ายค่าน้ำประปาไป 150 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_022",
+    "tier": "B_COLLOQUIAL",
+    "input": "เพิ่งตัดผมมา 350 รวมสระ",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "เพิ่งตัดผมมา  รวมสระ",
+        "description": "เพิ่งตัดผมมา 350 รวมสระ",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_023",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อวิตามินซีขวดใหญ่ 290",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 290,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ซื้อวิตามินซีขวดใหญ่",
+        "description": "ซื้อวิตามินซีขวดใหญ่ 290",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_024",
+    "tier": "B_COLLOQUIAL",
+    "input": "ไปตี้หมูกระทะกับเพื่อนตกคนละ 320",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 320,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ไปตี้หมูกระทะกับเพื่อนตกคนละ",
+        "description": "ไปตี้หมูกระทะกับเพื่อนตกคนละ 320",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_025",
+    "tier": "B_COLLOQUIAL",
+    "input": "จิบเบียร์ชิลล์ๆ ร้านเหล้า 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "จิบเบียร์ชิลล์ๆ ร้านเหล้า",
+        "description": "จิบเบียร์ชิลล์ๆ ร้านเหล้า 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_026",
+    "tier": "B_COLLOQUIAL",
+    "input": "ได้โบนัสพิเศษ 15,000 บาท เย้",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 15000,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ได้โบนัสพิเศษ  บาท เย้",
+        "description": "ได้โบนัสพิเศษ 15,000 บาท เย้",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_027",
+    "tier": "B_COLLOQUIAL",
+    "input": "ขายของมือสองในกลุ่มได้ 800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 800,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ขายของมือสองในกลุ่มได้",
+        "description": "ขายของมือสองในกลุ่มได้ 800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_028",
+    "tier": "B_COLLOQUIAL",
+    "input": "รับเงินค่าฟรีแลนซ์ 7,500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 7500,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "รับเงินค่าฟรีแลนซ์",
+        "description": "รับเงินค่าฟรีแลนซ์ 7,500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_029",
+    "tier": "B_COLLOQUIAL",
+    "input": "แวะกินส้มตำไก่ย่างหมดไป 220 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 220,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "แวะกินส้มตำไก่ย่างหมดไป  บาท",
+        "description": "แวะกินส้มตำไก่ย่างหมดไป 220 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_030",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อชานมไข่มุกหวานน้อย 60",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อชานมไข่มุกหวานน้อย",
+        "description": "ซื้อชานมไข่มุกหวานน้อย 60",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_031",
+    "tier": "B_COLLOQUIAL",
+    "input": "กินขนมจีนน้ำยาปู 120 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 120,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "กินขนมจีนน้ำยาปู  บาท",
+        "description": "กินขนมจีนน้ำยาปู 120 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_032",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าเปลี่ยนยางมอไซค์ 650",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 650,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "จ่ายค่าเปลี่ยนยางมอไซค์",
+        "description": "จ่ายค่าเปลี่ยนยางมอไซค์ 650",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_033",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อหลอดไฟมาเปลี่ยนที่ห้อง 89",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 89,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อหลอดไฟมาเปลี่ยนที่ห้อง",
+        "description": "ซื้อหลอดไฟมาเปลี่ยนที่ห้อง 89",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_034",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อน้ำยาซักผ้าปรับผ้านุ่ม 179",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 179,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ซื้อน้ำยาซักผ้าปรับผ้านุ่ม",
+        "description": "ซื้อน้ำยาซักผ้าปรับผ้านุ่ม 179",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_035",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าที่จอดรถสยามพารากอน 100",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 100,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "จ่ายค่าที่จอดรถสยามพารากอน",
+        "description": "จ่ายค่าที่จอดรถสยามพารากอน 100",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_036",
+    "tier": "B_COLLOQUIAL",
+    "input": "สั่ง GrabFood ส้มตำลาบ 260 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 260,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "สั่ง GrabFood ส้มตำลาบ  บาท",
+        "description": "สั่ง GrabFood ส้มตำลาบ 260 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_037",
+    "tier": "B_COLLOQUIAL",
+    "input": "สั่ง LineMan ข้าวมันไก่พิเศษ 85",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 85,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "สั่ง LineMan ข้าวมันไก่พิเศษ",
+        "description": "สั่ง LineMan ข้าวมันไก่พิเศษ 85",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_038",
+    "tier": "B_COLLOQUIAL",
+    "input": "แวะซื้อยาแก้แพ้ที่ร้านขายยา 60",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "แวะซื้อยาแก้แพ้ที่ร้านขายยา",
+        "description": "แวะซื้อยาแก้แพ้ที่ร้านขายยา 60",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_039",
+    "tier": "B_COLLOQUIAL",
+    "input": "ทำฟันขูดหินปูน 900 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 900,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ทำฟันขูดหินปูน  บาท",
+        "description": "ทำฟันขูดหินปูน 900 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_040",
+    "tier": "B_COLLOQUIAL",
+    "input": "เติมเหรียญอ่านนิยาย 150",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 150,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "เติมเหรียญอ่านนิยาย",
+        "description": "เติมเหรียญอ่านนิยาย 150",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_041",
+    "tier": "B_COLLOQUIAL",
+    "input": "โอนค่าอาหารมื้อเย็นให้แฟน 350",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 350,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนค่าอาหารมื้อเย็นให้แฟน",
+        "description": "โอนค่าอาหารมื้อเย็นให้แฟน 350",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_042",
+    "tier": "B_COLLOQUIAL",
+    "input": "ฝากเงินเข้าบัญชีเก็บออม 2000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2000,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ฝากเงินเข้าบัญชีเก็บออม",
+        "description": "ฝากเงินเข้าบัญชีเก็บออม 2000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_043",
+    "tier": "B_COLLOQUIAL",
+    "input": "ได้เงินปันผลหุ้นเข้าพอร์ต 1450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 1450,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ได้เงินปันผลหุ้นเข้าพอร์ต",
+        "description": "ได้เงินปันผลหุ้นเข้าพอร์ต 1450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_044",
+    "tier": "B_COLLOQUIAL",
+    "input": "รับเงินค่าสอนพิเศษ 1200 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 1200,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "รับเงินค่าสอนพิเศษ  บาท",
+        "description": "รับเงินค่าสอนพิเศษ 1200 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_045",
+    "tier": "B_COLLOQUIAL",
+    "input": "กินบุฟเฟต์ปิ้งย่างเกาหลี 389",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 389,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กินบุฟเฟต์ปิ้งย่างเกาหลี",
+        "description": "กินบุฟเฟต์ปิ้งย่างเกาหลี 389",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_046",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อกับข้าวตลาดนัด 140 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 140,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อกับข้าวตลาดนัด  บาท",
+        "description": "ซื้อกับข้าวตลาดนัด 140 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_047",
+    "tier": "B_COLLOQUIAL",
+    "input": "สั่งก๋วยเตี๋ยวต้มยำพิเศษไข่ 75",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 75,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "สั่งก๋วยเตี๋ยวต้มยำพิเศษไข่",
+        "description": "สั่งก๋วยเตี๋ยวต้มยำพิเศษไข่ 75",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_048",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อกาแฟดริปพิเศษ 140",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 140,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อกาแฟดริปพิเศษ",
+        "description": "ซื้อกาแฟดริปพิเศษ 140",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_049",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อเมล็ดกาแฟคั่วกลาง 320",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 320,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อเมล็ดกาแฟคั่วกลาง",
+        "description": "ซื้อเมล็ดกาแฟคั่วกลาง 320",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_050",
+    "tier": "B_COLLOQUIAL",
+    "input": "เปลี่ยนฟิล์มกระจกมือถือ 199",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 199,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "เปลี่ยนฟิล์มกระจกมือถือ",
+        "description": "เปลี่ยนฟิล์มกระจกมือถือ 199",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_051",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อหัวชาร์จ Type C 290",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 290,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อหัวชาร์จ Type C",
+        "description": "ซื้อหัวชาร์จ Type C 290",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_052",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าเน็ตบ้านทรู 641 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 641,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "จ่ายค่าเน็ตบ้านทรู  บาท",
+        "description": "จ่ายค่าเน็ตบ้านทรู 641 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_053",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าประกันชีวิตประจำเดือน 1800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1800,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "จ่ายค่าประกันชีวิตประจำเดือน",
+        "description": "จ่ายค่าประกันชีวิตประจำเดือน 1800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_054",
+    "tier": "B_COLLOQUIAL",
+    "input": "แวะนวดฝ่าเท้า 1 ชม 250",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "แวะนวดฝ่าเท้า  ชม",
+        "description": "แวะนวดฝ่าเท้า 1 ชม 250",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_055",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อยาย้อมผม 135",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 135,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ซื้อยาย้อมผม",
+        "description": "ซื้อยาย้อมผม 135",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_056",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อทรายแมว 10 ลิตร 240",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 10,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อทรายแมว  ลิตร",
+        "description": "ซื้อทรายแมว 10 ลิตร 240",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_057",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้ออาหารเปียกสุนัข 350",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้ออาหารเปียกสุนัข",
+        "description": "ซื้ออาหารเปียกสุนัข 350",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_058",
+    "tier": "B_COLLOQUIAL",
+    "input": "เติมแก๊ส LPG รถยนต์ 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "เติมแก๊ส LPG รถยนต์",
+        "description": "เติมแก๊ส LPG รถยนต์ 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_059",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าธรรมเนียมบัตร ATM 200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 200,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "จ่ายค่าธรรมเนียมบัตร ATM",
+        "description": "จ่ายค่าธรรมเนียมบัตร ATM 200",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_060",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อหนังสือการเงินพัฒนาตนเอง 295",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 295,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อหนังสือการเงินพัฒนาตนเอง",
+        "description": "ซื้อหนังสือการเงินพัฒนาตนเอง 295",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_061",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อปากกาและสมุดโน้ต 125",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 125,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อปากกาและสมุดโน้ต",
+        "description": "ซื้อปากกาและสมุดโน้ต 125",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_062",
+    "tier": "B_COLLOQUIAL",
+    "input": "สั่งเสื้อไหมพรมกันหนาว 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "สั่งเสื้อไหมพรมกันหนาว",
+        "description": "สั่งเสื้อไหมพรมกันหนาว 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_063",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อรองเท้าแตะใส่เดินห้าง 299",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 299,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อรองเท้าแตะใส่เดินห้าง",
+        "description": "ซื้อรองเท้าแตะใส่เดินห้าง 299",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_064",
+    "tier": "B_COLLOQUIAL",
+    "input": "กินไอติมสเวนเซ่นส์ 169 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 169,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กินไอติมสเวนเซ่นส์  บาท",
+        "description": "กินไอติมสเวนเซ่นส์ 169 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_065",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อโดนัทมิสเตอร์โดนัท 120",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 120,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อโดนัทมิสเตอร์โดนัท",
+        "description": "ซื้อโดนัทมิสเตอร์โดนัท 120",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_066",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อเฟรนช์ฟรายส์แมคโดนัลด์ 99",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 99,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อเฟรนช์ฟรายส์แมคโดนัลด์",
+        "description": "ซื้อเฟรนช์ฟรายส์แมคโดนัลด์ 99",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_067",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อไก่ทอดผู้พัน 299",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 299,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อไก่ทอดผู้พัน",
+        "description": "ซื้อไก่ทอดผู้พัน 299",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_068",
+    "tier": "B_COLLOQUIAL",
+    "input": "จ่ายค่าน้ำมันมอไซค์เต็มถัง 120",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 120,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "จ่ายค่าน้ำมันมอไซค์เต็มถัง",
+        "description": "จ่ายค่าน้ำมันมอไซค์เต็มถัง 120",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_069",
+    "tier": "B_COLLOQUIAL",
+    "input": "นั่งรถเมล์ปรับอากาศ 20 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 20,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "นั่งรถเมล์ปรับอากาศ  บาท",
+        "description": "นั่งรถเมล์ปรับอากาศ 20 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_070",
+    "tier": "B_COLLOQUIAL",
+    "input": "ค่าเรือด่วนเจ้าพระยา 16 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 16,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่าเรือด่วนเจ้าพระยา  บาท",
+        "description": "ค่าเรือด่วนเจ้าพระยา 16 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_071",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อกระติกน้ำเก็บความเย็น 390",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 390,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อกระติกน้ำเก็บความเย็น",
+        "description": "ซื้อกระติกน้ำเก็บความเย็น 390",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_072",
+    "tier": "B_COLLOQUIAL",
+    "input": "ซื้อหมอนเพื่อสุขภาพ 590",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 590,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อหมอนเพื่อสุขภาพ",
+        "description": "ซื้อหมอนเพื่อสุขภาพ 590",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_073",
+    "tier": "B_COLLOQUIAL",
+    "input": "โอนเงินช่วยเหลือน้ำท่วม 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 500,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนเงินช่วยเหลือน้ำท่วม",
+        "description": "โอนเงินช่วยเหลือน้ำท่วม 500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_074",
+    "tier": "B_COLLOQUIAL",
+    "input": "ได้เงินคืนภาษี 3,450 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 3450,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ได้เงินคืนภาษี  บาท",
+        "description": "ได้เงินคืนภาษี 3,450 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_B_075",
+    "tier": "B_COLLOQUIAL",
+    "input": "รับเงินคืนจากร้านค้า 199",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 199,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "รับเงินคืนจากร้านค้า",
+        "description": "รับเงินคืนจากร้านค้า 199",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_001",
+    "tier": "C_NATURAL",
+    "input": "เมื่อวานพาลูกไปกิน MK หมดไป 780",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 780,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "MK",
+        "description": "เมื่อวานพาลูกไปกิน MK หมดไป 780",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_002",
+    "tier": "C_NATURAL",
+    "input": "ซื้อของเข้าบ้านที่ Lotus 1,250 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1250,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Lotus",
+        "description": "ซื้อของเข้าบ้านที่ Lotus 1,250 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_003",
+    "tier": "C_NATURAL",
+    "input": "แวะ 7-Eleven ซื้อของกิน 145 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 145,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "7-Eleven",
+        "description": "แวะ 7-Eleven ซื้อของกิน 145 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_004",
+    "tier": "C_NATURAL",
+    "input": "กิน Starbucks กาแฟแก้วโปรด 185",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 185,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Starbucks",
+        "description": "กิน Starbucks กาแฟแก้วโปรด 185",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_005",
+    "tier": "C_NATURAL",
+    "input": "สั่ง KFC ชุดใหญ่มากิน 399 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 399,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "KFC",
+        "description": "สั่ง KFC ชุดใหญ่มากิน 399 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_006",
+    "tier": "C_NATURAL",
+    "input": "กิน McDonald เบอร์เกอร์ 159",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 159,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "McDonald",
+        "description": "กิน McDonald เบอร์เกอร์ 159",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_007",
+    "tier": "C_NATURAL",
+    "input": "แวะ Amazon สั่งชาเขียว 60 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Amazon",
+        "description": "แวะ Amazon สั่งชาเขียว 60 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_008",
+    "tier": "C_NATURAL",
+    "input": "กิน Bar B Q Plaza กับแฟน 1,190",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1190,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Bar B Q Plaza",
+        "description": "กิน Bar B Q Plaza กับแฟน 1,190",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_009",
+    "tier": "C_NATURAL",
+    "input": "กิน Shabushi คนเดียว 419",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 419,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Shabushi",
+        "description": "กิน Shabushi คนเดียว 419",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_010",
+    "tier": "C_NATURAL",
+    "input": "ซื้อของ Big C ซุปเปอร์ 850 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 850,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Big C",
+        "description": "ซื้อของ Big C ซุปเปอร์ 850 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_011",
+    "tier": "C_NATURAL",
+    "input": "ซื้อของ Tops Market สดใหม่ 640",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 640,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Tops Market",
+        "description": "ซื้อของ Tops Market สดใหม่ 640",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_012",
+    "tier": "C_NATURAL",
+    "input": "ซื้อเสื้อ Uniqlo ใส่สบาย 790",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 790,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Uniqlo",
+        "description": "ซื้อเสื้อ Uniqlo ใส่สบาย 790",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_013",
+    "tier": "C_NATURAL",
+    "input": "ช้อปปิ้ง H&M กางเกง 990 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 990,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "H&M",
+        "description": "ช้อปปิ้ง H&M กางเกง 990 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_014",
+    "tier": "C_NATURAL",
+    "input": "ซื้อของใน Shopee ส่งฟรี 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Shopee",
+        "description": "ซื้อของใน Shopee ส่งฟรี 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_015",
+    "tier": "C_NATURAL",
+    "input": "ซื้อหูฟังใน Lazada 890 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 890,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Lazada",
+        "description": "ซื้อหูฟังใน Lazada 890 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_016",
+    "tier": "C_NATURAL",
+    "input": "เติมน้ำมัน ปตท ปั๊มใหญ่ 1,000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1000,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ปตท",
+        "description": "เติมน้ำมัน ปตท ปั๊มใหญ่ 1,000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_017",
+    "tier": "C_NATURAL",
+    "input": "เติมน้ำมัน Shell วีเพาเวอร์ 1200 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1200,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "Shell",
+        "description": "เติมน้ำมัน Shell วีเพาเวอร์ 1200 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_018",
+    "tier": "C_NATURAL",
+    "input": "เติมน้ำมัน บางจาก อี20 800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 800,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "บางจาก",
+        "description": "เติมน้ำมัน บางจาก อี20 800",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_019",
+    "tier": "C_NATURAL",
+    "input": "เติมน้ำมัน Caltex เบนซิน 900 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 900,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "Caltex",
+        "description": "เติมน้ำมัน Caltex เบนซิน 900 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_020",
+    "tier": "C_NATURAL",
+    "input": "จ่ายค่าเน็ต AIS ไฟเบอร์ 599",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 599,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "AIS",
+        "description": "จ่ายค่าเน็ต AIS ไฟเบอร์ 599",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_021",
+    "tier": "C_NATURAL",
+    "input": "จ่ายค่าโทรศัพท์ True Move 499 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 499,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "True Move",
+        "description": "จ่ายค่าโทรศัพท์ True Move 499 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_022",
+    "tier": "C_NATURAL",
+    "input": "จ่ายบิล Dtac รายเดือน 399",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 399,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "Dtac",
+        "description": "จ่ายบิล Dtac รายเดือน 399",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_023",
+    "tier": "C_NATURAL",
+    "input": "จ่ายบัตรเครดิต KBank 4,500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 4500,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "KBank",
+        "description": "จ่ายบัตรเครดิต KBank 4,500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_024",
+    "tier": "C_NATURAL",
+    "input": "จ่ายบัตรเครดิต SCB CardX 3,200 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 3200,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "SCB",
+        "description": "จ่ายบัตรเครดิต SCB CardX 3,200 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_025",
+    "tier": "C_NATURAL",
+    "input": "ซื้อยา Boots สาขาเซ็นทรัล 280",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 280,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "Boots",
+        "description": "ซื้อยา Boots สาขาเซ็นทรัล 280",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_026",
+    "tier": "C_NATURAL",
+    "input": "ซื้อโฟมล้างหน้า Watsons 199",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 199,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "Watsons",
+        "description": "ซื้อโฟมล้างหน้า Watsons 199",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_027",
+    "tier": "C_NATURAL",
+    "input": "ซื้อเวชภัณฑ์ที่ Matsumoto Kiyoshi 420",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 420,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "Matsumoto Kiyoshi",
+        "description": "ซื้อเวชภัณฑ์ที่ Matsumoto Kiyoshi 420",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_028",
+    "tier": "C_NATURAL",
+    "input": "ดูหนัง Major รัชโยธิน 2 ใบ 500 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "Major Cineplex",
+        "description": "ดูหนัง Major รัชโยธิน 2 ใบ 500 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_029",
+    "tier": "C_NATURAL",
+    "input": "ดูหนัง SF Cinema เซ็นทรัลเวิลด์ 260",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 260,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "SF Cinema",
+        "description": "ดูหนัง SF Cinema เซ็นทรัลเวิลด์ 260",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_030",
+    "tier": "C_NATURAL",
+    "input": "สมัครสมาชิก Netflix รายเดือน 419",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 419,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "Netflix",
+        "description": "สมัครสมาชิก Netflix รายเดือน 419",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_031",
+    "tier": "C_NATURAL",
+    "input": "จ่ายค่า Spotify พรีเมียม 139 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 139,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "Spotify",
+        "description": "จ่ายค่า Spotify พรีเมียม 139 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_032",
+    "tier": "C_NATURAL",
+    "input": "จ่ายค่า YouTube Premium 159",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 159,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "YouTube",
+        "description": "จ่ายค่า YouTube Premium 159",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_033",
+    "tier": "C_NATURAL",
+    "input": "ซื้อเฟอร์นิเจอร์ IKEA 2,490 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2490,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "IKEA",
+        "description": "ซื้อเฟอร์นิเจอร์ IKEA 2,490 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_034",
+    "tier": "C_NATURAL",
+    "input": "ซื้อของแต่งบ้าน HomePro 1,150",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1150,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "HomePro",
+        "description": "ซื้อของแต่งบ้าน HomePro 1,150",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_035",
+    "tier": "C_NATURAL",
+    "input": "ซื้ออุปกรณ์ซ่อมบ้าน ไทวัสดุ 680 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 680,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ไทวัสดุ",
+        "description": "ซื้ออุปกรณ์ซ่อมบ้าน ไทวัสดุ 680 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_036",
+    "tier": "C_NATURAL",
+    "input": "ซื้อเครื่องเขียน B2S เซ็นทรัล 340",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 340,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "B2S",
+        "description": "ซื้อเครื่องเขียน B2S เซ็นทรัล 340",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_037",
+    "tier": "C_NATURAL",
+    "input": "ซื้อหนังสือร้าน นายอินทร์ 295 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 295,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "นายอินทร์",
+        "description": "ซื้อหนังสือร้าน นายอินทร์ 295 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_038",
+    "tier": "C_NATURAL",
+    "input": "ซื้อหนังสือ Kinokuniya ญี่ปุ่น 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Kinokuniya",
+        "description": "ซื้อหนังสือ Kinokuniya ญี่ปุ่น 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_039",
+    "tier": "C_NATURAL",
+    "input": "ซื้อโดนัท Krispy Kreme 315 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 315,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Krispy Kreme",
+        "description": "ซื้อโดนัท Krispy Kreme 315 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_040",
+    "tier": "C_NATURAL",
+    "input": "กินเบอร์เกอร์ Mos Burger 145",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 145,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Mos Burger",
+        "description": "กินเบอร์เกอร์ Mos Burger 145",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_041",
+    "tier": "C_NATURAL",
+    "input": "กินซูชิสายพาน Sushiro 380 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 380,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Sushiro",
+        "description": "กินซูชิสายพาน Sushiro 380 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_042",
+    "tier": "C_NATURAL",
+    "input": "กินราเมง Hachiban 135",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 135,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Hachiban Ramen",
+        "description": "กินราเมง Hachiban 135",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_043",
+    "tier": "C_NATURAL",
+    "input": "กินส้มตำ นิตยาไก่ย่าง 450 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "นิตยาไก่ย่าง",
+        "description": "กินส้มตำ นิตยาไก่ย่าง 450 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_044",
+    "tier": "C_NATURAL",
+    "input": "กินสุกี้ ตี๋น้อย รอบดึก 276",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 276,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "สุกี้ตี๋น้อย",
+        "description": "กินสุกี้ ตี๋น้อย รอบดึก 276",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_045",
+    "tier": "C_NATURAL",
+    "input": "แวะซื้อชาตรามือ ชากุหลาบ 55",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 55,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ชาตรามือ",
+        "description": "แวะซื้อชาตรามือ ชากุหลาบ 55",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_046",
+    "tier": "C_NATURAL",
+    "input": "กินไอติม Dairy Queen บลิซซาร์ด 49",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 49,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Dairy Queen",
+        "description": "กินไอติม Dairy Queen บลิซซาร์ด 49",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_047",
+    "tier": "C_NATURAL",
+    "input": "ซื้อขนมปัง ยามาซากิ 125 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 125,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Yamazaki",
+        "description": "ซื้อขนมปัง ยามาซากิ 125 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_048",
+    "tier": "C_NATURAL",
+    "input": "ซื้อขนมปัง Saint Etoile 95",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 95,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Saint Etoile",
+        "description": "ซื้อขนมปัง Saint Etoile 95",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_049",
+    "tier": "C_NATURAL",
+    "input": "ซื้อของ CJ Express ใกล้บ้าน 230",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 230,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "CJ Express",
+        "description": "ซื้อของ CJ Express ใกล้บ้าน 230",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_050",
+    "tier": "C_NATURAL",
+    "input": "ซื้อของ Makro ยกแพ็ค 1,850 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1850,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Makro",
+        "description": "ซื้อของ Makro ยกแพ็ค 1,850 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_051",
+    "tier": "C_NATURAL",
+    "input": "ซื้ออาหารเสริม iHerb 1,420",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1420,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "iHerb",
+        "description": "ซื้ออาหารเสริม iHerb 1,420",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_052",
+    "tier": "C_NATURAL",
+    "input": "จ่ายคอร์สออกกำลังกาย Fitness First 2,300 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2300,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "Fitness First",
+        "description": "จ่ายคอร์สออกกำลังกาย Fitness First 2,300 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_053",
+    "tier": "C_NATURAL",
+    "input": "เล่นโยคะ Yoga & Me 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "Yoga & Me",
+        "description": "เล่นโยคะ Yoga & Me 450",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_054",
+    "tier": "C_NATURAL",
+    "input": "ทำผมร้าน ชลดาบิวตี้ 600 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 600,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ชลดาบิวตี้",
+        "description": "ทำผมร้าน ชลดาบิวตี้ 600 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_055",
+    "tier": "C_NATURAL",
+    "input": "ทำเล็บเจล Nails Cafe 350",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "Nails Cafe",
+        "description": "ทำเล็บเจล Nails Cafe 350",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_056",
+    "tier": "C_NATURAL",
+    "input": "ส่งพัสดุ Kerry Express 65 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 65,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "Kerry Express",
+        "description": "ส่งพัสดุ Kerry Express 65 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_057",
+    "tier": "C_NATURAL",
+    "input": "ส่งพัสดุ Flash Express 45",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 45,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "Flash Express",
+        "description": "ส่งพัสดุ Flash Express 45",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_058",
+    "tier": "C_NATURAL",
+    "input": "ส่งเอกสาร ไปรษณีย์ไทย EMS 52 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 52,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ไปรษณีย์ไทย",
+        "description": "ส่งเอกสาร ไปรษณีย์ไทย EMS 52 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_059",
+    "tier": "C_NATURAL",
+    "input": "โอนเงินบัญชี PromptPay 500 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 500,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "PromptPay",
+        "description": "โอนเงินบัญชี PromptPay 500 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_C_060",
+    "tier": "C_NATURAL",
+    "input": "โอนเงินจ่ายแม่ค้าผ่าน K PLUS 280",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 280,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "K PLUS",
+        "description": "โอนเงินจ่ายแม่ค้าผ่าน K PLUS 280",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_001",
+    "tier": "D_DATE",
+    "input": "วันนี้กินข้าว 100",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 100,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กินข้าว",
+        "description": "วันนี้กินข้าว 100",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_002",
+    "tier": "D_DATE",
+    "input": "เมื่อวานเติมน้ำมัน 800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 800,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เติมน้ำมัน",
+        "description": "เมื่อวานเติมน้ำมัน 800",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_003",
+    "tier": "D_DATE",
+    "input": "เมื่อวานนี้ ซื้อกาแฟ 65",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 65,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กาแฟ",
+        "description": "เมื่อวานนี้ ซื้อกาแฟ 65",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_004",
+    "tier": "D_DATE",
+    "input": "พรุ่งนี้ จ่ายค่าห้อง 5000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 5000,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าห้อง",
+        "description": "พรุ่งนี้ จ่ายค่าห้อง 5000",
+        "date": "2026-08-22"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_005",
+    "tier": "D_DATE",
+    "input": "17/8 ซื้อของ 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อของ",
+        "description": "17/8 ซื้อของ 500",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_006",
+    "tier": "D_DATE",
+    "input": "17-8 เติมน้ำมัน 900",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 900,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เติมน้ำมัน",
+        "description": "17-8 เติมน้ำมัน 900",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_007",
+    "tier": "D_DATE",
+    "input": "17/08 ซื้อเสื้อ 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อเสื้อ",
+        "description": "17/08 ซื้อเสื้อ 450",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_008",
+    "tier": "D_DATE",
+    "input": "17.8 ซื้อกระเป๋า 350",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อกระเป๋า",
+        "description": "17.8 ซื้อกระเป๋า 350",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_009",
+    "tier": "D_DATE",
+    "input": "17 สิงหาคม ซื้อของ 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อของ",
+        "description": "17 สิงหาคม ซื้อของ 500",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_010",
+    "tier": "D_DATE",
+    "input": "17 สิงหา กินข้าว MK 890",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 890,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "MK",
+        "description": "17 สิงหา กินข้าว MK 890",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_011",
+    "tier": "D_DATE",
+    "input": "17 ส.ค. ซื้อของ 350",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 350,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อของ",
+        "description": "17 ส.ค. ซื้อของ 350",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_012",
+    "tier": "D_DATE",
+    "input": "วันที่ 19 ซื้อของ Lotus 200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 200,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Lotus",
+        "description": "วันที่ 19 ซื้อของ Lotus 200",
+        "date": "2026-08-19"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_013",
+    "tier": "D_DATE",
+    "input": "วันที่ 19 กินชาบู 399",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 399,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ชาบู",
+        "description": "วันที่ 19 กินชาบู 399",
+        "date": "2026-08-19"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_014",
+    "tier": "D_DATE",
+    "input": "วันที่ 1 จ่ายค่าเน็ต 599",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 599,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าเน็ต",
+        "description": "วันที่ 1 จ่ายค่าเน็ต 599",
+        "date": "2026-08-01"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_015",
+    "tier": "D_DATE",
+    "input": "17/8/2569 ซื้อของ 300",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 300,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อของ",
+        "description": "17/8/2569 ซื้อของ 300",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_016",
+    "tier": "D_DATE",
+    "input": "17/8/69 ซื้อกาแฟ 70",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 70,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กาแฟ",
+        "description": "17/8/69 ซื้อกาแฟ 70",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_017",
+    "tier": "D_DATE",
+    "input": "17/8/2026 เติมน้ำมัน 1,000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1000,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เติมน้ำมัน",
+        "description": "17/8/2026 เติมน้ำมัน 1,000",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_018",
+    "tier": "D_DATE",
+    "input": "17/8/26 ซื้อของกิน 250",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 250,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อของกิน",
+        "description": "17/8/26 ซื้อของกิน 250",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_019",
+    "tier": "D_DATE",
+    "input": "17 สิงหาคม 69 ซื้อของ 300",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 300,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อของ",
+        "description": "17 สิงหาคม 69 ซื้อของ 300",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_020",
+    "tier": "D_DATE",
+    "input": "17 สิงหาคม 2569 กินหมูกระทะ 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "หมูกระทะ",
+        "description": "17 สิงหาคม 2569 กินหมูกระทะ 450",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_021",
+    "tier": "D_DATE",
+    "input": "วันที่ 17 สิงหาคม ซื้อหนังสือ 280",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 280,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อหนังสือ",
+        "description": "วันที่ 17 สิงหาคม ซื้อหนังสือ 280",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_022",
+    "tier": "D_DATE",
+    "input": "1 มกราคม เลี้ยงฉลองปีใหม่ 3500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 3500,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "เลี้ยงฉลองปีใหม่",
+        "description": "1 มกราคม เลี้ยงฉลองปีใหม่ 3500",
+        "date": "2026-01-01"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_023",
+    "tier": "D_DATE",
+    "input": "14 กุมภา ซื้อดอกไม้ 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อดอกไม้",
+        "description": "14 กุมภา ซื้อดอกไม้ 500",
+        "date": "2026-02-14"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_024",
+    "tier": "D_DATE",
+    "input": "31 ธ.ค. ท่องเที่ยวเชียงใหม่ 4800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 4800,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "ท่องเที่ยว",
+        "description": "31 ธ.ค. ท่องเที่ยวเชียงใหม่ 4800",
+        "date": "2026-12-31"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_025",
+    "tier": "D_DATE",
+    "input": "15/5 ซื้อพัดลม 690",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 690,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อพัดลม",
+        "description": "15/5 ซื้อพัดลม 690",
+        "date": "2026-05-15"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_026",
+    "tier": "D_DATE",
+    "input": "20/10 จ่ายประกัน 2500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2500,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ประกัน",
+        "description": "20/10 จ่ายประกัน 2500",
+        "date": "2026-10-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_027",
+    "tier": "D_DATE",
+    "input": "วันที่ 10 มกราคม จ่ายค่าหอ 4500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 4500,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าหอ",
+        "description": "วันที่ 10 มกราคม จ่ายค่าหอ 4500",
+        "date": "2026-01-10"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_028",
+    "tier": "D_DATE",
+    "input": "วันที่ 5 ก.พ. 69 ซื้อโน้ตบุ๊ก 24900",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 24900,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "โน้ตบุ๊ก",
+        "description": "วันที่ 5 ก.พ. 69 ซื้อโน้ตบุ๊ก 24900",
+        "date": "2026-02-05"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_029",
+    "tier": "D_DATE",
+    "input": "10 มีนาคม ซื้อรองเท้า 1500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1500,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ซื้อรองเท้า",
+        "description": "10 มีนาคม ซื้อรองเท้า 1500",
+        "date": "2026-03-10"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_030",
+    "tier": "D_DATE",
+    "input": "13 เมษา เที่ยวสงกรานต์ 3200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 3200,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "เที่ยวสงกรานต์",
+        "description": "13 เมษา เที่ยวสงกรานต์ 3200",
+        "date": "2026-04-13"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_031",
+    "tier": "D_DATE",
+    "input": "1 พ.ค. ซื้ออาหารแมว 450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 450,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "อาหารแมว",
+        "description": "1 พ.ค. ซื้ออาหารแมว 450",
+        "date": "2026-05-01"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_032",
+    "tier": "D_DATE",
+    "input": "15 มิ.ย. จ่ายค่าเทอม 18000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 18000,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าเทอม",
+        "description": "15 มิ.ย. จ่ายค่าเทอม 18000",
+        "date": "2026-06-15"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_033",
+    "tier": "D_DATE",
+    "input": "28 ก.ค. เลี้ยงวันเกิดเพื่อน 1200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1200,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "เลี้ยงวันเกิดเพื่อน",
+        "description": "28 ก.ค. เลี้ยงวันเกิดเพื่อน 1200",
+        "date": "2026-07-28"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_034",
+    "tier": "D_DATE",
+    "input": "9 กันยา ช้อปปิ้ง 9.9 ไป 1490",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1490,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ช้อปปิ้ง 9.9",
+        "description": "9 กันยา ช้อปปิ้ง 9.9 ไป 1490",
+        "date": "2026-09-09"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_035",
+    "tier": "D_DATE",
+    "input": "10 ต.ค. ช้อปปิ้ง 10.10 ไป 2100",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2100,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ช้อปปิ้ง 10.10",
+        "description": "10 ต.ค. ช้อปปิ้ง 10.10 ไป 2100",
+        "date": "2026-10-10"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_036",
+    "tier": "D_DATE",
+    "input": "11 พ.ย. ซื้อเครื่องฟอกอากาศ 3500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 3500,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "เครื่องฟอกอากาศ",
+        "description": "11 พ.ย. ซื้อเครื่องฟอกอากาศ 3500",
+        "date": "2026-11-11"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_037",
+    "tier": "D_DATE",
+    "input": "12 ธ.ค. 69 ซื้อของขวัญปีใหม่ 1800",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1800,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ของขวัญปีใหม่",
+        "description": "12 ธ.ค. 69 ซื้อของขวัญปีใหม่ 1800",
+        "date": "2026-12-12"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_038",
+    "tier": "D_DATE",
+    "input": "2026-08-20 กินข้าวเย็น 150",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 150,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กินข้าวเย็น",
+        "description": "2026-08-20 กินข้าวเย็น 150",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_039",
+    "tier": "D_DATE",
+    "input": "2026-08-19 เติมน้ำมัน 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เติมน้ำมัน",
+        "description": "2026-08-19 เติมน้ำมัน 500",
+        "date": "2026-08-19"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_040",
+    "tier": "D_DATE",
+    "input": "2569-08-18 ซื้อของ 7-11 ไป 95",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 95,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "7-11",
+        "description": "2569-08-18 ซื้อของ 7-11 ไป 95",
+        "date": "2026-08-18"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_041",
+    "tier": "D_DATE",
+    "input": "วันที่ 20/8/69 ซื้อยาพารา 25",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 25,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ยาพารา",
+        "description": "วันที่ 20/8/69 ซื้อยาพารา 25",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_042",
+    "tier": "D_DATE",
+    "input": "วันที่ 15 สิงหา จ่ายค่าไฟ 980",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 980,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าไฟ",
+        "description": "วันที่ 15 สิงหา จ่ายค่าไฟ 980",
+        "date": "2026-08-15"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_043",
+    "tier": "D_DATE",
+    "input": "วันที่ 12 สิงหา พาแม่กินข้าว 1450",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1450,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "พาแม่กินข้าว",
+        "description": "วันที่ 12 สิงหา พาแม่กินข้าว 1450",
+        "date": "2026-08-12"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_044",
+    "tier": "D_DATE",
+    "input": "วันที่ 10 ส.ค. 2569 เปลี่ยนฟิล์มรถ 2500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2500,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เปลี่ยนฟิล์มรถ",
+        "description": "วันที่ 10 ส.ค. 2569 เปลี่ยนฟิล์มรถ 2500",
+        "date": "2026-08-10"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_045",
+    "tier": "D_DATE",
+    "input": "วันที่ 5 ส.ค. ซื้อชุดนอน 390",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 390,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "ชุดนอน",
+        "description": "วันที่ 5 ส.ค. ซื้อชุดนอน 390",
+        "date": "2026-08-05"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_046",
+    "tier": "D_DATE",
+    "input": "วันที่ 25 ส.ค. ซื้อตั๋วเครื่องบิน 2400",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2400,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ตั๋วเครื่องบิน",
+        "description": "วันที่ 25 ส.ค. ซื้อตั๋วเครื่องบิน 2400",
+        "date": "2026-08-25"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_047",
+    "tier": "D_DATE",
+    "input": "วันที่ 28 สิงหาคม จ่ายค่างวดรถ 8500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 8500,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่างวดรถ",
+        "description": "วันที่ 28 สิงหาคม จ่ายค่างวดรถ 8500",
+        "date": "2026-08-28"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_048",
+    "tier": "D_DATE",
+    "input": "วันที่ 30/8 กินปิ้งย่างกับที่ทำงาน 550",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 550,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ปิ้งย่าง",
+        "description": "วันที่ 30/8 กินปิ้งย่างกับที่ทำงาน 550",
+        "date": "2026-08-30"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_049",
+    "tier": "D_DATE",
+    "input": "วันที่ 31/8/69 ตัดผมสระไดร์ 400",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 400,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ตัดผม",
+        "description": "วันที่ 31/8/69 ตัดผมสระไดร์ 400",
+        "date": "2026-08-31"
+      }
+    ]
+  },
+  {
+    "id": "TC_D_050",
+    "tier": "D_DATE",
+    "input": "เมื่อวานกินบอนชอน 420",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 420,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "บอนชอน",
+        "description": "เมื่อวานกินบอนชอน 420",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_001",
+    "tier": "E_AMBIGUOUS",
+    "input": "500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "ทั่วไป",
+        "description": "500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_002",
+    "tier": "E_AMBIGUOUS",
+    "input": "1,200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1200,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "ทั่วไป",
+        "description": "1,200",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_003",
+    "tier": "E_AMBIGUOUS",
+    "input": "30,000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 30000,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "ทั่วไป",
+        "description": "30,000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_004",
+    "tier": "E_AMBIGUOUS",
+    "input": "1500.50",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1500.5,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "ทั่วไป",
+        "description": "1500.50",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_005",
+    "tier": "E_AMBIGUOUS",
+    "input": "25.75",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 25.75,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "ทั่วไป",
+        "description": "25.75",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_006",
+    "tier": "E_AMBIGUOUS",
+    "input": "ค่าอะไรสักอย่าง 750",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 750,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "ทั่วไป",
+        "description": "ค่าอะไรสักอย่าง 750",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_007",
+    "tier": "E_AMBIGUOUS",
+    "input": "จ่ายไป 420",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 420,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "ทั่วไป",
+        "description": "จ่ายไป 420",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_008",
+    "tier": "E_AMBIGUOUS",
+    "input": "โอน 999",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 999,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอน",
+        "description": "โอน 999",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_009",
+    "tier": "E_AMBIGUOUS",
+    "input": "โอน 1,500 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 1500,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอน",
+        "description": "โอน 1,500 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_010",
+    "tier": "E_AMBIGUOUS",
+    "input": "โอนเข้าวอลเล็ท 300",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 300,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนเข้าวอลเล็ท",
+        "description": "โอนเข้าวอลเล็ท 300",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_011",
+    "tier": "E_AMBIGUOUS",
+    "input": "ได้มา 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 500,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ได้มา",
+        "description": "ได้มา 500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_012",
+    "tier": "E_AMBIGUOUS",
+    "input": "รับเงิน 1,200",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 1200,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "รับเงิน",
+        "description": "รับเงิน 1,200",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_013",
+    "tier": "E_AMBIGUOUS",
+    "input": "เงินเข้า 3,000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 3000,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "เงินเข้า",
+        "description": "เงินเข้า 3,000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_014",
+    "tier": "E_AMBIGUOUS",
+    "input": "รายได้พิเศษ 850 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 850,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "รายได้พิเศษ",
+        "description": "รายได้พิเศษ 850 บาท",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_015",
+    "tier": "E_AMBIGUOUS",
+    "input": "โอนเงินคืน 400",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 400,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนเงินคืน",
+        "description": "โอนเงินคืน 400",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_E_016",
+    "tier": "E_AMBIGUOUS",
+    "input": "สวัสดีครับ",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_017",
+    "tier": "E_AMBIGUOUS",
+    "input": "ขอบคุณมากครับ",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_018",
+    "tier": "E_AMBIGUOUS",
+    "input": "ทดสอบระบบ",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_019",
+    "tier": "E_AMBIGUOUS",
+    "input": "จดตังทำอะไรได้บ้าง",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_020",
+    "tier": "E_AMBIGUOUS",
+    "input": "เมื่อวานไปเที่ยวสนุกมาก",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_021",
+    "tier": "E_AMBIGUOUS",
+    "input": "hello bot",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_022",
+    "tier": "E_AMBIGUOUS",
+    "input": "ขอแก้ไขรายการ",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_023",
+    "tier": "E_AMBIGUOUS",
+    "input": "ขอลบรายการ",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_024",
+    "tier": "E_AMBIGUOUS",
+    "input": "วันนี้อากาศดีจัง",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_025",
+    "tier": "E_AMBIGUOUS",
+    "input": "กินข้าวอร่อยมากเลย",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_026",
+    "tier": "E_AMBIGUOUS",
+    "input": "อยากรวยต้องทำยังไง",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_027",
+    "tier": "E_AMBIGUOUS",
+    "input": "บอทชื่ออะไรครับ",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_028",
+    "tier": "E_AMBIGUOUS",
+    "input": "good morning",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_029",
+    "tier": "E_AMBIGUOUS",
+    "input": "hi",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_E_030",
+    "tier": "E_AMBIGUOUS",
+    "input": "ช่วยสรุปยอดเงินให้หน่อย",
+    "reference_date": "2026-08-21",
+    "expected": []
+  },
+  {
+    "id": "TC_F_001",
+    "tier": "F_COMPLEX",
+    "input": "กินข้าว 200 \n ล้างรถ 300",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 200,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กินข้าว",
+        "description": "กินข้าว 200",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 300,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ล้างรถ",
+        "description": "ล้างรถ 300",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_002",
+    "tier": "F_COMPLEX",
+    "input": "กาแฟ 60 ข้าวมันไก่ 50",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กาแฟ",
+        "description": "กาแฟ 60",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 50,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ข้าวมันไก่",
+        "description": "ข้าวมันไก่ 50",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_003",
+    "tier": "F_COMPLEX",
+    "input": "เติมน้ำมัน 800 ซื้อขนม 120",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 800,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เติมน้ำมัน",
+        "description": "เติมน้ำมัน 800",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 120,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ซื้อขนม",
+        "description": "ซื้อขนม 120",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_004",
+    "tier": "F_COMPLEX",
+    "input": "เมื่อวานไปกินข้าวกับครอบครัวที่ MK จ่ายไป 780 รวมเครื่องดื่มด้วย",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 780,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "MK",
+        "description": "กินข้าวกับครอบครัวที่ MK 780",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_005",
+    "tier": "F_COMPLEX",
+    "input": "ซื้อของใน Lazada เมื่อวันที่ 17 สิงหา ยอด 1,299 บาท",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1299,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Lazada",
+        "description": "ซื้อของใน Lazada 1,299",
+        "date": "2026-08-17"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_006",
+    "tier": "F_COMPLEX",
+    "input": "ได้เงินเดือน 35000 จ่ายค่าห้อง 4500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 35000,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "เงินเดือน",
+        "description": "ได้เงินเดือน 35000",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 4500,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าห้อง",
+        "description": "จ่ายค่าห้อง 4500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_007",
+    "tier": "F_COMPLEX",
+    "input": "ซื้อเสื้อผ้า Uniqlo 1,490 และกิน Starbucks 185",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1490,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Uniqlo",
+        "description": "ซื้อเสื้อผ้า Uniqlo 1,490",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 185,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "Starbucks",
+        "description": "กิน Starbucks 185",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_008",
+    "tier": "F_COMPLEX",
+    "input": "กินชาบู 499 ค่าน้ำมัน 500 ค่าทางด่วน 50",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 499,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ชาบู",
+        "description": "กินชาบู 499",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 500,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่าน้ำมัน",
+        "description": "ค่าน้ำมัน 500",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 50,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ค่าทางด่วน",
+        "description": "ค่าทางด่วน 50",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_009",
+    "tier": "F_COMPLEX",
+    "input": "ซื้อของเซเว่น 125 บาท และเติมเงินมือถือ 100",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 125,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "เซเว่น",
+        "description": "ซื้อของเซเว่น 125",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 100,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "เติมเงินมือถือ",
+        "description": "เติมเงินมือถือ 100",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_010",
+    "tier": "F_COMPLEX",
+    "input": "เมื่อเช้ากินโจ๊ก 45 ซื้อกาแฟ 50 ข้าวเที่ยง 60",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 45,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "โจ๊ก",
+        "description": "กินโจ๊ก 45",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 50,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "กาแฟ",
+        "description": "ซื้อกาแฟ 50",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ข้าวเที่ยง",
+        "description": "ข้าวเที่ยง 60",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_011",
+    "tier": "F_COMPLEX",
+    "input": "ขายเสื้อได้ 350 ขายกางเกงได้ 500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 350,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ขายเสื้อ",
+        "description": "ขายเสื้อได้ 350",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "INCOME",
+        "amount": 500,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ขายกางเกง",
+        "description": "ขายกางเกงได้ 500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_012",
+    "tier": "F_COMPLEX",
+    "input": "จ่ายค่าไฟ 1450 ค่าน้ำ 210 ค่าเน็ต 599",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1450,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าไฟ",
+        "description": "จ่ายค่าไฟ 1450",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 210,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าน้ำ",
+        "description": "ค่าน้ำ 210",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 599,
+        "category": "บิล/ค่าใช้จ่าย/สาธารณูปโภค",
+        "merchant": "ค่าเน็ต",
+        "description": "ค่าเน็ต 599",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_013",
+    "tier": "F_COMPLEX",
+    "input": "ซื้อของ Lotus 890 และ เติมน้ำมัน ปตท 1000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 890,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Lotus",
+        "description": "ซื้อของ Lotus 890",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 1000,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ปตท",
+        "description": "เติมน้ำมัน ปตท 1000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_014",
+    "tier": "F_COMPLEX",
+    "input": "กินข้าวเที่ยง 80 \n ซื้อชานม 65 \n ค่าบีทีเอส 44",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 80,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ข้าวเที่ยง",
+        "description": "กินข้าวเที่ยง 80",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 65,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ชานม",
+        "description": "ซื้อชานม 65",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 44,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "บีทีเอส",
+        "description": "ค่าบีทีเอส 44",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_015",
+    "tier": "F_COMPLEX",
+    "input": "วันที่ 19 ไปซื้อของ HomePro 2400 และ กินฟูจิ 890",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 2400,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "HomePro",
+        "description": "ซื้อของ HomePro 2400",
+        "date": "2026-08-19"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 890,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "ฟูจิ",
+        "description": "กินฟูจิ 890",
+        "date": "2026-08-19"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_016",
+    "tier": "F_COMPLEX",
+    "input": "ได้เงินปันผล 1200 บาท และ ขายของออนไลน์ได้ 2500",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "INCOME",
+        "amount": 1200,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "เงินปันผล",
+        "description": "เงินปันผล 1200",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "INCOME",
+        "amount": 2500,
+        "category": "รายรับ/เงินเดือน/ธุรกิจ",
+        "merchant": "ขายของออนไลน์",
+        "description": "ขายของออนไลน์ 2500",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_017",
+    "tier": "F_COMPLEX",
+    "input": "โอนให้แม่ 5000 โอนให้พ่อ 3000",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "TRANSFER",
+        "amount": 5000,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนให้แม่",
+        "description": "โอนให้แม่ 5000",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "TRANSFER",
+        "amount": 3000,
+        "category": "โอนเงิน/ทั่วไป",
+        "merchant": "โอนให้พ่อ",
+        "description": "โอนให้พ่อ 3000",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_018",
+    "tier": "F_COMPLEX",
+    "input": "ซื้อของ Shopee 590 และ Lazada 420",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 590,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Shopee",
+        "description": "ซื้อของ Shopee 590",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 420,
+        "category": "ช้อปปิ้ง/ของใช้/อุปกรณ์",
+        "merchant": "Lazada",
+        "description": "ซื้อของ Lazada 420",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_019",
+    "tier": "F_COMPLEX",
+    "input": "กินเบียร์กับเพื่อน 650 ค่าแท็กซี่กลับ 180",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 650,
+        "category": "ความบันเทิง/สังสรรค์",
+        "merchant": "เบียร์",
+        "description": "กินเบียร์กับเพื่อน 650",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 180,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "แท็กซี่",
+        "description": "ค่าแท็กซี่กลับ 180",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_020",
+    "tier": "F_COMPLEX",
+    "input": "ทำฟันอุดฟัน 1200 ซื้อยา 150",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1200,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ทำฟัน",
+        "description": "ทำฟันอุดฟัน 1200",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 150,
+        "category": "สุขภาพ/ความงาม",
+        "merchant": "ค่ายา",
+        "description": "ซื้อยา 150",
+        "date": "2026-08-21"
+      }
+    ]
+  },
+  {
+    "id": "TC_F_021",
+    "tier": "F_COMPLEX",
+    "input": "เติมน้ำมัน 1000 ล้างรถดูดฝุ่น 250 ซื้อกาแฟอเมซอน 60",
+    "reference_date": "2026-08-21",
+    "expected": [
+      {
+        "type": "EXPENSE",
+        "amount": 1000,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "เติมน้ำมัน",
+        "description": "เติมน้ำมัน 1000",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 250,
+        "category": "การเดินทาง/ยานพาหนะ",
+        "merchant": "ล้างรถ",
+        "description": "ล้างรถดูดฝุ่น 250",
+        "date": "2026-08-21"
+      },
+      {
+        "type": "EXPENSE",
+        "amount": 60,
+        "category": "อาหารและเครื่องดื่ม",
+        "merchant": "อเมซอน",
+        "description": "กาแฟอเมซอน 60",
+        "date": "2026-08-21"
+      }
+    ]
+  }
+]

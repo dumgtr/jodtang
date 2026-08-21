@@ -16,7 +16,8 @@
     "test:date": "tsx scripts/test-date-parser.ts",
     "test:tx-mgmt": "tsx scripts/test-transaction-management.ts",
     "test:migration-gate": "tsx scripts/test-disposable-migration-gate.ts",
-    "test": "npm run test:extraction && npm run test:slip && npm run test:security && npm run test:date && npm run test:tx-mgmt"
+    "test": "npm run test:extraction && npm run test:slip && npm run test:security && npm run test:date && npm run test:tx-mgmt",
+    "benchmark:ai": "tsx scripts/benchmark-ai.ts"
   },
   "keywords": [
     "line-bot",
