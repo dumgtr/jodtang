@@ -53,7 +53,13 @@ CRITICAL INSTRUCTIONS:
    - "TODAY", "YESTERDAY", "THIS_WEEK", "LAST_WEEK", "CURRENT_MONTH", "LAST_MONTH", "THIS_YEAR", "LAST_YEAR", "SPECIFIC_DATE", "ALL_TIME".
    - If user specifies a particular day like "17 สิงหา" or "วันที่ 19", use type "SPECIFIC_DATE" and provide specific_date: "YYYY-MM-DD" or natural text.
 
-4. Output strict JSON matching the schema below.
+4. Extract Transaction Type:
+   - "EXPENSE": Default for spending, buying, expenses (e.g. "ใช้เงิน", "จ่าย", "ซื้อ", "กินข้าว").
+   - "INCOME": For income, earnings, salary (e.g. "รายรับ", "เงินเดือน", "รายได้").
+   - "TRANSFER": For money transfers (e.g. "โอนเงิน", "โอนไป", "โอน").
+   - "ALL": For all types combined (e.g. "ทุกประเภท", "ทั้งหมด").
+
+5. Output strict JSON matching the schema below.
 
 JSON Schema:
 {

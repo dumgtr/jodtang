@@ -90,14 +90,45 @@ export function buildSlipUploadQuickReply(): messagingApi.QuickReply {
 }
 
 /**
- * Builds the official 2-area JodTang Rich Menu specification.
+ * Builds the official Security & Privacy FAQ message response.
+ * Follows conservative guidelines:
+ * - No bank connection, no passwords/PINs requested.
+ * - Uses LINE User ID for data separation.
+ * - Standard HTTPS/TLS encrypted communication.
+ * - AI assists in text extraction; user confirms via Draft before commit.
+ */
+export function buildSecurityFaqText(): string {
+  return [
+    '🔒 ความปลอดภัยและความเป็นส่วนตัวของ จดตัง (JodTang)',
+    '',
+    '1. 🏦 ไม่เชื่อมต่อบัญชีธนาคาร',
+    '• จดตังไม่ใช่แอปธนาคาร และไม่มีการเชื่อมต่อกับบัญชีเงินฝากใดๆ',
+    '• ระบบจะไม่ขอรหัสผ่าน, PIN, OTP หรือข้อมูลบัตรเครดิต/เดบิตเด็ดขาด',
+    '',
+    '2. 👤 การเก็บรักษาข้อมูลเฉพาะบุคคล',
+    '• บันทึกรายรับ-รายจ่ายจะผูกกับ LINE User ID ของคุณโดยเฉพาะ',
+    '• ข้อมูลถูกแยกรายผู้ใช้งานอย่างปลอดภัย ไม่ปะปนกับผู้อื่น',
+    '',
+    '3. 🛡️ การรับส่งข้อมูลที่ปลอดภัย',
+    '• การสื่อสารทั้งหมดระหว่าง LINE, เซิร์ฟเวอร์ และฐานข้อมูล ดำเนินการผ่านการเข้ารหัส HTTPS/TLS ตามมาตรฐาน',
+    '',
+    '4. 🤖 การประมวลผลด้วย AI และการยืนยันรายการ',
+    '• AI ถูกใช้เพื่อช่วยอ่านข้อความและสกัดตัวเลขยอดเงิน/หมวดหมู่เท่านั้น',
+    '• ทุกรายการจะมีหน้าต่างการ์ด (Draft) ให้คุณตรวจสอบและกดยืนยันก่อนบันทึกจริงเสมอ ✨',
+  ].join('\n');
+}
+
+/**
+ * Builds the official 2-row JodTang Rich Menu specification with Security FAQ.
  *
  * Layout (2500 x 843):
- * ┌──────────────────────────────┐
- * │  [ 📊 สรุปยอด ] [ 📷 เพิ่มรูป ] │
- * └──────────────────────────────┘
+ * ┌──────────────────────────────────────┐
+ * │          📊 สรุปยอด                  │ (y: 0..562)
+ * ├──────────────────────────────────────┤
+ * │    🔒 ความปลอดภัยและความเป็นส่วนตัว    │ (y: 562..843)
+ * └──────────────────────────────────────┘
  *
- * Default: Chat bar displays "พิมพ์บอกจดตัง เช่น กินข้าว 80..." with keyboard open.
+ * Default: selected = false (Keyboard text input is primary default).
  */
 export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
   return {
@@ -105,36 +136,36 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
       width: 2500,
       height: 843,
     },
-    selected: true,
-    name: 'JodTang Main Menu',
-    chatBarText: '💬 พิมพ์ข้อความ หรือเลือกเมนู...',
+    selected: false,
+    name: 'JodTang - สรุปยอดและความปลอดภัย',
+    chatBarText: 'เมนูจดตัง',
     areas: [
-      // Left Area (0..1250): 📊 สรุปยอด
+      // Top Area (0..562): 📊 สรุปยอด
       {
         bounds: {
           x: 0,
           y: 0,
-          width: 1250,
-          height: 843,
+          width: 2500,
+          height: 562,
         },
         action: {
           type: 'message',
-          label: '📊 สรุปยอด',
+          label: 'สรุปยอด',
           text: '📊 สรุปยอด',
         },
       },
-      // Right Area (1250..2500): 📷 เพิ่มรูปภาพ/สลิป
+      // Bottom Area (562..843): 🔒 ความปลอดภัยและความเป็นส่วนตัว
       {
         bounds: {
-          x: 1250,
-          y: 0,
-          width: 1250,
-          height: 843,
+          x: 0,
+          y: 562,
+          width: 2500,
+          height: 281,
         },
         action: {
           type: 'message',
-          label: '📷 เพิ่มรูปภาพ/สลิป',
-          text: '📷 เพิ่มรูปภาพ/สลิป',
+          label: 'ความปลอดภัย',
+          text: '🔒 ความปลอดภัยและความเป็นส่วนตัว',
         },
       },
     ],

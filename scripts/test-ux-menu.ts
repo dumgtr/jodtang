@@ -34,25 +34,29 @@ async function runUxMenuTests() {
 
   assert.equal(richMenu.size.width, 2500, 'Rich Menu width must be 2500');
   assert.equal(richMenu.size.height, 843, 'Rich Menu height must be 843');
-  assert.equal(richMenu.selected, true, 'Rich Menu should be enabled by default');
+  assert.equal(richMenu.selected, false, 'Rich Menu should have selected=false (text input default)');
   assert(richMenu.chatBarText.length > 0, 'Chat bar text must guide user to type message or choose menu');
   assert.equal(richMenu.areas.length, 2, 'Rich Menu must have 2 main areas');
 
-  // Left Area: 📊 สรุปยอด
-  const leftArea = richMenu.areas[0];
-  assert.equal(leftArea.bounds.x, 0);
-  assert.equal(leftArea.bounds.width, 1250);
-  assert.equal(leftArea.action.type, 'message');
-  assert.equal((leftArea.action as any).text, '📊 สรุปยอด');
+  // Top Area: 📊 สรุปยอด
+  const topArea = richMenu.areas[0];
+  assert.equal(topArea.bounds.x, 0);
+  assert.equal(topArea.bounds.y, 0);
+  assert.equal(topArea.bounds.width, 2500);
+  assert.equal(topArea.bounds.height, 562);
+  assert.equal(topArea.action.type, 'message');
+  assert.equal((topArea.action as any).text, '📊 สรุปยอด');
 
-  // Right Area: 📷 เพิ่มรูปภาพ/สลิป
-  const rightArea = richMenu.areas[1];
-  assert.equal(rightArea.bounds.x, 1250);
-  assert.equal(rightArea.bounds.width, 1250);
-  assert.equal(rightArea.action.type, 'message');
-  assert.equal((rightArea.action as any).text, '📷 เพิ่มรูปภาพ/สลิป');
+  // Bottom Area: 🔒 ความปลอดภัยและความเป็นส่วนตัว
+  const bottomArea = richMenu.areas[1];
+  assert.equal(bottomArea.bounds.x, 0);
+  assert.equal(bottomArea.bounds.y, 562);
+  assert.equal(bottomArea.bounds.width, 2500);
+  assert.equal(bottomArea.bounds.height, 281);
+  assert.equal(bottomArea.action.type, 'message');
+  assert.equal((bottomArea.action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
 
-  console.log('   ✅ Rich Menu Specification verified (2-area layout with text input default).\n');
+  console.log('   ✅ Rich Menu Specification verified (2-row layout with text input default).\n');
 
   // ----------------------------------------------------
   // 2. Setup Test User Fixtures

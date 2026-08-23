@@ -17,7 +17,11 @@ import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
 import { parseQueryIntent } from '../services/query-parser.service';
 import { QueryEngineService } from '../services/query-engine.service';
 import { formatQueryResult } from '../services/query-formatter.service';
-import { buildQuickSummaryQuickReply, buildSlipUploadQuickReply } from '../utils/menu.builder';
+import {
+  buildQuickSummaryQuickReply,
+  buildSlipUploadQuickReply,
+  buildSecurityFaqText,
+} from '../utils/menu.builder';
 
 /**
  * Deterministically checks if input text is an edit command (stripping emojis, symbols, and variation selectors).
@@ -53,6 +57,22 @@ function isSlipUploadMenuCommand(text: string): boolean {
   if (/\d/.test(text)) return false;
   const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
   return /^(เพิ่มรูป|เพิ่มรูปภาพ|เพิ่มสลิป|เพิ่มรูปภาพสลิป|อัปโหลดรูป|แนบสลิป|ส่งรูป)$/u.test(normalized);
+}
+
+/**
+ * Deterministically checks if input text is a Security & Privacy FAQ request.
+ */
+function isSecurityFaqCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return (
+    /^(ความปลอดภัย|ความเป็นส่วนตัว|ความปลอดภัยและความเป็นส่วนตัว|ความปลอดภัยข้อมูล|นโยบายความเป็นส่วนตัว)$/u.test(
+      normalized
+    ) ||
+    normalized === 'security' ||
+    normalized === 'privacy' ||
+    normalized === 'faq'
+  );
 }
 
 /**
@@ -422,6 +442,22 @@ export async function handleTextMessage(
               type: 'text',
               text: '📷 คุณสามารถถ่ายรูปหรือเลือกภาพสลิป/ใบเสร็จจากอัลบั้มเพื่อส่งให้จดตังได้เลยครับ ✨',
               quickReply: buildSlipUploadQuickReply(),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    // 3D. Security & Privacy FAQ Command
+    if (isSecurityFaqCommand(trimmedText)) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildSecurityFaqText(),
             },
           ],
         });
