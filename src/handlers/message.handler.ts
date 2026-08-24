@@ -17,7 +17,7 @@ import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
 import { parseQueryIntent } from '../services/query-parser.service';
 import { QueryEngineService } from '../services/query-engine.service';
 import { formatQueryResult } from '../services/query-formatter.service';
-import { isSecurityFaqCommand } from '../services/security-faq.service';
+import { classifySecurityFaqIntent } from '../services/security-faq.service';
 import {
   buildQuickSummaryQuickReply,
   buildSlipUploadQuickReply,
@@ -75,9 +75,28 @@ export async function handleTextMessage(
   referenceDate?: string
 ): Promise<void> {
   try {
-    // 1. Ensure user exists
-    const user = await UserRepository.findOrCreateByLineUserId(lineUserId);
     const trimmedText = text.trim();
+
+    // 1. Security FAQ is intentionally handled before user lookup/state.
+    // This keeps the FAQ route read-only even for a first-time LINE user.
+    const securityFaqTopic = classifySecurityFaqIntent(trimmedText);
+    if (securityFaqTopic) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildSecurityFaqText(securityFaqTopic),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    // 2. Ensure user exists for stateful/query/write paths
+    const user = await UserRepository.findOrCreateByLineUserId(lineUserId);
 
     // 2. Check Conversation State
     const state = ConversationService.getState(user.id);
@@ -428,22 +447,6 @@ export async function handleTextMessage(
               type: 'text',
               text: '📷 คุณสามารถถ่ายรูปหรือเลือกภาพสลิป/ใบเสร็จจากอัลบั้มเพื่อส่งให้จดตังได้เลยครับ ✨',
               quickReply: buildSlipUploadQuickReply(),
-            },
-          ],
-        });
-      }
-      return;
-    }
-
-    // 3D. Security & Privacy FAQ Command
-    if (isSecurityFaqCommand(trimmedText)) {
-      if (replyToken) {
-        await lineClient.replyMessage({
-          replyToken,
-          messages: [
-            {
-              type: 'text',
-              text: buildSecurityFaqText(),
             },
           ],
         });
