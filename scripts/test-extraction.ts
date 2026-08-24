@@ -1,3 +1,8 @@
+import { env } from '../src/config/env';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
+
+assertTestDatabaseConnection(env.DATABASE_URL);
+
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) {
     throw new Error(`ASSERTION FAILED: ${message}`);

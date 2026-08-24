@@ -417,9 +417,9 @@
     },
     "expectedResult": {
       "topName": "การไฟฟ้านครหลวง",
-      "totalAmount": 1450
+      "totalAmount": 5379
     },
-    "description": "Top spending merchant in current month (MEA ฿1,450)"
+    "description": "Top spending merchant in current month (MEA ฿1,450; ranking total ฿5,379)"
   },
   {
     "id": "Q_D_002",
@@ -470,9 +470,9 @@
     },
     "expectedResult": {
       "topName": "อาหารและเครื่องดื่ม",
-      "totalAmount": 1879
+      "totalAmount": 5579
     },
-    "description": "Top spending category (Food ฿1,879)"
+    "description": "Top spending category (Food ฿1,879; ranking total ฿5,579)"
   },
   {
     "id": "Q_D_005",
@@ -505,9 +505,9 @@
     },
     "expectedResult": {
       "topName": "Lotus",
-      "totalAmount": 1250
+      "totalAmount": 3429
     },
-    "description": "Top merchant in current week (Lotus ฿1,250)"
+    "description": "Top merchant in current week (Lotus ฿1,250; ranking total ฿3,429)"
   },
   {
     "id": "Q_E_001",

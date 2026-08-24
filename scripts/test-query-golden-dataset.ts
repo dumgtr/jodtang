@@ -2,12 +2,16 @@ import assert from 'node:assert/strict';
 import fs from 'fs';
 import path from 'path';
 import { query, pool } from '../src/db/client';
+import { env } from '../src/config/env';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { parseQueryIntent } from '../src/services/query-parser.service';
 import { QueryEngineService } from '../src/services/query-engine.service';
 import { formatQueryResult } from '../src/services/query-formatter.service';
 import { QueryGoldenCase } from './generate-query-golden-dataset';
 import { QueryResult } from '../src/types/query';
+
+assertTestDatabaseConnection(env.DATABASE_URL);
 
 interface CaseEvalResult {
   id: string;

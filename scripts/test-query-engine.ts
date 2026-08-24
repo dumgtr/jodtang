@@ -1,8 +1,12 @@
 import assert from 'node:assert/strict';
 import { query, pool } from '../src/db/client';
+import { env } from '../src/config/env';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { QueryEngineService } from '../src/services/query-engine.service';
 import { QueryIntent, SummaryQueryResult, RankingQueryResult, ListingQueryResult, CountQueryResult } from '../src/types/query';
+
+assertTestDatabaseConnection(env.DATABASE_URL);
 
 async function runQueryEngineTests() {
   console.log('====================================================');

@@ -1,6 +1,11 @@
 import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 import { env } from '../config/env';
 import { logInternalError } from '../utils/errors';
+import { assertTestDatabaseUrl } from './test-isolation';
+
+if (env.NODE_ENV === 'test' || process.env.JODTANG_TEST_ISOLATION === '1') {
+  assertTestDatabaseUrl(env.DATABASE_URL);
+}
 
 function getDatabaseSslMode(connectionString: string): string | undefined {
   try {

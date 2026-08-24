@@ -17,6 +17,7 @@ import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
 import { parseQueryIntent } from '../services/query-parser.service';
 import { QueryEngineService } from '../services/query-engine.service';
 import { formatQueryResult } from '../services/query-formatter.service';
+import { isSecurityFaqCommand } from '../services/security-faq.service';
 import {
   buildQuickSummaryQuickReply,
   buildSlipUploadQuickReply,
@@ -60,22 +61,6 @@ function isSlipUploadMenuCommand(text: string): boolean {
 }
 
 /**
- * Deterministically checks if input text is a Security & Privacy FAQ request.
- */
-function isSecurityFaqCommand(text: string): boolean {
-  if (/\d/.test(text)) return false;
-  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
-  return (
-    /^(ความปลอดภัย|ความเป็นส่วนตัว|ความปลอดภัยและความเป็นส่วนตัว|ความปลอดภัยข้อมูล|นโยบายความเป็นส่วนตัว)$/u.test(
-      normalized
-    ) ||
-    normalized === 'security' ||
-    normalized === 'privacy' ||
-    normalized === 'faq'
-  );
-}
-
-/**
  * Handles incoming LINE text message events.
  * 1. Checks if user is in an active edit conversation state (draft or confirmed transaction).
  * 2. Checks if user sent a management command (e.g. "ขอแก้ไขรายการ", "ขอลบรายการ", with or without emojis).
@@ -86,7 +71,8 @@ export async function handleTextMessage(
   lineUserId: string,
   text: string,
   replyToken: string | undefined,
-  lineClient: messagingApi.MessagingApiClient
+  lineClient: messagingApi.MessagingApiClient,
+  referenceDate?: string
 ): Promise<void> {
   try {
     // 1. Ensure user exists
@@ -466,7 +452,7 @@ export async function handleTextMessage(
     }
 
     // 4. Timezone-aware Reference Date (Asia/Bangkok)
-    const currentDate = new Intl.DateTimeFormat('en-CA', {
+    const currentDate = referenceDate ?? new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Asia/Bangkok',
       year: 'numeric',
       month: '2-digit',

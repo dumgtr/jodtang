@@ -52,12 +52,14 @@ CRITICAL INSTRUCTIONS:
 3. Extract Date Range:
    - "TODAY", "YESTERDAY", "THIS_WEEK", "LAST_WEEK", "CURRENT_MONTH", "LAST_MONTH", "THIS_YEAR", "LAST_YEAR", "SPECIFIC_DATE", "ALL_TIME".
    - If user specifies a particular day like "17 สิงหา" or "วันที่ 19", use type "SPECIFIC_DATE" and provide specific_date: "YYYY-MM-DD" or natural text.
+   - For a ranking question with no explicit period, use "ALL_TIME".
 
 4. Extract Transaction Type:
    - "EXPENSE": Default for spending, buying, expenses (e.g. "ใช้เงิน", "จ่าย", "ซื้อ", "กินข้าว").
    - "INCOME": For income, earnings, salary (e.g. "รายรับ", "เงินเดือน", "รายได้").
    - "TRANSFER": For money transfers (e.g. "โอนเงิน", "โอนไป", "โอน").
    - "ALL": For all types combined (e.g. "ทุกประเภท", "ทั้งหมด").
+   - For a generic LISTING or COUNT question using "รายการ" without an expense, income, or transfer cue, use "ALL".
 
 5. Output strict JSON matching the schema below.
 
@@ -158,10 +160,16 @@ export async function parseQueryIntent(
       'SPECIFIC_DATE', 'CUSTOM_RANGE', 'ALL_TIME',
     ];
     if (!validDateTypes.includes(dateType)) dateType = 'CURRENT_MONTH';
+    if (intent === 'RANKING' && !hasExplicitDateRangeReference(trimmed)) {
+      dateType = 'ALL_TIME';
+    }
 
     // Normalize transaction type
     let txType = String(parsed.transaction_type || 'EXPENSE').toUpperCase().trim();
     if (!['EXPENSE', 'INCOME', 'TRANSFER', 'ALL'].includes(txType)) txType = 'EXPENSE';
+    if (isGenericAllTransactionQuery(trimmed, intent)) {
+      txType = 'ALL';
+    }
 
     // Normalize group_by
     let groupBy = parsed.group_by ? String(parsed.group_by).toUpperCase().trim() : 'NONE';
@@ -236,6 +244,46 @@ const SPECIFIC_DAY_PATTERN = new RegExp(
   `|(?:\\d{1,2}\\s*(?:${THAI_MONTH_ALTERNATION})(?:\\s*\\d{2,4})?)`
 );
 
+function hasExplicitDateRangeReference(text: string): boolean {
+  const lower = text.toLowerCase();
+  return Boolean(text.match(SPECIFIC_DAY_PATTERN)) || [
+    'เมื่อวาน',
+    'วันนี้',
+    'สัปดาห์นี้',
+    'อาทิตย์นี้',
+    'สัปดาห์ที่แล้ว',
+    'อาทิตย์ที่แล้ว',
+    'เดือนนี้',
+    'เดือนที่แล้ว',
+    'เดือนก่อน',
+    'ปีนี้',
+    'ปีที่แล้ว',
+  ].some((cue) => lower.includes(cue));
+}
+
+function isGenericAllTransactionQuery(text: string, intent: string): boolean {
+  if (intent !== 'LISTING' && intent !== 'COUNT') return false;
+
+  const lower = text.toLowerCase();
+  if (!lower.includes('รายการ')) return false;
+
+  const hasExplicitTypeCue = [
+    'รายจ่าย',
+    'ค่าใช้จ่าย',
+    'ใช้เงิน',
+    'จ่าย',
+    'ซื้อ',
+    'กิน',
+    'อาหาร',
+    'รายรับ',
+    'เงินเดือน',
+    'รายได้',
+    'โอน',
+  ].some((cue) => lower.includes(cue));
+
+  return !hasExplicitTypeCue;
+}
+
 /**
  * Deterministic intent rule engine fallback for offline testing or fast keywords.
  */
@@ -250,6 +298,8 @@ export function parseDeterministicQueryIntentFallback(
     lower.includes('เท่าไร') ||
     lower.includes('เท่าไหร่') ||
     lower.includes('อะไรบ้าง') ||
+    lower.includes('อะไรไปบ้าง') ||
+    lower.includes('ดูรายการ') ||
     lower.includes('กี่บาท') ||
     lower.includes('กี่รายการ') ||
     lower.includes('กี่ครั้ง') ||
@@ -308,7 +358,13 @@ export function parseDeterministicQueryIntentFallback(
     } else {
       groupBy = 'MERCHANT';
     }
-  } else if (lower.includes('อะไรบ้าง') || lower.includes('รายการบ้าง') || lower.includes('มีอะไร') || lower.includes('ดูรายการ')) {
+  } else if (
+    lower.includes('อะไรบ้าง') ||
+    lower.includes('อะไรไปบ้าง') ||
+    lower.includes('รายการบ้าง') ||
+    lower.includes('มีอะไร') ||
+    lower.includes('ดูรายการ')
+  ) {
     intent = 'LISTING';
     aggregation = 'NONE';
     sortBy = 'DATE';
@@ -318,7 +374,19 @@ export function parseDeterministicQueryIntentFallback(
     aggregation = 'COUNT';
   }
 
-  // 3. Category matching
+  if (intent === 'RANKING' && !hasExplicitDateRangeReference(text)) {
+    dateRangeType = 'ALL_TIME';
+  }
+
+  // 3. Merchant matching
+  let merchant: string | null = null;
+  if (lower.includes('mk')) merchant = 'MK';
+  else if (lower.includes('lotus')) merchant = 'Lotus';
+  else if (lower.includes('ปตท')) merchant = 'ปตท';
+  else if (lower.includes('การไฟฟ้านครหลวง') || lower.includes('mea')) merchant = 'การไฟฟ้านครหลวง';
+  else if (lower.includes('apple')) merchant = 'Apple';
+
+  // 4. Category matching
   let category: string | null = null;
   if (lower.includes('กินข้าว') || lower.includes('อาหาร') || lower.includes('กาแฟ') || lower.includes('ชาบู') || lower.includes('ของกิน')) {
     category = 'อาหารและเครื่องดื่ม';
@@ -328,13 +396,20 @@ export function parseDeterministicQueryIntentFallback(
     category = 'ช้อปปิ้ง/ของใช้/อุปกรณ์';
   } else if (lower.includes('ค่าไฟ') || lower.includes('ค่าน้ำ') || lower.includes('บิล') || lower.includes('เน็ต')) {
     category = 'บิล/ค่าใช้จ่าย/สาธารณูปโภค';
+  } else if (
+    lower.includes('ค่ารักษาพยาบาล') ||
+    lower.includes('รักษาพยาบาล') ||
+    lower.includes('สุขภาพ') ||
+    lower.includes('โรงพยาบาล')
+  ) {
+    category = 'สุขภาพ/ความงาม';
   }
 
-  // 4. Merchant matching
-  let merchant: string | null = null;
-  if (lower.includes('mk')) merchant = 'MK';
-  else if (lower.includes('lotus')) merchant = 'Lotus';
-  else if (lower.includes('ปตท')) merchant = 'ปตท';
+  // "ซื้อของที่ <merchant>" is a merchant-only query in the contract;
+  // do not add an inferred shopping category that would create an AND filter.
+  if (lower.includes('ซื้อของที่') && merchant) {
+    category = null;
+  }
 
   // 5. Transaction type detection (default EXPENSE)
   // INCOME: รายรับ / เงินเดือน / รายได้ / ขายของ / โบนัส
@@ -356,6 +431,8 @@ export function parseDeterministicQueryIntentFallback(
     lower.includes('ทั้งหมด') ||
     lower.includes('รวมทุกอย่าง')
   ) {
+    transactionType = 'ALL';
+  } else if (isGenericAllTransactionQuery(text, intent)) {
     transactionType = 'ALL';
   }
 

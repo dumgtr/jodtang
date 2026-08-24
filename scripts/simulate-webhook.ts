@@ -1,7 +1,10 @@
 import crypto from 'crypto';
 import { env } from '../src/config/env';
 import { pool, query } from '../src/db/client';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { TransactionRepository } from '../src/modules/transaction/transaction.repository';
+
+assertTestDatabaseConnection(env.DATABASE_URL);
 
 const BASE_URL = `http://localhost:${env.PORT}`;
 const MOCK_USER_A = 'U_MOCK_TEST_USER_AAA';

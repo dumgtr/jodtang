@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { query, pool } from '../src/db/client';
+import { env } from '../src/config/env';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { handleTextMessage } from '../src/handlers/message.handler';
 import {
@@ -7,6 +9,8 @@ import {
   buildQuickSummaryQuickReply,
   buildSlipUploadQuickReply,
 } from '../src/utils/menu.builder';
+
+assertTestDatabaseConnection(env.DATABASE_URL);
 
 type MockReply = {
   replyToken: string;

@@ -107,6 +107,16 @@ async function runQueryIntentContractTests() {
       },
     },
     {
+      input: 'สรุปเดือนนี้',
+      verify: (intent: QueryIntent | null) => {
+        assert(intent !== null, 'Must parse as valid query');
+        assert.equal(intent.intent, 'SUMMARY');
+        assert.equal(intent.date_range.type, 'CURRENT_MONTH');
+        assert.equal(intent.transaction_type, 'EXPENSE');
+        assert.equal(intent.aggregation, 'SUM');
+      },
+    },
+    {
       input: 'เดือนนี้กินข้าวไปเท่าไร',
       verify: (intent: QueryIntent | null) => {
         assert(intent !== null, 'Must parse as valid query');
@@ -159,6 +169,18 @@ async function runQueryIntentContractTests() {
       input: 'สวัสดีครับ',
       verify: (intent: QueryIntent | null) => {
         assert.equal(intent, null, 'Non-query greeting must return null');
+      },
+    },
+    {
+      input: 'สวัสดี',
+      verify: (intent: QueryIntent | null) => {
+        assert.equal(intent, null, 'Greeting must return null');
+      },
+    },
+    {
+      input: 'หวัดดี',
+      verify: (intent: QueryIntent | null) => {
+        assert.equal(intent, null, 'Greeting must return null');
       },
     },
     {

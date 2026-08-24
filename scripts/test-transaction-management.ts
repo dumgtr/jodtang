@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict';
 import { pool, query } from '../src/db/client';
+import { env } from '../src/config/env';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { DraftRepository } from '../src/modules/draft/draft.repository';
 import { TransactionRepository } from '../src/modules/transaction/transaction.repository';
 import { ConversationService } from '../src/services/conversation.service';
 import { handleTextMessage } from '../src/handlers/message.handler';
 import { handlePostbackEvent } from '../src/handlers/postback.handler';
+
+assertTestDatabaseConnection(env.DATABASE_URL);
 
 type Reply = {
   replyToken: string;

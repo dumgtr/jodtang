@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict';
 import { query } from '../src/db/client';
+import { env } from '../src/config/env';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { handleTextMessage } from '../src/handlers/message.handler';
+import { isSecurityFaqCommand } from '../src/services/security-faq.service';
 import { buildSecurityFaqText, buildJodTangRichMenuRequest } from '../src/utils/menu.builder';
+
+assertTestDatabaseConnection(env.DATABASE_URL);
 
 type MockReply = {
   replyToken: string;
@@ -21,6 +26,50 @@ async function runSecurityFaqTests() {
   console.log('====================================================');
   console.log('🧪 Testing Security & Privacy FAQ Flow in JodTang');
   console.log('====================================================\n');
+
+  // 0. Deterministic natural-language intent recognition.
+  console.log('0. Testing Security FAQ intent recognition and routing boundaries...');
+  const securityIntentCases = [
+    'ตรวจสอบความปลอดภัย',
+    'สอบถามความปลอดภัย',
+    'นโยบายความปลอดภัย',
+    'ระบบปลอดภัยไหม',
+    'ข้อมูลของฉันปลอดภัยไหม',
+    'ข้อมูลส่วนตัวปลอดภัยหรือเปล่า',
+    'จดตังเก็บข้อมูลอะไรบ้าง',
+    'ข้อมูลฉันถูกเก็บไว้ที่ไหน',
+    'จดตังเอาข้อมูลไปใช้ไหม',
+    'AI เอาข้อมูลไปเทรนไหม',
+    'จดตังเห็นบัญชีธนาคารไหม',
+    'ต้องให้รหัสผ่านไหม',
+    'มีใครเห็นรายการของฉันไหม',
+    'ความเป็นส่วนตัว',
+    'privacy',
+    'security',
+    'data privacy',
+    'ปลอดภัยไหม',
+    'เรื่องความปลอดภัย',
+    'ขอข้อมูลความปลอดภัย',
+  ];
+
+  for (const phrase of securityIntentCases) {
+    assert.equal(isSecurityFaqCommand(phrase), true, `Expected SECURITY_FAQ for "${phrase}"`);
+  }
+
+  const nonSecurityIntentCases = [
+    'กินข้าว 80',
+    'จ่ายค่าไฟ 500',
+    'ได้เงินเดือน 30000',
+    'สรุปเดือนนี้',
+    'เดือนนี้ใช้เงินไปเท่าไร',
+    'สวัสดี',
+    'หวัดดี',
+  ];
+
+  for (const phrase of nonSecurityIntentCases) {
+    assert.equal(isSecurityFaqCommand(phrase), false, `Must not route "${phrase}" to SECURITY_FAQ`);
+  }
+  console.log(`   ✅ ${securityIntentCases.length} Security FAQ cases and ${nonSecurityIntentCases.length} boundary cases passed.\n`);
 
   // 1. Test Rich Menu Request Spec
   console.log('1. Testing Rich Menu JSON Specification...');
@@ -57,13 +106,7 @@ async function runSecurityFaqTests() {
 
   // 3. Test Security FAQ Trigger Messages
   console.log('3. Testing Security FAQ command triggers...');
-  const testPhrases = [
-    '🔒 ความปลอดภัยและความเป็นส่วนตัว',
-    'ความปลอดภัย',
-    'ความเป็นส่วนตัว',
-    'security',
-    'privacy',
-  ];
+  const testPhrases = ['🔒 ความปลอดภัยและความเป็นส่วนตัว', ...securityIntentCases];
 
   for (const phrase of testPhrases) {
     const replies: MockReply[] = [];
@@ -85,18 +128,21 @@ async function runSecurityFaqTests() {
   }
 
   // 4. Verify Write Path is Untouched
-  console.log('\n4. Verifying Write Path regression ("กินข้าว 60")...');
-  const repliesWrite: MockReply[] = [];
-  const clientWrite = createMockLineClient(repliesWrite);
-  const draftsBeforeWrite = await countDrafts();
+  console.log('\n4. Verifying Write Path regression...');
+  const writePhrases = ['กินข้าว 80', 'จ่ายค่าไฟ 500', 'ได้เงินเดือน 30000'];
+  for (const phrase of writePhrases) {
+    const repliesWrite: MockReply[] = [];
+    const clientWrite = createMockLineClient(repliesWrite);
+    const draftsBeforeWrite = await countDrafts();
 
-  await handleTextMessage(lineUserId, 'กินข้าว 60', 'TOKEN_WRITE', clientWrite);
+    await handleTextMessage(lineUserId, phrase, `TOKEN_WRITE_${Date.now()}`, clientWrite);
 
-  assert.equal(repliesWrite.length, 1);
-  assert.equal(repliesWrite[0].messages[0].type, 'flex', 'Write Path must return Flex confirmation');
-  const draftsAfterWrite = await countDrafts();
-  assert.equal(draftsAfterWrite, draftsBeforeWrite + 1, 'Write Path must create 1 draft');
-  console.log('   ✅ Write Path verified (created 1 draft).');
+    assert.equal(repliesWrite.length, 1, `Expected one Write reply for "${phrase}"`);
+    assert.equal(repliesWrite[0].messages[0].type, 'flex', 'Write Path must return Flex confirmation');
+    const draftsAfterWrite = await countDrafts();
+    assert.equal(draftsAfterWrite, draftsBeforeWrite + 1, `Write Path must create 1 draft for "${phrase}"`);
+    console.log(`   ✅ Write Path verified for "${phrase}".`);
+  }
 
   // Clean test fixtures
   await query(`DELETE FROM transaction_drafts WHERE user_id = $1;`, [user.id]);

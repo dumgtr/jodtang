@@ -1,14 +1,20 @@
 import assert from 'node:assert/strict';
 import { query, pool } from '../src/db/client';
+import { env } from '../src/config/env';
+import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { DraftRepository } from '../src/modules/draft/draft.repository';
 import { TransactionRepository } from '../src/modules/transaction/transaction.repository';
 import { handleTextMessage } from '../src/handlers/message.handler';
 
+assertTestDatabaseConnection(env.DATABASE_URL);
+
 type MockReply = {
   replyToken: string;
   messages: Array<{ type: string; text?: string; altText?: string; contents?: any; quickReply?: any }>;
 };
+
+const Q5_REFERENCE_DATE = '2026-08-21';
 
 function createMockLineClient(replies: MockReply[]) {
   return {
@@ -85,7 +91,7 @@ async function runRealWorldIntegrationTests() {
   const clientA = createMockLineClient(repliesA);
   const draftsBeforeA = await initialDraftsCount(userA.id);
 
-  await handleTextMessage(lineUserA, 'เดือนนี้ใช้เงินไปเท่าไร', 'TOKEN_A', clientA);
+  await handleTextMessage(lineUserA, 'เดือนนี้ใช้เงินไปเท่าไร', 'TOKEN_A', clientA, Q5_REFERENCE_DATE);
 
   assert.equal(repliesA.length, 1);
   const textA = repliesA[0].messages[0].text || '';
@@ -102,7 +108,7 @@ async function runRealWorldIntegrationTests() {
   const repliesB: MockReply[] = [];
   const clientB = createMockLineClient(repliesB);
 
-  await handleTextMessage(lineUserA, 'เดือนนี้กินข้าวไปเท่าไร', 'TOKEN_B', clientB);
+  await handleTextMessage(lineUserA, 'เดือนนี้กินข้าวไปเท่าไร', 'TOKEN_B', clientB, Q5_REFERENCE_DATE);
 
   assert.equal(repliesB.length, 1);
   const textB = repliesB[0].messages[0].text || '';
@@ -116,7 +122,7 @@ async function runRealWorldIntegrationTests() {
   const repliesC: MockReply[] = [];
   const clientC = createMockLineClient(repliesC);
 
-  await handleTextMessage(lineUserA, 'เดือนนี้ร้านไหนใช้เงินเยอะที่สุด', 'TOKEN_C', clientC);
+  await handleTextMessage(lineUserA, 'เดือนนี้ร้านไหนใช้เงินเยอะที่สุด', 'TOKEN_C', clientC, Q5_REFERENCE_DATE);
 
   assert.equal(repliesC.length, 1);
   const textC = repliesC[0].messages[0].text || '';
@@ -132,7 +138,7 @@ async function runRealWorldIntegrationTests() {
   const repliesD: MockReply[] = [];
   const clientD = createMockLineClient(repliesD);
 
-  await handleTextMessage(lineUserA, 'อาทิตย์นี้มีค่าใช้จ่ายอะไรบ้าง', 'TOKEN_D', clientD);
+  await handleTextMessage(lineUserA, 'อาทิตย์นี้มีค่าใช้จ่ายอะไรบ้าง', 'TOKEN_D', clientD, Q5_REFERENCE_DATE);
 
   assert.equal(repliesD.length, 1);
   const textD = repliesD[0].messages[0].text || '';
@@ -147,7 +153,7 @@ async function runRealWorldIntegrationTests() {
   const repliesE: MockReply[] = [];
   const clientE = createMockLineClient(repliesE);
 
-  await handleTextMessage(lineUserA, 'เดือนนี้มีรายจ่ายกี่รายการ', 'TOKEN_E', clientE);
+  await handleTextMessage(lineUserA, 'เดือนนี้มีรายจ่ายกี่รายการ', 'TOKEN_E', clientE, Q5_REFERENCE_DATE);
 
   assert.equal(repliesE.length, 1);
   const textE = repliesE[0].messages[0].text || '';
@@ -161,7 +167,7 @@ async function runRealWorldIntegrationTests() {
   const repliesF: MockReply[] = [];
   const clientF = createMockLineClient(repliesF);
 
-  await handleTextMessage(lineUserA, 'เดือนนี้มีรายรับเท่าไร', 'TOKEN_F', clientF);
+  await handleTextMessage(lineUserA, 'เดือนนี้มีรายรับเท่าไร', 'TOKEN_F', clientF, Q5_REFERENCE_DATE);
 
   assert.equal(repliesF.length, 1);
   const textF = repliesF[0].messages[0].text || '';
@@ -176,7 +182,7 @@ async function runRealWorldIntegrationTests() {
   const repliesG: MockReply[] = [];
   const clientG = createMockLineClient(repliesG);
 
-  await handleTextMessage(lineUserA, 'เดือนนี้โอนเงินไปเท่าไร', 'TOKEN_G', clientG);
+  await handleTextMessage(lineUserA, 'เดือนนี้โอนเงินไปเท่าไร', 'TOKEN_G', clientG, Q5_REFERENCE_DATE);
 
   assert.equal(repliesG.length, 1);
   const textG = repliesG[0].messages[0].text || '';
@@ -192,7 +198,7 @@ async function runRealWorldIntegrationTests() {
   const clientH = createMockLineClient(repliesH);
   const draftsBeforeH = await initialDraftsCount(userA.id);
 
-  await handleTextMessage(lineUserA, 'กินข้าว 500', 'TOKEN_H', clientH);
+  await handleTextMessage(lineUserA, 'กินข้าว 500', 'TOKEN_H', clientH, Q5_REFERENCE_DATE);
 
   assert.equal(repliesH.length, 1);
   const replyH = repliesH[0].messages[0];
@@ -210,7 +216,7 @@ async function runRealWorldIntegrationTests() {
   const clientI = createMockLineClient(repliesI);
   const draftsBeforeI = await initialDraftsCount(userA.id);
 
-  await handleTextMessage(lineUserA, 'สวัสดีครับ', 'TOKEN_I', clientI);
+  await handleTextMessage(lineUserA, 'สวัสดีครับ', 'TOKEN_I', clientI, Q5_REFERENCE_DATE);
 
   assert.equal(repliesI.length, 1);
   const textI = repliesI[0].messages[0].text || '';
@@ -226,7 +232,7 @@ async function runRealWorldIntegrationTests() {
   const repliesJ: MockReply[] = [];
   const clientJ = createMockLineClient(repliesJ);
 
-  await handleTextMessage(lineUserA, 'เดือนนี้ซื้อของที่ Apple เท่าไร', 'TOKEN_J', clientJ);
+  await handleTextMessage(lineUserA, 'เดือนนี้ซื้อของที่ Apple เท่าไร', 'TOKEN_J', clientJ, Q5_REFERENCE_DATE);
 
   assert.equal(repliesJ.length, 1);
   const textJ = repliesJ[0].messages[0].text || '';
@@ -240,7 +246,7 @@ async function runRealWorldIntegrationTests() {
   const repliesK: MockReply[] = [];
   const clientK = createMockLineClient(repliesK);
 
-  await handleTextMessage(lineUserB, 'เดือนนี้ใช้เงินไปเท่าไร', 'TOKEN_K', clientK);
+  await handleTextMessage(lineUserB, 'เดือนนี้ใช้เงินไปเท่าไร', 'TOKEN_K', clientK, Q5_REFERENCE_DATE);
 
   assert.equal(repliesK.length, 1);
   const textK = repliesK[0].messages[0].text || '';
