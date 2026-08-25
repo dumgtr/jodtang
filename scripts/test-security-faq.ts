@@ -4,6 +4,7 @@ import { env } from '../src/config/env';
 import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
 import { handleTextMessage } from '../src/handlers/message.handler';
+import { handleWebhookEvent } from '../src/handlers/webhook-event.handler';
 import {
   classifySecurityFaqIntent,
   isSecurityFaqCommand,
@@ -391,8 +392,46 @@ async function runSecurityFaqTests() {
   assert.equal((bottomArea.action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
   console.log('   ✅ Rich Menu specification verified (2-row layout with selected=false).\n');
 
-  // 4. Exercise the actual handler route on a disposable test database.
-  console.log('4. Testing handler routing and strict FAQ read-only behavior...');
+  // 4. Exercise the production webhook boundary before any user lookup.
+  console.log('4. Testing production webhook Security FAQ ordering...');
+  const webhookReplies: MockReply[] = [];
+  let userLookupCalls = 0;
+  let downstreamTextHandlerCalls = 0;
+
+  await handleWebhookEvent(
+    {
+      type: 'message',
+      replyToken: 'TOKEN_WEBHOOK_SECURITY_ORDER',
+      source: { type: 'user', userId: 'U_WEBHOOK_SECURITY_ORDER' },
+      message: {
+        type: 'text',
+        id: 'MESSAGE_WEBHOOK_SECURITY_ORDER',
+        text: 'มีการเข้ารหัสข้อมูลไหม',
+      },
+    } as any,
+    {
+      lineClient: createMockLineClient(webhookReplies),
+      findOrCreateByLineUserId: async () => {
+        userLookupCalls += 1;
+        throw new Error('Security FAQ must not call user lookup');
+      },
+      handleTextMessage: async () => {
+        downstreamTextHandlerCalls += 1;
+        throw new Error('Security FAQ must terminate before downstream text handling');
+      },
+      handleImageMessage: async () => undefined,
+      handlePostbackEvent: async () => undefined,
+    }
+  );
+
+  assert.equal(userLookupCalls, 0, 'Security FAQ must not call findOrCreateByLineUserId');
+  assert.equal(downstreamTextHandlerCalls, 0, 'Security FAQ must not call handleTextMessage');
+  assert.equal(webhookReplies.length, 1, 'Security FAQ must produce one webhook reply');
+  assert(webhookReplies[0].messages[0].text?.includes(SECURITY_FAQ_TOPIC_LABELS.encryption));
+  console.log('   ✅ Production webhook routed Security FAQ before user lookup with no downstream call.\n');
+
+  // 5. Exercise the existing handler route on a disposable test database.
+  console.log('5. Testing handler routing and strict FAQ read-only behavior...');
   const lineUserId = 'U_SECURITY_FAQ_TEST';
   const user = await UserRepository.findOrCreateByLineUserId(lineUserId);
 
@@ -423,8 +462,8 @@ async function runSecurityFaqTests() {
   }
   console.log('   ✅ Handler routed all 12 topics to focused, read-only FAQ responses.\n');
 
-  // 5. Verify the normal Write Path is untouched.
-  console.log('5. Verifying Write Path regression...');
+  // 6. Verify the normal Write Path is untouched.
+  console.log('6. Verifying Write Path regression...');
   const writePhrases = ['กินข้าว 80', 'จ่ายค่าไฟ 500', 'ได้เงินเดือน 30000'];
   for (const phrase of writePhrases) {
     const repliesWrite: MockReply[] = [];

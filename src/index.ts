@@ -5,6 +5,7 @@ import { UserRepository } from './modules/user/user.repository';
 import { handleTextMessage } from './handlers/message.handler';
 import { handleImageMessage } from './handlers/image.handler';
 import { handlePostbackEvent } from './handlers/postback.handler';
+import { handleWebhookEvent } from './handlers/webhook-event.handler';
 import { GENERIC_USER_ERROR_MESSAGE, getSafeHttpStatus, logInternalError } from './utils/errors';
 
 const lineConfig: MiddlewareConfig = {
@@ -14,6 +15,15 @@ const lineConfig: MiddlewareConfig = {
 const lineClient = new messagingApi.MessagingApiClient({
   channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
 });
+
+const webhookEventDependencies = {
+  lineClient,
+  findOrCreateByLineUserId: (lineUserId: string) =>
+    UserRepository.findOrCreateByLineUserId(lineUserId),
+  handleTextMessage,
+  handleImageMessage,
+  handlePostbackEvent,
+};
 
 const app = express();
 
@@ -49,7 +59,7 @@ app.post(
       setImmediate(async () => {
         for (const event of events) {
           try {
-            await handleWebhookEvent(event);
+            await handleWebhookEvent(event, webhookEventDependencies);
           } catch (err) {
             logInternalError('[Event Processing Error]', err);
           }
@@ -63,50 +73,6 @@ app.post(
     }
   }
 );
-
-/**
- * 3. Main Webhook Event Dispatcher
- */
-async function handleWebhookEvent(event: WebhookEvent): Promise<void> {
-  const lineUserId = event.source.userId;
-  if (!lineUserId) {
-    console.warn('[LINE Event] Skipped event without userId', {
-      eventType: event.type,
-      sourceType: event.source.type,
-    });
-    return;
-  }
-
-  // 1. Ensure user exists in Postgres
-  const user = await UserRepository.findOrCreateByLineUserId(lineUserId);
-
-  // 2. Handle text messages -> deterministic validation plus optional AI extraction -> draft confirmation
-  if (event.type === 'message' && event.message.type === 'text') {
-    const text = event.message.text.trim();
-    console.log('[Text Message Received]', { userId: user.id, inputLength: text.length });
-    await handleTextMessage(lineUserId, text, event.replyToken, lineClient);
-    return;
-  }
-
-  // 3. Handle image messages -> maintenance response only (no OCR, AI, or database writes)
-  if (event.type === 'message' && event.message.type === 'image') {
-    console.log('[Image Message Received]', { userId: user.id, messageId: event.message.id });
-    await handleImageMessage(lineUserId, event.message.id, event.replyToken, lineClient);
-    return;
-  }
-
-  // 4. Handle Postback Events (Confirm, Cancel, Edit, Set Field)
-  if (event.type === 'postback') {
-    const postback = new URLSearchParams(event.postback.data);
-    console.log('[Postback Received]', {
-      userId: user.id,
-      action: postback.get('action'),
-      draftId: postback.get('draft_id'),
-    });
-    await handlePostbackEvent(user, event.postback.data, event.replyToken, lineClient);
-    return;
-  }
-}
 
 // 4. Fallback JSON Parser for non-webhook routes
 app.use(express.json());
