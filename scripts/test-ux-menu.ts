@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { query, pool } from '../src/db/client';
+import { query } from '../src/db/client';
 import { env } from '../src/config/env';
 import { assertTestDatabaseConnection } from '../src/db/test-isolation';
 import { UserRepository } from '../src/modules/user/user.repository';
@@ -27,46 +27,64 @@ function createMockLineClient(replies: MockReply[]) {
 
 async function runUxMenuTests() {
   console.log('====================================================');
-  console.log('🧪 JodTang Q6: Query/Summary UX + LINE Menu UI Test');
+  console.log('🧪 JodTang M12: Rich Menu (2x2) & UX Navigation Test');
   console.log('====================================================\n');
 
   // ----------------------------------------------------
-  // 1. Rich Menu Specification Validation
+  // 1. Rich Menu Balanced 2x2 Specification Validation
   // ----------------------------------------------------
-  console.log('1. Testing Rich Menu JSON Specification...');
+  console.log('1. Testing Rich Menu JSON Specification (2x2 Balanced Grid)...');
   const richMenu = buildJodTangRichMenuRequest();
 
   assert.equal(richMenu.size.width, 2500, 'Rich Menu width must be 2500');
   assert.equal(richMenu.size.height, 843, 'Rich Menu height must be 843');
   assert.equal(richMenu.selected, false, 'Rich Menu should have selected=false (text input default)');
   assert(richMenu.chatBarText.length > 0, 'Chat bar text must guide user to type message or choose menu');
-  assert.equal(richMenu.areas.length, 2, 'Rich Menu must have 2 main areas');
+  assert.equal(richMenu.areas.length, 4, 'Rich Menu must have 4 balanced areas in 2x2 grid');
 
-  // Top Area: 📊 สรุปยอด
-  const topArea = richMenu.areas[0];
-  assert.equal(topArea.bounds.x, 0);
-  assert.equal(topArea.bounds.y, 0);
-  assert.equal(topArea.bounds.width, 2500);
-  assert.equal(topArea.bounds.height, 562);
-  assert.equal(topArea.action.type, 'message');
-  assert.equal((topArea.action as any).text, '📊 สรุปยอด');
+  // Area 1: Top-Left (✏️ เริ่มจด)
+  const area1 = richMenu.areas[0];
+  assert.equal(area1.bounds.x, 0);
+  assert.equal(area1.bounds.y, 0);
+  assert.equal(area1.bounds.width, 1250);
+  assert.equal(area1.bounds.height, 421);
+  assert.equal(area1.action.type, 'message');
+  assert.equal((area1.action as any).text, 'เริ่มจด');
 
-  // Bottom Area: 🔒 ความปลอดภัยและความเป็นส่วนตัว
-  const bottomArea = richMenu.areas[1];
-  assert.equal(bottomArea.bounds.x, 0);
-  assert.equal(bottomArea.bounds.y, 562);
-  assert.equal(bottomArea.bounds.width, 2500);
-  assert.equal(bottomArea.bounds.height, 281);
-  assert.equal(bottomArea.action.type, 'message');
-  assert.equal((bottomArea.action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
+  // Area 2: Top-Right (📷 อัพสลิป)
+  const area2 = richMenu.areas[1];
+  assert.equal(area2.bounds.x, 1250);
+  assert.equal(area2.bounds.y, 0);
+  assert.equal(area2.bounds.width, 1250);
+  assert.equal(area2.bounds.height, 421);
+  assert.equal(area2.action.type, 'message');
+  assert.equal((area2.action as any).text, 'อัพสลิป');
 
-  console.log('   ✅ Rich Menu Specification verified (2-row layout with text input default).\n');
+  // Area 3: Bottom-Left (📊 สรุปยอด)
+  const area3 = richMenu.areas[2];
+  assert.equal(area3.bounds.x, 0);
+  assert.equal(area3.bounds.y, 421);
+  assert.equal(area3.bounds.width, 1250);
+  assert.equal(area3.bounds.height, 422);
+  assert.equal(area3.action.type, 'message');
+  assert.equal((area3.action as any).text, '📊 สรุปยอด');
+
+  // Area 4: Bottom-Right (🔒 ความปลอดภัย)
+  const area4 = richMenu.areas[3];
+  assert.equal(area4.bounds.x, 1250);
+  assert.equal(area4.bounds.y, 421);
+  assert.equal(area4.bounds.width, 1250);
+  assert.equal(area4.bounds.height, 422);
+  assert.equal(area4.action.type, 'message');
+  assert.equal((area4.action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
+
+  console.log('   ✅ Rich Menu Specification verified (2x2 balanced layout with selected=false).\n');
 
   // ----------------------------------------------------
   // 2. Setup Test User Fixtures
   // ----------------------------------------------------
   console.log('2. Setting up test user fixtures...');
-  const lineUser = 'U_Q6_UX_TEST_USER';
+  const lineUser = 'U_M12_UX_TEST_USER';
   const user = await UserRepository.findOrCreateByLineUserId(lineUser);
 
   await query(`DELETE FROM transaction_drafts WHERE user_id = $1;`, [user.id]);
@@ -82,75 +100,125 @@ async function runUxMenuTests() {
   console.log('   ✅ Fixture data loaded.\n');
 
   // ----------------------------------------------------
-  // 3. Quick Summary Menu Command Trigger
+  // 3. Test "เริ่มจด" (Top-Left Rich Menu Button)
   // ----------------------------------------------------
-  console.log('3. Testing "📊 สรุปยอด" button tap / message...');
-  const summaryReplies: MockReply[] = [];
-  const client1 = createMockLineClient(summaryReplies);
+  console.log('3. Testing "เริ่มจด" button tap / message...');
+  const startReplies: MockReply[] = [];
+  const clientStart = createMockLineClient(startReplies);
 
-  await handleTextMessage(lineUser, '📊 สรุปยอด', 'TOKEN_MENU_1', client1);
+  await handleTextMessage(lineUser, 'เริ่มจด', 'TOKEN_START_1', clientStart);
 
-  assert.equal(summaryReplies.length, 1);
-  const msg1 = summaryReplies[0].messages[0];
-  assert(msg1.text?.includes('เลือกช่วงเวลาหรือหมวดหมู่'), 'Must reply with summary selector guide');
-  assert(msg1.quickReply !== undefined, 'Must provide Quick Reply actions');
-  assert(msg1.quickReply.items.length >= 4, 'Must provide at least 4 quick query shortcuts');
+  assert.equal(startReplies.length, 1);
+  const startMsg = startReplies[0].messages[0];
+  assert(startMsg.text?.includes('เริ่มจดได้เลยครับ'), 'Must reply with start record guide');
+  assert(startMsg.text?.includes('กินข้าว 80'), 'Must contain example transactions');
 
-  const shortcutLabels = msg1.quickReply.items.map((i: any) => i.action.label);
-  assert(shortcutLabels.some((l: string) => l.includes('สรุปเดือนนี้')), 'Must contain "สรุปเดือนนี้"');
-  assert(shortcutLabels.some((l: string) => l.includes('สรุปสัปดาห์นี้')), 'Must contain "สรุปสัปดาห์นี้"');
-  assert(shortcutLabels.some((l: string) => l.includes('ร้านจ่ายเยอะสุด')), 'Must contain "ร้านจ่ายเยอะสุด"');
+  // Verify 0 drafts created
+  const draftsAfterStart = await query(`SELECT COUNT(*) as cnt FROM transaction_drafts WHERE user_id = $1;`, [user.id]);
+  assert.equal(Number(draftsAfterStart.rows[0].cnt), 0, 'Must NOT create drafts for Start Record command');
 
-  console.log('   ✅ "📊 สรุปยอด" command properly returns Quick Reply query shortcuts.\n');
+  console.log('   ✅ "เริ่มจด" properly returns conversational guide without DB write.\n');
 
   // ----------------------------------------------------
-  // 4. Slip & Receipt Upload Menu Command Trigger
+  // 4. Test "อัพสลิป" (Top-Right Rich Menu Button)
   // ----------------------------------------------------
-  console.log('4. Testing "📷 เพิ่มรูปภาพ/สลิป" button tap / message...');
+  console.log('4. Testing "อัพสลิป" button tap / message...');
   const slipReplies: MockReply[] = [];
-  const client2 = createMockLineClient(slipReplies);
+  const clientSlip = createMockLineClient(slipReplies);
 
-  await handleTextMessage(lineUser, '📷 เพิ่มรูปภาพ/สลิป', 'TOKEN_MENU_2', client2);
+  await handleTextMessage(lineUser, 'อัพสลิป', 'TOKEN_SLIP_1', clientSlip);
 
   assert.equal(slipReplies.length, 1);
-  const msg2 = slipReplies[0].messages[0];
-  assert(msg2.text?.includes('ถ่ายรูปหรือเลือกภาพสลิป/ใบเสร็จ'), 'Must reply with slip upload instructions');
-  assert(msg2.quickReply !== undefined, 'Must provide Quick Reply actions for photo upload');
+  const slipMsg = slipReplies[0].messages[0];
+  assert(slipMsg.text?.includes('ถ่ายรูปหรือเลือกภาพสลิป/ใบเสร็จ'), 'Must reply with slip upload guide');
+  assert(slipMsg.quickReply !== undefined, 'Must provide Quick Reply actions');
 
-  const slipActions = msg2.quickReply.items.map((i: any) => i.action.type);
-  assert(slipActions.includes('cameraRoll'), 'Must provide cameraRoll action');
-  assert(slipActions.includes('camera'), 'Must provide camera action');
+  const slipActionTypes = slipMsg.quickReply.items.map((i: any) => i.action.type);
+  assert(slipActionTypes.includes('cameraRoll'), 'Must provide cameraRoll action');
+  assert(slipActionTypes.includes('camera'), 'Must provide camera action');
 
-  console.log('   ✅ "📷 เพิ่มรูปภาพ/สลิป" command properly returns Camera/CameraRoll actions.\n');
+  console.log('   ✅ "อัพสลิป" properly returns Camera/CameraRoll Quick Replies.\n');
 
   // ----------------------------------------------------
-  // 5. Selecting a Quick Summary shortcut executes Query Engine
+  // 5. Test "📊 สรุปยอด" (Bottom-Left Rich Menu Button)
   // ----------------------------------------------------
-  console.log('5. Testing user tapping Quick Summary action "สรุปค่าใช้จ่ายเดือนนี้"...');
+  console.log('5. Testing "📊 สรุปยอด" button tap / message...');
+  const summaryReplies: MockReply[] = [];
+  const clientSummary = createMockLineClient(summaryReplies);
+
+  await handleTextMessage(lineUser, '📊 สรุปยอด', 'TOKEN_SUM_1', clientSummary);
+
+  assert.equal(summaryReplies.length, 1);
+  const sumMsg = summaryReplies[0].messages[0];
+  assert(sumMsg.text?.includes('เลือกช่วงเวลาหรือหมวดหมู่'), 'Must reply with summary selector guide');
+  assert(sumMsg.quickReply !== undefined, 'Must provide Quick Reply actions');
+  assert(sumMsg.quickReply.items.length >= 4, 'Must provide quick query shortcuts');
+
+  console.log('   ✅ "📊 สรุปยอด" properly returns Quick Summary shortcuts.\n');
+
+  // ----------------------------------------------------
+  // 6. Test Help / Guide ("วิธีใช้", "คู่มือ", "help")
+  // ----------------------------------------------------
+  console.log('6. Testing Help / Guide ("วิธีใช้", "help")...');
+  const helpReplies: MockReply[] = [];
+  const clientHelp = createMockLineClient(helpReplies);
+
+  await handleTextMessage(lineUser, 'วิธีใช้', 'TOKEN_HELP_1', clientHelp);
+
+  assert.equal(helpReplies.length, 1);
+  const helpMsg = helpReplies[0].messages[0];
+  assert(helpMsg.text?.includes('คู่มือการใช้งาน จดตัง'), 'Must return Help manual header');
+  assert(helpMsg.text?.includes('เริ่มจดรายการ'), 'Must explain recording transactions');
+  assert(helpMsg.text?.includes('ส่งรูปสลิป/ใบเสร็จ'), 'Must explain slip upload');
+  assert(helpMsg.text?.includes('สรุปและดูยอด'), 'Must explain summary queries');
+
+  console.log('   ✅ "วิธีใช้" properly returns comprehensive user guide.\n');
+
+  // ----------------------------------------------------
+  // 7. Test Recent Transactions ("ประวัติรายการ", "รายการล่าสุด")
+  // ----------------------------------------------------
+  console.log('7. Testing Recent Transactions ("ประวัติรายการ", "รายการล่าสุด")...');
+  const recentReplies: MockReply[] = [];
+  const clientRecent = createMockLineClient(recentReplies);
+
+  await handleTextMessage(lineUser, 'รายการล่าสุด', 'TOKEN_RECENT_1', clientRecent);
+
+  assert.equal(recentReplies.length, 1);
+  const recentMsg = recentReplies[0].messages[0];
+  assert(recentMsg.text?.includes('รายการล่าสุดที่บันทึกไว้'), 'Must return recent transactions header');
+  assert(recentMsg.text?.includes('780.00'), 'Must display formatted transaction amount');
+  assert(recentMsg.text?.includes('อาหารและเครื่องดื่ม'), 'Must display category');
+
+  console.log('   ✅ "รายการล่าสุด" properly returns read-only recent transaction summary.\n');
+
+  // ----------------------------------------------------
+  // 8. Test Shortcut Execution ("สรุปค่าใช้จ่ายเดือนนี้")
+  // ----------------------------------------------------
+  console.log('8. Testing user tapping Quick Summary action "สรุปค่าใช้จ่ายเดือนนี้"...');
   const queryReplies: MockReply[] = [];
-  const client3 = createMockLineClient(queryReplies);
+  const clientQuery = createMockLineClient(queryReplies);
 
-  await handleTextMessage(lineUser, 'สรุปค่าใช้จ่ายเดือนนี้', 'TOKEN_MENU_3', client3);
+  await handleTextMessage(lineUser, 'สรุปค่าใช้จ่ายเดือนนี้', 'TOKEN_QUERY_1', clientQuery);
 
   assert.equal(queryReplies.length, 1);
-  const msg3 = queryReplies[0].messages[0];
-  assert(msg3.text?.includes('780 บาท'), 'Must execute query engine and return formatted total');
-  assert(msg3.text?.includes('1 รายการ'), 'Must return transaction count');
+  const queryMsg = queryReplies[0].messages[0];
+  assert(queryMsg.text?.includes('780 บาท'), 'Must execute query engine and return formatted total');
+  assert(queryMsg.text?.includes('1 รายการ'), 'Must return transaction count');
 
   console.log('   ✅ Quick Summary shortcut seamlessly executes Query Path.\n');
 
   // ----------------------------------------------------
-  // 6. Normal text input still smoothly routes to Write Path
+  // 9. Normal text input still smoothly routes to Write Path
   // ----------------------------------------------------
-  console.log('6. Testing normal typing "กินข้าว 150" still creates draft...');
+  console.log('9. Testing normal typing "กินข้าว 150" still creates draft...');
   const writeReplies: MockReply[] = [];
-  const client4 = createMockLineClient(writeReplies);
+  const clientWrite = createMockLineClient(writeReplies);
 
-  await handleTextMessage(lineUser, 'กินข้าว 150', 'TOKEN_MENU_4', client4);
+  await handleTextMessage(lineUser, 'กินข้าว 150', 'TOKEN_WRITE_1', clientWrite);
 
   assert.equal(writeReplies.length, 1);
-  const msg4 = writeReplies[0].messages[0];
-  assert.equal(msg4.type, 'flex', 'Must create draft and send Flex confirmation carousel');
+  const writeMsg = writeReplies[0].messages[0];
+  assert.equal(writeMsg.type, 'flex', 'Must create draft and send Flex confirmation carousel');
 
   console.log('   ✅ Default keyboard typing creates transaction drafts as normal.\n');
 
@@ -160,11 +228,11 @@ async function runUxMenuTests() {
   await query(`DELETE FROM audit_logs WHERE user_id = $1;`, [user.id]);
 
   console.log('====================================================');
-  console.log('🎉 ALL Q6 UX & LINE MENU TESTS PASSED 100%!');
+  console.log('🎉 ALL M12 UX & LINE MENU TESTS PASSED 100%!');
   console.log('====================================================\n');
 }
 
 runUxMenuTests().catch((err) => {
-  console.error('❌ Q6 UX Menu Test Failed:', err);
+  console.error('❌ M12 UX Menu Test Failed:', err);
   process.exit(1);
 });

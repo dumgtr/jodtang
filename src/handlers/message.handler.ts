@@ -22,7 +22,19 @@ import {
   buildQuickSummaryQuickReply,
   buildSlipUploadQuickReply,
   buildSecurityFaqText,
+  buildStartRecordGuideText,
+  buildHelpGuideText,
+  buildRecentTransactionsText,
 } from '../utils/menu.builder';
+
+/**
+ * Deterministically checks if input text is a Start Record command (e.g. "เริ่มจด", "จดรายการ").
+ */
+function isStartRecordCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return /^(เริ่มจด|เริ่มบันทึก|จดรายการ|บันทึกรายการ|จดเงิน)$/u.test(normalized);
+}
 
 /**
  * Deterministically checks if input text is an edit command (stripping emojis, symbols, and variation selectors).
@@ -57,7 +69,36 @@ function isSummaryMenuCommand(text: string): boolean {
 function isSlipUploadMenuCommand(text: string): boolean {
   if (/\d/.test(text)) return false;
   const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
-  return /^(เพิ่มรูป|เพิ่มรูปภาพ|เพิ่มสลิป|เพิ่มรูปภาพสลิป|อัปโหลดรูป|แนบสลิป|ส่งรูป)$/u.test(normalized);
+  return /^(อัพสลิป|อัปสลิป|เพิ่มรูป|เพิ่มรูปภาพ|เพิ่มสลิป|เพิ่มรูปภาพสลิป|อัปโหลดรูป|อัพโหลดรูป|แนบสลิป|ส่งรูป|สแกนสลิป)$/u.test(normalized);
+}
+
+/**
+ * Deterministically checks if input text is a Help / Guide request.
+ */
+function isHelpGuideCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return (
+    /^(วิธีใช้|คู่มือ|ช่วยเหลือ|ช่วยด้วย|แนะนำวิธีใช้|คำสั่ง)$/u.test(normalized) ||
+    normalized === 'help' ||
+    normalized === 'guide' ||
+    normalized === 'manual' ||
+    normalized === 'menu' ||
+    normalized === 'info'
+  );
+}
+
+/**
+ * Deterministically checks if input text is a Recent Transactions request.
+ */
+function isRecentTransactionsCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return (
+    /^(ประวัติรายการ|รายการล่าสุด|ประวัติการจด|ดูรายการล่าสุด|ประวัติ)$/u.test(normalized) ||
+    normalized === 'recent' ||
+    normalized === 'history'
+  );
 }
 
 /**
@@ -420,7 +461,56 @@ export async function handleTextMessage(
       return;
     }
 
-    // 3B. Quick Summary Menu Command (Q6 UX)
+    // 3A. Start Record Command (Conversational Guide)
+    if (isStartRecordCommand(trimmedText)) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildStartRecordGuideText(),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    // 3B. Help & Guide Command
+    if (isHelpGuideCommand(trimmedText)) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildHelpGuideText(),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    // 3C. Recent Transactions Command (Read-only)
+    if (isRecentTransactionsCommand(trimmedText)) {
+      const recentTxs = await TransactionRepository.findRecentByUser(user.id, 5);
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildRecentTransactionsText(recentTxs),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    // 3D. Quick Summary Menu Command (Q6 UX)
     if (isSummaryMenuCommand(trimmedText)) {
       if (replyToken) {
         await lineClient.replyMessage({
@@ -437,7 +527,7 @@ export async function handleTextMessage(
       return;
     }
 
-    // 3C. Slip / Image Upload Entrypoint Command (Q6 UX)
+    // 3E. Slip / Image Upload Entrypoint Command (Q6 UX)
     if (isSlipUploadMenuCommand(trimmedText)) {
       if (replyToken) {
         await lineClient.replyMessage({

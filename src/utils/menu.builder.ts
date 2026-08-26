@@ -1,13 +1,86 @@
 import { messagingApi } from '@line/bot-sdk';
 import type { SecurityFaqTopic } from '../services/security-faq.service';
+import type { Transaction } from '../types/database';
 
 /**
- * Q6: Query/Summary UX + LINE Menu UI Builder
+ * Q6 / M12: Query/Summary UX + LINE Menu UI Builder
  *
  * Provides:
  * 1. Quick Reply action sets for Quick Summary & Slip Upload entrypoint.
- * 2. Rich Menu JSON specifications with default keyboard text input.
+ * 2. Conversational guides for Start Record, Help Manual, and Recent Transactions.
+ * 3. Balanced 2x2 Rich Menu JSON specifications with default keyboard text input.
  */
+
+/**
+ * Builds conversational start-record prompt guide.
+ */
+export function buildStartRecordGuideText(): string {
+  return [
+    '✏️ เริ่มจดได้เลยครับ!',
+    'พิมพ์บอกรายการได้เลย เช่น:',
+    '• "กินข้าว 80"',
+    '• "เงินเดือนเข้า 30,000"',
+    '• "โอนเงิน 500 บาท"',
+  ].join('\n');
+}
+
+/**
+ * Builds conversational help & guide manual.
+ */
+export function buildHelpGuideText(): string {
+  return [
+    '📖 คู่มือการใช้งาน จดตัง (JodTang)',
+    '',
+    '1. ✏️ เริ่มจดรายการ (พิมพ์บอกได้ทันที)',
+    '• รายจ่าย: "กินข้าว 80", "ซื้อของ 450"',
+    '• รายรับ: "เงินเดือนเข้า 30,000"',
+    '• โอนเงิน: "โอนให้แม่ 500 บาท"',
+    '',
+    '2. 📷 ส่งรูปสลิป/ใบเสร็จ',
+    '• กดปุ่ม "อัพสลิป" เพื่อเลือกรูปจากอัลบั้มหรือถ่ายรูปส่งให้ระบบ',
+    '',
+    '3. 📊 สรุปและดูยอด',
+    '• "สรุปเดือนนี้", "วันนี้ใช้ไปเท่าไร"',
+    '• "ร้านไหนจ่ายเยอะสุด", "อาทิตย์นี้มีค่าใช้จ่ายอะไรบ้าง"',
+    '',
+    '4. 📋 ดูประวัติ / แก้ไข / ยกเลิก',
+    '• พิมพ์ "รายการล่าสุด" เพื่อดูประวัติการจด',
+    '• พิมพ์ "ขอแก้ไขรายการ" หรือ "ขอลบรายการ"',
+    '',
+    '5. 🔒 ความปลอดภัยและความเป็นส่วนตัว',
+    '• พิมพ์ "ความปลอดภัย" หรือแตะปุ่มในเมนูเพื่อดูนโยบาย',
+  ].join('\n');
+}
+
+/**
+ * Formats recent confirmed transactions for read-only history view.
+ */
+export function buildRecentTransactionsText(txs: Transaction[]): string {
+  if (!txs || txs.length === 0) {
+    return '📭 ยังไม่มีรายการที่บันทึกไว้ในระบบครับ\nพิมพ์บอกรายการได้เลย เช่น "กินข้าว 80" หรือ "เงินเดือนเข้า 30,000" ✨';
+  }
+
+  const lines = ['📋 รายการล่าสุดที่บันทึกไว้:'];
+  txs.forEach((tx, index) => {
+    const amountStr = Number(tx.amount).toLocaleString('th-TH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    const typeIcon = tx.type === 'income' ? '🟢' : tx.type === 'transfer' ? '🔵' : '🔴';
+    const dateStr = new Date(tx.occurred_at).toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const category = tx.category_id || 'ทั่วไป';
+    const desc = tx.description || tx.merchant_id || '-';
+    lines.push(`${index + 1}. ${typeIcon} ฿${amountStr} · ${category} (${desc}) · ${dateStr}`);
+  });
+
+  lines.push('');
+  lines.push('💡 พิมพ์ "ขอแก้ไขรายการ" หรือ "ขอลบรายการ" เพื่อจัดการรายการ');
+  return lines.join('\n');
+}
 
 /**
  * Builds Quick Reply items for Quick Summary queries.
@@ -285,16 +358,44 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
       height: 843,
     },
     selected: false,
-    name: 'JodTang - สรุปยอดและความปลอดภัย',
+    name: 'JodTang Main Menu',
     chatBarText: 'เมนูจดตัง',
     areas: [
-      // Top Area (0..562): 📊 สรุปยอด
+      // Top-Left (Area 1: 0,0, 1250, 421): ✏️ เริ่มจด
       {
         bounds: {
           x: 0,
           y: 0,
-          width: 2500,
-          height: 562,
+          width: 1250,
+          height: 421,
+        },
+        action: {
+          type: 'message',
+          label: 'เริ่มจด',
+          text: 'เริ่มจด',
+        },
+      },
+      // Top-Right (Area 2: 1250,0, 1250, 421): 📷 อัพสลิป
+      {
+        bounds: {
+          x: 1250,
+          y: 0,
+          width: 1250,
+          height: 421,
+        },
+        action: {
+          type: 'message',
+          label: 'อัพสลิป',
+          text: 'อัพสลิป',
+        },
+      },
+      // Bottom-Left (Area 3: 0,421, 1250, 422): 📊 สรุปยอด
+      {
+        bounds: {
+          x: 0,
+          y: 421,
+          width: 1250,
+          height: 422,
         },
         action: {
           type: 'message',
@@ -302,13 +403,13 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
           text: '📊 สรุปยอด',
         },
       },
-      // Bottom Area (562..843): 🔒 ความปลอดภัยและความเป็นส่วนตัว
+      // Bottom-Right (Area 4: 1250,421, 1250, 422): 🔒 ความปลอดภัย
       {
         bounds: {
-          x: 0,
-          y: 562,
-          width: 2500,
-          height: 281,
+          x: 1250,
+          y: 421,
+          width: 1250,
+          height: 422,
         },
         action: {
           type: 'message',

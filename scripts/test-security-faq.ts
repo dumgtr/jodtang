@@ -379,18 +379,36 @@ async function runSecurityFaqTests() {
   assert.equal(menuReq.size.height, 843);
   assert.equal(menuReq.selected, false, 'Default display MUST be collapsed (selected=false)!');
   assert.equal(menuReq.chatBarText, 'เมนูจดตัง');
-  assert.equal(menuReq.areas.length, 2, 'Must have 2 areas: Top (Summary) and Bottom (Security FAQ)');
+  assert.equal(menuReq.areas.length, 4, 'Must have 4 balanced areas in 2x2 grid');
 
-  const topArea = menuReq.areas[0];
-  assert.equal(topArea.bounds.y, 0);
-  assert.equal(topArea.bounds.height, 562);
-  assert.equal((topArea.action as any).text, '📊 สรุปยอด');
+  // Area 1: Top-Left (✏️ เริ่มจด)
+  assert.equal(menuReq.areas[0].bounds.x, 0);
+  assert.equal(menuReq.areas[0].bounds.y, 0);
+  assert.equal(menuReq.areas[0].bounds.width, 1250);
+  assert.equal(menuReq.areas[0].bounds.height, 421);
+  assert.equal((menuReq.areas[0].action as any).text, 'เริ่มจด');
 
-  const bottomArea = menuReq.areas[1];
-  assert.equal(bottomArea.bounds.y, 562);
-  assert.equal(bottomArea.bounds.height, 281);
-  assert.equal((bottomArea.action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
-  console.log('   ✅ Rich Menu specification verified (2-row layout with selected=false).\n');
+  // Area 2: Top-Right (📷 อัพสลิป)
+  assert.equal(menuReq.areas[1].bounds.x, 1250);
+  assert.equal(menuReq.areas[1].bounds.y, 0);
+  assert.equal(menuReq.areas[1].bounds.width, 1250);
+  assert.equal(menuReq.areas[1].bounds.height, 421);
+  assert.equal((menuReq.areas[1].action as any).text, 'อัพสลิป');
+
+  // Area 3: Bottom-Left (📊 สรุปยอด)
+  assert.equal(menuReq.areas[2].bounds.x, 0);
+  assert.equal(menuReq.areas[2].bounds.y, 421);
+  assert.equal(menuReq.areas[2].bounds.width, 1250);
+  assert.equal(menuReq.areas[2].bounds.height, 422);
+  assert.equal((menuReq.areas[2].action as any).text, '📊 สรุปยอด');
+
+  // Area 4: Bottom-Right (🔒 ความปลอดภัย)
+  assert.equal(menuReq.areas[3].bounds.x, 1250);
+  assert.equal(menuReq.areas[3].bounds.y, 421);
+  assert.equal(menuReq.areas[3].bounds.width, 1250);
+  assert.equal(menuReq.areas[3].bounds.height, 422);
+  assert.equal((menuReq.areas[3].action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
+  console.log('   ✅ Rich Menu specification verified (2x2 balanced layout with selected=false).\n');
 
   // 4. Exercise the production webhook boundary before any user lookup.
   console.log('4. Testing production webhook Security FAQ ordering...');
