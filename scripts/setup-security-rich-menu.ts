@@ -13,7 +13,7 @@ async function setupSecurityRichMenu() {
     throw new Error('LINE_CHANNEL_ACCESS_TOKEN is missing in environment!');
   }
 
-  const imagePath = path.resolve(__dirname, '../jodtang-rich-menu-security-2500x843.png');
+  const imagePath = path.resolve(__dirname, '../jodtang-rich-menu-large-2500x1686.png');
   if (!fs.existsSync(imagePath)) {
     throw new Error(`Rich menu image not found at ${imagePath}`);
   }
@@ -49,7 +49,7 @@ async function setupSecurityRichMenu() {
   console.log(`✅ Created New Rich Menu: ${newRichMenuId}`);
 
   // 3. Step 2: Upload Image
-  console.log('\nStep 2: Uploading 2500x843 image to new Rich Menu...');
+  console.log('\nStep 2: Uploading 2500x1686 image to new Rich Menu...');
   const imageBuffer = fs.readFileSync(imagePath);
   const uploadRes = await fetch(`https://api-data.line.me/v2/bot/richmenu/${newRichMenuId}/content`, {
     method: 'POST',

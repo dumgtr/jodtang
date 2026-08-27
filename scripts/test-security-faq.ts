@@ -376,39 +376,53 @@ async function runSecurityFaqTests() {
   console.log('3. Testing Rich Menu JSON Specification...');
   const menuReq = buildJodTangRichMenuRequest();
   assert.equal(menuReq.size.width, 2500);
-  assert.equal(menuReq.size.height, 843);
+  assert.equal(menuReq.size.height, 1686);
   assert.equal(menuReq.selected, false, 'Default display MUST be collapsed (selected=false)!');
   assert.equal(menuReq.chatBarText, 'เมนูจดตัง');
-  assert.equal(menuReq.areas.length, 4, 'Must have 4 balanced areas in 2x2 grid');
+  assert.equal(menuReq.areas.length, 6, 'Must have 6 balanced areas in 2x3 grid');
 
-  // Area 1: Top-Left (✏️ เริ่มจด)
+  // Area 1: Row 1, Col 1 (✏️ เริ่มจด)
   assert.equal(menuReq.areas[0].bounds.x, 0);
   assert.equal(menuReq.areas[0].bounds.y, 0);
   assert.equal(menuReq.areas[0].bounds.width, 1250);
-  assert.equal(menuReq.areas[0].bounds.height, 421);
+  assert.equal(menuReq.areas[0].bounds.height, 562);
   assert.equal((menuReq.areas[0].action as any).text, 'เริ่มจด');
 
-  // Area 2: Top-Right (📷 อัพสลิป)
+  // Area 2: Row 1, Col 2 (📷 อัพสลิป)
   assert.equal(menuReq.areas[1].bounds.x, 1250);
   assert.equal(menuReq.areas[1].bounds.y, 0);
   assert.equal(menuReq.areas[1].bounds.width, 1250);
-  assert.equal(menuReq.areas[1].bounds.height, 421);
+  assert.equal(menuReq.areas[1].bounds.height, 562);
   assert.equal((menuReq.areas[1].action as any).text, 'อัพสลิป');
 
-  // Area 3: Bottom-Left (📊 สรุปยอด)
+  // Area 3: Row 2, Col 1 (📊 สรุปยอด)
   assert.equal(menuReq.areas[2].bounds.x, 0);
-  assert.equal(menuReq.areas[2].bounds.y, 421);
+  assert.equal(menuReq.areas[2].bounds.y, 562);
   assert.equal(menuReq.areas[2].bounds.width, 1250);
-  assert.equal(menuReq.areas[2].bounds.height, 422);
+  assert.equal(menuReq.areas[2].bounds.height, 562);
   assert.equal((menuReq.areas[2].action as any).text, '📊 สรุปยอด');
 
-  // Area 4: Bottom-Right (🔒 ความปลอดภัย)
+  // Area 4: Row 2, Col 2 (📥 Export CSV)
   assert.equal(menuReq.areas[3].bounds.x, 1250);
-  assert.equal(menuReq.areas[3].bounds.y, 421);
+  assert.equal(menuReq.areas[3].bounds.y, 562);
   assert.equal(menuReq.areas[3].bounds.width, 1250);
-  assert.equal(menuReq.areas[3].bounds.height, 422);
-  assert.equal((menuReq.areas[3].action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
-  console.log('   ✅ Rich Menu specification verified (2x2 balanced layout with selected=false).\n');
+  assert.equal(menuReq.areas[3].bounds.height, 562);
+  assert.equal((menuReq.areas[3].action as any).text, '📥 Export CSV');
+
+  // Area 5: Row 3, Col 1 (❤️ โดเนท)
+  assert.equal(menuReq.areas[4].bounds.x, 0);
+  assert.equal(menuReq.areas[4].bounds.y, 1124);
+  assert.equal(menuReq.areas[4].bounds.width, 1250);
+  assert.equal(menuReq.areas[4].bounds.height, 562);
+  assert.equal((menuReq.areas[4].action as any).text, '❤️ โดเนท');
+
+  // Area 6: Row 3, Col 2 (🔒 ความปลอดภัย)
+  assert.equal(menuReq.areas[5].bounds.x, 1250);
+  assert.equal(menuReq.areas[5].bounds.y, 1124);
+  assert.equal(menuReq.areas[5].bounds.width, 1250);
+  assert.equal(menuReq.areas[5].bounds.height, 562);
+  assert.equal((menuReq.areas[5].action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
+  console.log('   ✅ Rich Menu specification verified (6-button 2x3 balanced layout with selected=false).\n');
 
   // 4. Exercise the production webhook boundary before any user lookup.
   console.log('4. Testing production webhook Security FAQ ordering...');

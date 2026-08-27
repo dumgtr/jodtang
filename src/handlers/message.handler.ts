@@ -25,6 +25,8 @@ import {
   buildStartRecordGuideText,
   buildHelpGuideText,
   buildRecentTransactionsText,
+  buildComingSoonExportCsvText,
+  buildComingSoonDonateText,
 } from '../utils/menu.builder';
 
 /**
@@ -102,6 +104,30 @@ function isRecentTransactionsCommand(text: string): boolean {
 }
 
 /**
+ * Deterministically checks if input text is an Export CSV request.
+ */
+function isExportCsvCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return (
+    /^(exportcsv|csv|export|ส่งออกcsv|ดาวน์โหลดcsv)$/u.test(normalized) ||
+    normalized.includes('exportcsv')
+  );
+}
+
+/**
+ * Deterministically checks if input text is a Donate / Support request.
+ */
+function isDonateCommand(text: string): boolean {
+  if (/\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return (
+    /^(โดเนท|บริจาค|สนับสนุน|donate|support|tip)$/u.test(normalized) ||
+    normalized.includes('โดเนท')
+  );
+}
+
+/**
  * Handles incoming LINE text message events.
  * 1. Checks if user is in an active edit conversation state (draft or confirmed transaction).
  * 2. Checks if user sent a management command (e.g. "ขอแก้ไขรายการ", "ขอลบรายการ", with or without emojis).
@@ -117,6 +143,38 @@ export async function handleTextMessage(
 ): Promise<void> {
   try {
     const trimmedText = text.trim();
+
+    // 0. Upcoming Navigation Commands (Export CSV M14, Donate)
+    // Read-only, informative messages, executed before user lookup/state
+    if (isExportCsvCommand(trimmedText)) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildComingSoonExportCsvText(),
+            },
+          ],
+        });
+      }
+      return;
+    }
+
+    if (isDonateCommand(trimmedText)) {
+      if (replyToken) {
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildComingSoonDonateText(),
+            },
+          ],
+        });
+      }
+      return;
+    }
 
     // 1. Security FAQ is intentionally handled before user lookup/state.
     // This keeps the FAQ route read-only even for a first-time LINE user.

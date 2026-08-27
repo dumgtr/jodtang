@@ -31,54 +31,72 @@ async function runUxMenuTests() {
   console.log('====================================================\n');
 
   // ----------------------------------------------------
-  // 1. Rich Menu Balanced 2x2 Specification Validation
+  // 1. Rich Menu 6-Button Large Specification Validation
   // ----------------------------------------------------
-  console.log('1. Testing Rich Menu JSON Specification (2x2 Balanced Grid)...');
+  console.log('1. Testing Rich Menu JSON Specification (6-Button Large Grid)...');
   const richMenu = buildJodTangRichMenuRequest();
 
   assert.equal(richMenu.size.width, 2500, 'Rich Menu width must be 2500');
-  assert.equal(richMenu.size.height, 843, 'Rich Menu height must be 843');
+  assert.equal(richMenu.size.height, 1686, 'Rich Menu height must be 1686');
   assert.equal(richMenu.selected, false, 'Rich Menu should have selected=false (text input default)');
   assert(richMenu.chatBarText.length > 0, 'Chat bar text must guide user to type message or choose menu');
-  assert.equal(richMenu.areas.length, 4, 'Rich Menu must have 4 balanced areas in 2x2 grid');
+  assert.equal(richMenu.areas.length, 6, 'Rich Menu must have 6 balanced areas in 2x3 grid');
 
-  // Area 1: Top-Left (✏️ เริ่มจด)
+  // Area 1: Row 1, Col 1 (✏️ เริ่มจด)
   const area1 = richMenu.areas[0];
   assert.equal(area1.bounds.x, 0);
   assert.equal(area1.bounds.y, 0);
   assert.equal(area1.bounds.width, 1250);
-  assert.equal(area1.bounds.height, 421);
+  assert.equal(area1.bounds.height, 562);
   assert.equal(area1.action.type, 'message');
   assert.equal((area1.action as any).text, 'เริ่มจด');
 
-  // Area 2: Top-Right (📷 อัพสลิป)
+  // Area 2: Row 1, Col 2 (📷 อัพสลิป)
   const area2 = richMenu.areas[1];
   assert.equal(area2.bounds.x, 1250);
   assert.equal(area2.bounds.y, 0);
   assert.equal(area2.bounds.width, 1250);
-  assert.equal(area2.bounds.height, 421);
+  assert.equal(area2.bounds.height, 562);
   assert.equal(area2.action.type, 'message');
   assert.equal((area2.action as any).text, 'อัพสลิป');
 
-  // Area 3: Bottom-Left (📊 สรุปยอด)
+  // Area 3: Row 2, Col 1 (📊 สรุปยอด)
   const area3 = richMenu.areas[2];
   assert.equal(area3.bounds.x, 0);
-  assert.equal(area3.bounds.y, 421);
+  assert.equal(area3.bounds.y, 562);
   assert.equal(area3.bounds.width, 1250);
-  assert.equal(area3.bounds.height, 422);
+  assert.equal(area3.bounds.height, 562);
   assert.equal(area3.action.type, 'message');
   assert.equal((area3.action as any).text, '📊 สรุปยอด');
 
-  // Area 4: Bottom-Right (🔒 ความปลอดภัย)
+  // Area 4: Row 2, Col 2 (📥 Export CSV)
   const area4 = richMenu.areas[3];
   assert.equal(area4.bounds.x, 1250);
-  assert.equal(area4.bounds.y, 421);
+  assert.equal(area4.bounds.y, 562);
   assert.equal(area4.bounds.width, 1250);
-  assert.equal(area4.bounds.height, 422);
+  assert.equal(area4.bounds.height, 562);
   assert.equal(area4.action.type, 'message');
-  assert.equal((area4.action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
+  assert.equal((area4.action as any).text, '📥 Export CSV');
 
-  console.log('   ✅ Rich Menu Specification verified (2x2 balanced layout with selected=false).\n');
+  // Area 5: Row 3, Col 1 (❤️ โดเนท)
+  const area5 = richMenu.areas[4];
+  assert.equal(area5.bounds.x, 0);
+  assert.equal(area5.bounds.y, 1124);
+  assert.equal(area5.bounds.width, 1250);
+  assert.equal(area5.bounds.height, 562);
+  assert.equal(area5.action.type, 'message');
+  assert.equal((area5.action as any).text, '❤️ โดเนท');
+
+  // Area 6: Row 3, Col 2 (🔒 ความปลอดภัย)
+  const area6 = richMenu.areas[5];
+  assert.equal(area6.bounds.x, 1250);
+  assert.equal(area6.bounds.y, 1124);
+  assert.equal(area6.bounds.width, 1250);
+  assert.equal(area6.bounds.height, 562);
+  assert.equal(area6.action.type, 'message');
+  assert.equal((area6.action as any).text, '🔒 ความปลอดภัยและความเป็นส่วนตัว');
+
+  console.log('   ✅ Rich Menu Specification verified (6-button 2x3 balanced layout with selected=false).\n');
 
   // ----------------------------------------------------
   // 2. Setup Test User Fixtures
@@ -222,13 +240,45 @@ async function runUxMenuTests() {
 
   console.log('   ✅ Default keyboard typing creates transaction drafts as normal.\n');
 
+  // ----------------------------------------------------
+  // 10. Export CSV Upcoming Command Test (M14)
+  // ----------------------------------------------------
+  console.log('10. Testing "📥 Export CSV" upcoming command...');
+  const exportReplies: MockReply[] = [];
+  const clientExport = createMockLineClient(exportReplies);
+
+  await handleTextMessage(lineUser, '📥 Export CSV', 'TOKEN_EXPORT_1', clientExport);
+
+  assert.equal(exportReplies.length, 1);
+  const exportMsg = exportReplies[0].messages[0];
+  assert(exportMsg.text?.includes('ฟังก์ชัน Export CSV (กำลังพัฒนา)'), 'Must return Export CSV coming soon text');
+  assert(exportMsg.text?.includes('M14'), 'Must mention M14 upcoming milestone');
+
+  console.log('   ✅ "📥 Export CSV" properly informs user of upcoming M14 feature.\n');
+
+  // ----------------------------------------------------
+  // 11. Donate / Support Upcoming Command Test
+  // ----------------------------------------------------
+  console.log('11. Testing "❤️ โดเนท" upcoming command...');
+  const donateReplies: MockReply[] = [];
+  const clientDonate = createMockLineClient(donateReplies);
+
+  await handleTextMessage(lineUser, '❤️ โดเนท', 'TOKEN_DONATE_1', clientDonate);
+
+  assert.equal(donateReplies.length, 1);
+  const donateMsg = donateReplies[0].messages[0];
+  assert(donateMsg.text?.includes('ขอบคุณที่ร่วมเป็นกำลังใจให้ จดตัง'), 'Must return warm appreciation text');
+  assert(donateMsg.text?.includes('โดเนท'), 'Must mention donation channel coming soon');
+
+  console.log('   ✅ "❤️ โดเนท" properly informs user of upcoming donation channel.\n');
+
   // Clean test fixtures
   await query(`DELETE FROM transaction_drafts WHERE user_id = $1;`, [user.id]);
   await query(`DELETE FROM transactions WHERE user_id = $1;`, [user.id]);
   await query(`DELETE FROM audit_logs WHERE user_id = $1;`, [user.id]);
 
   console.log('====================================================');
-  console.log('🎉 ALL M12 UX & LINE MENU TESTS PASSED 100%!');
+  console.log('🎉 ALL JODTANG LARGE RICH MENU & UX TESTS PASSED 100%!');
   console.log('====================================================\n');
 }
 

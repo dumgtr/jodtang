@@ -342,12 +342,14 @@ export function buildSecurityFaqText(topic: SecurityFaqTopic = 'overview'): stri
 /**
  * Builds the official 2-row JodTang Rich Menu specification with Security FAQ.
  *
- * Layout (2500 x 843):
- * ┌──────────────────────────────────────┐
- * │          📊 สรุปยอด                  │ (y: 0..562)
- * ├──────────────────────────────────────┤
- * │    🔒 ความปลอดภัยและความเป็นส่วนตัว    │ (y: 562..843)
- * └──────────────────────────────────────┘
+ * Layout (2500 x 1686):
+ * ┌──────────────────────────────┬──────────────────────────────┐
+ * │  Area 1: ✏️ เริ่มจด           │  Area 2: 📷 อัพสลิป           │ (y: 0..562)
+ * ├──────────────────────────────┼──────────────────────────────┤
+ * │  Area 3: 📊 สรุปยอด          │  Area 4: 📥 Export CSV       │ (y: 562..1124)
+ * ├──────────────────────────────┼──────────────────────────────┤
+ * │  Area 5: ❤️ โดเนท            │  Area 6: 🔒 ความปลอดภัย      │ (y: 1124..1686)
+ * └──────────────────────────────┴──────────────────────────────┘
  *
  * Default: selected = false (Keyboard text input is primary default).
  */
@@ -355,19 +357,19 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
   return {
     size: {
       width: 2500,
-      height: 843,
+      height: 1686,
     },
     selected: false,
-    name: 'JodTang Main Menu',
+    name: 'JodTang Large Menu (6 Buttons)',
     chatBarText: 'เมนูจดตัง',
     areas: [
-      // Top-Left (Area 1: 0,0, 1250, 421): ✏️ เริ่มจด
+      // Row 1, Col 1 (Area 1: 0, 0, 1250, 562): ✏️ เริ่มจด
       {
         bounds: {
           x: 0,
           y: 0,
           width: 1250,
-          height: 421,
+          height: 562,
         },
         action: {
           type: 'message',
@@ -375,13 +377,13 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
           text: 'เริ่มจด',
         },
       },
-      // Top-Right (Area 2: 1250,0, 1250, 421): 📷 อัพสลิป
+      // Row 1, Col 2 (Area 2: 1250, 0, 1250, 562): 📷 อัพสลิป
       {
         bounds: {
           x: 1250,
           y: 0,
           width: 1250,
-          height: 421,
+          height: 562,
         },
         action: {
           type: 'message',
@@ -389,13 +391,13 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
           text: 'อัพสลิป',
         },
       },
-      // Bottom-Left (Area 3: 0,421, 1250, 422): 📊 สรุปยอด
+      // Row 2, Col 1 (Area 3: 0, 562, 1250, 562): 📊 สรุปยอด
       {
         bounds: {
           x: 0,
-          y: 421,
+          y: 562,
           width: 1250,
-          height: 422,
+          height: 562,
         },
         action: {
           type: 'message',
@@ -403,13 +405,41 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
           text: '📊 สรุปยอด',
         },
       },
-      // Bottom-Right (Area 4: 1250,421, 1250, 422): 🔒 ความปลอดภัย
+      // Row 2, Col 2 (Area 4: 1250, 562, 1250, 562): 📥 Export CSV
       {
         bounds: {
           x: 1250,
-          y: 421,
+          y: 562,
           width: 1250,
-          height: 422,
+          height: 562,
+        },
+        action: {
+          type: 'message',
+          label: 'Export CSV',
+          text: '📥 Export CSV',
+        },
+      },
+      // Row 3, Col 1 (Area 5: 0, 1124, 1250, 562): ❤️ โดเนท
+      {
+        bounds: {
+          x: 0,
+          y: 1124,
+          width: 1250,
+          height: 562,
+        },
+        action: {
+          type: 'message',
+          label: 'โดเนท',
+          text: '❤️ โดเนท',
+        },
+      },
+      // Row 3, Col 2 (Area 6: 1250, 1124, 1250, 562): 🔒 ความปลอดภัย
+      {
+        bounds: {
+          x: 1250,
+          y: 1124,
+          width: 1250,
+          height: 562,
         },
         action: {
           type: 'message',
@@ -419,4 +449,30 @@ export function buildJodTangRichMenuRequest(): messagingApi.RichMenuRequest {
       },
     ],
   };
+}
+
+/**
+ * Builds user-facing message for upcoming Export CSV function (M14).
+ */
+export function buildComingSoonExportCsvText(): string {
+  return [
+    '📥 ฟังก์ชัน Export CSV (กำลังพัฒนา)',
+    '━━━━━━━━━━━━━━━━━━━━',
+    'เร็วๆ นี้คุณจะสามารถดาวน์โหลดประวัติรายรับ-รายจ่ายทั้งหมดออกมาเป็นไฟล์ CSV / Excel เพื่อนำไปใช้งานหรือจัดทำบัญชีต่อได้อย่างสะดวกรวดเร็วครับ ✨',
+    '',
+    '📌 ฟังก์ชันนี้จะเปิดให้ใช้งานในเวอร์ชันถัดไป (M14) โปรดรอติดตามนะครับ! 🙏',
+  ].join('\n');
+}
+
+/**
+ * Builds user-facing message for upcoming Donate / Support function.
+ */
+export function buildComingSoonDonateText(): string {
+  return [
+    '❤️ ขอบคุณที่ร่วมเป็นกำลังใจให้ จดตัง (JodTang)!',
+    '━━━━━━━━━━━━━━━━━━━━',
+    'ระบบรับการสนับสนุน / โดเนทเพื่อช่วยค่าเซิร์ฟเวอร์และค่าพัฒนาระบบ กำลังอยู่ระหว่างการจัดเตรียมช่องทางที่สะดวกและปลอดภัยครับ 🙏',
+    '',
+    'ทุกความตั้งใจและการสนับสนุนมีความหมายอย่างยิ่งต่อทีมพัฒนา โปรดรอติดตามในเร็วๆ นี้นะครับ ✨',
+  ].join('\n');
 }
