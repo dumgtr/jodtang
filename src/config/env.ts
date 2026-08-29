@@ -5,6 +5,16 @@ import { z } from 'zod';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 
+const optionalNonEmptyString = z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.string().optional(),
+);
+
+const optionalUrl = z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.string().url().optional(),
+);
+
 const envSchema = z.object({
   PORT: z.string().default('3000').transform((val) => parseInt(val, 10)),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
@@ -22,8 +32,11 @@ const envSchema = z.object({
     .transform((value) => value === 'true'),
   SLIPOK_API_KEY: z.string().optional(),
   SLIPOK_BRANCH_ID: z.string().optional(),
-  PUBLIC_BASE_URL: z.string().url().optional(),
-  EXPORT_TOKEN_SECRET: z.string().min(16).optional(),
+  PUBLIC_BASE_URL: optionalUrl,
+  EXPORT_TOKEN_SECRET: optionalNonEmptyString.refine(
+    (value) => value === undefined || value.length >= 16,
+    'EXPORT_TOKEN_SECRET must be at least 16 characters when provided',
+  ),
 });
 
 export const env = envSchema.parse(process.env);
