@@ -143,6 +143,10 @@ export function buildExportDownloadUrl(userId: string): string {
     throw new Error('PUBLIC_BASE_URL is required for production CSV exports.');
   }
 
+  if (env.NODE_ENV === 'production' && new URL(baseUrl).protocol !== 'https:') {
+    throw new Error('PUBLIC_BASE_URL must use HTTPS for production CSV exports.');
+  }
+
   const token = createExportToken(userId);
   return `${baseUrl}/exports/transactions.csv?token=${encodeURIComponent(token)}`;
 }

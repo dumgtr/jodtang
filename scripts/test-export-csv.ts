@@ -86,7 +86,7 @@ async function runExportCsvTests(): Promise<void> {
   assert.equal(verifyExportToken(token, now + 1), userA.id);
   assert.equal(verifyExportToken(token, now + 15 * 60 * 1000), null);
   assert.equal(verifyExportToken(`${token}tampered`, now + 1), null);
-  assert.notEqual(token.includes(userA.id), true);
+  assert.equal(token.includes(userA.id), false);
   console.log('✅ Export token confidentiality, expiry, and tamper checks verified.');
 
   console.log('\n4. Testing export download URL and LINE Flex response contract...');
@@ -131,6 +131,38 @@ async function runExportCsvTests(): Promise<void> {
   assert.equal(replies[0].messages[0].type, 'flex');
   assert.equal(replies[0].messages[0].contents.footer.contents[0].action.type, 'uri');
   console.log('✅ Export command is dispatched as a user-scoped read-only path.');
+
+  console.log('\n6. Testing group-chat privacy guard...');
+  const groupReplies: any[] = [];
+  const groupEvent = {
+    type: 'message',
+    mode: 'active',
+    timestamp: Date.now(),
+    source: { type: 'group', groupId: 'C_TEST_EXPORT_GROUP', userId: userA.line_user_id },
+    replyToken: 'export-group-reply-token',
+    message: {
+      type: 'text',
+      id: 'export-group-message-id',
+      text: 'Export CSV',
+    },
+  } as WebhookEvent;
+
+  await handleWebhookEvent(groupEvent, {
+    lineClient: {
+      replyMessage: async (reply: any) => groupReplies.push(reply),
+    } as any,
+    findOrCreateByLineUserId: async () => userA,
+    handleTextMessage: async () => {
+      throw new Error('Generic text pipeline must not run for group export.');
+    },
+    handleImageMessage: async () => undefined,
+    handlePostbackEvent: async () => undefined,
+  });
+
+  assert.equal(groupReplies.length, 1);
+  assert.equal(groupReplies[0].messages[0].type, 'text');
+  assert(groupReplies[0].messages[0].text.includes('แชตส่วนตัว'));
+  console.log('✅ Group-chat export is blocked to prevent link leakage.');
 
   console.log('\n🎉 Export CSV Suite: PASS');
 }

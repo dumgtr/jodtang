@@ -85,6 +85,21 @@ export async function handleWebhookEvent(
       normalizedExport.includes('exportcsv');
 
     if (isExportCsv) {
+      if (event.source.type !== 'user') {
+        if (event.replyToken) {
+          await dependencies.lineClient.replyMessage({
+            replyToken: event.replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: '🔒 เพื่อความเป็นส่วนตัว Export CSV ใช้ได้เฉพาะในแชตส่วนตัวกับจดตังครับ',
+              },
+            ],
+          });
+        }
+        return;
+      }
+
       try {
         const transactions = await TransactionRepository.findAllByUser(user.id);
         const downloadUrl = buildExportDownloadUrl(user.id);

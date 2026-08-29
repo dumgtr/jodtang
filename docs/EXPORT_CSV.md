@@ -46,10 +46,12 @@ All transaction statuses are exported, including `voided`, so the export preserv
 - Export token is encrypted with AES-256-GCM and expires after 15 minutes.
 - `EXPORT_TOKEN_SECRET` may be supplied as dedicated key material; when absent, the existing LINE channel secret is used as fallback key material.
 - Production requires `PUBLIC_BASE_URL` unless the platform provides `RENDER_EXTERNAL_URL`.
+- Production download URLs must use HTTPS.
 - Download responses use `Cache-Control: private, no-store, max-age=0` and `X-Content-Type-Options: nosniff`.
 - No export files are persisted to disk or object storage.
 - No new database table or migration is required.
 - The Export command bypasses the generic AI/transaction-write pipeline and is read-only.
+- Export is blocked in group and multi-person chats so a user-specific download link cannot be exposed to other chat members.
 
 ## Test contract
 
@@ -60,6 +62,7 @@ All transaction statuses are exported, including `voided`, so the export preserv
 - formula-injection hardening;
 - token confidentiality, expiry, and tamper rejection;
 - download URL / Flex URI contract;
-- webhook dispatch bypasses the generic AI/text pipeline.
+- webhook dispatch bypasses the generic AI/text pipeline;
+- group-chat privacy guard.
 
 The test is included in `test:regression:raw` and therefore in the normal isolated `npm test` path.
