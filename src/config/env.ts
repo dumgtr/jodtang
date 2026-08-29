@@ -22,6 +22,8 @@ const envSchema = z.object({
     .transform((value) => value === 'true'),
   SLIPOK_API_KEY: z.string().optional(),
   SLIPOK_BRANCH_ID: z.string().optional(),
+  PUBLIC_BASE_URL: z.string().url().optional(),
+  EXPORT_TOKEN_SECRET: z.string().min(16).optional(),
 });
 
 export const env = envSchema.parse(process.env);

@@ -38,6 +38,25 @@ export class TransactionRepository {
   }
 
   /**
+   * Find every transaction owned by a user for data export.
+   * Includes voided rows so exports preserve the user's transaction history.
+   */
+  static async findAllByUser(
+    userId: string,
+    client?: PoolClient
+  ): Promise<Transaction[]> {
+    const q = `
+      SELECT * FROM transactions
+      WHERE user_id = $1
+      ORDER BY occurred_at ASC, created_at ASC;
+    `;
+    const res = client
+      ? await client.query<Transaction>(q, [userId])
+      : await query<Transaction>(q, [userId]);
+    return res.rows;
+  }
+
+  /**
    * Find a transaction by ID and User ID.
    */
   static async findByIdAndUser(

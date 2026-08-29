@@ -6,6 +6,7 @@ import { handleTextMessage } from './handlers/message.handler';
 import { handleImageMessage } from './handlers/image.handler';
 import { handlePostbackEvent } from './handlers/postback.handler';
 import { handleWebhookEvent } from './handlers/webhook-event.handler';
+import { handleTransactionCsvExport } from './handlers/export.handler';
 import { GENERIC_USER_ERROR_MESSAGE, getSafeHttpStatus, logInternalError } from './utils/errors';
 
 const lineConfig: MiddlewareConfig = {
@@ -32,8 +33,15 @@ app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// 2. Secure, short-lived per-user CSV export endpoint.
+// The token is opaque and encrypted; the endpoint never accepts a user ID
+// supplied directly by the browser.
+app.get('/exports/transactions.csv', (req: Request, res: Response) => {
+  void handleTransactionCsvExport(req, res);
+});
+
 /**
- * 2. LINE Webhook Handler
+ * 3. LINE Webhook Handler
  * - Handles verification pings immediately.
  * - Responds 200 OK immediately.
  * - Processes events asynchronously in the background.
