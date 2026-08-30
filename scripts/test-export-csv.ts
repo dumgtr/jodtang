@@ -111,6 +111,7 @@ async function runExportCsvTests(): Promise<void> {
   console.log('\n4. Testing export download URL and LINE Flex response contract...');
   const url = buildExportDownloadUrl(userA.id);
   assert(url.startsWith('http://localhost:3000/exports/transactions.csv?token='));
+  assert(url.includes('&openExternalBrowser=1'), 'URL must contain openExternalBrowser=1 parameter to bypass LINE in-app browser download block');
   const flex = buildExportCsvFlexMessage(url, userARows.length) as any;
   assert.equal(flex.type, 'flex');
   assert.equal(flex.contents.footer.contents[0].action.type, 'uri');

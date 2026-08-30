@@ -11,8 +11,8 @@ Export the authenticated user's transaction history as a UTF-8 CSV from the Larg
 3. The validated webhook already has the LINE user identity and resolves the internal JodTang user.
 4. JodTang queries only transactions owned by that user.
 5. JodTang issues a short-lived opaque download token (15 minutes).
-6. Bot replies with a Flex Message containing a URI download button.
-7. Browser requests `/exports/transactions.csv?token=...`.
+6. Bot replies with a Flex Message containing a URI download button (with `openExternalBrowser=1` so LINE opens the device's native browser for direct file downloading).
+7. Browser requests `/exports/transactions.csv?token=...&openExternalBrowser=1`.
 8. Server validates/decrypts the token, re-checks ownership through the token's internal user UUID, generates the CSV, and returns it as an attachment.
 
 ## Export contract
