@@ -5,17 +5,13 @@ import type { Transaction } from '../types/database';
 export const EXPORT_TOKEN_TTL_MS = 15 * 60 * 1000;
 
 const CSV_HEADERS = [
-  'transaction_id',
   'type',
   'amount',
   'category',
   'merchant',
   'account',
   'description',
-  'status',
   'occurred_at',
-  'created_at',
-  'updated_at',
 ] as const;
 
 function base64UrlEncode(value: Buffer): string {
@@ -113,17 +109,13 @@ export function buildTransactionsCsv(transactions: Transaction[]): string {
   for (const tx of transactions) {
     rows.push(
       [
-        tx.id,
         tx.type,
         formatAmount(tx.amount),
         tx.category_id,
         tx.merchant_id,
         tx.account_id,
         tx.description,
-        tx.status,
         formatDate(tx.occurred_at),
-        formatDate(tx.created_at),
-        formatDate(tx.updated_at),
       ].map((value) => escapeCsvCell(value)).join(','),
     );
   }

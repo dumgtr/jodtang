@@ -68,17 +68,34 @@ async function runExportCsvTests(): Promise<void> {
   assert.equal(userARows.some((row) => row.description === 'B-only record'), false);
   console.log('✅ Multi-tenant export query isolation verified.');
 
-  console.log('\n2. Testing UTF-8 BOM, CSV quoting, field preservation, and formula-injection hardening...');
+  console.log('\n2. Testing UTF-8 BOM, 7-field projection, CSV quoting, field preservation, and formula-injection hardening...');
   const csv = buildTransactionsCsv(userARows);
-  assert(csv.startsWith('\uFEFF'));
-  assert(csv.includes('"transaction_id"'));
-  assert(csv.includes('"1250.50"'));
-  assert(csv.includes('"\t=HYPERLINK(""http://example.invalid"",""x"")"'));
-  assert(csv.includes('"\t+danger"'));
-  assert(csv.includes('"\t@merchant"'));
-  assert(csv.includes('\r\n'));
-  assert.equal(csv.includes('B-only record'), false);
-  console.log('✅ CSV encoding/escaping/security invariants verified.');
+  assert(csv.startsWith('\uFEFF'), 'CSV must start with UTF-8 BOM');
+
+  const rawLines = csv.replace(/^\uFEFF/u, '').split('\r\n').filter((line) => line.length > 0);
+  assert.equal(rawLines.length, 2, 'Must contain 1 header line and 1 transaction data line');
+
+  // Exact 7-field Header assertion
+  assert.equal(
+    rawLines[0],
+    '"type","amount","category","merchant","account","description","occurred_at"',
+    'Header must match exactly 7 fields in specified order'
+  );
+
+  // Technical & audit fields must NOT be exported
+  assert.equal(csv.includes('"transaction_id"'), false, 'transaction_id must not be in export');
+  assert.equal(csv.includes('"status"'), false, 'status must not be in export');
+  assert.equal(csv.includes('"created_at"'), false, 'created_at must not be in export');
+  assert.equal(csv.includes('"updated_at"'), false, 'updated_at must not be in export');
+  assert.equal(csv.includes(formulaTx.id), false, 'Internal UUID must not be in export');
+
+  // Exact 7-field Row content assertion
+  assert.equal(
+    rawLines[1],
+    `"expense","1250.50","\t+danger","\t@merchant","","\t=HYPERLINK(""http://example.invalid"",""x"")","${new Date(formulaTx.occurred_at).toISOString()}"`
+  );
+  assert.equal(csv.includes('B-only record'), false, 'Must not include other user records');
+  console.log('✅ 7-field CSV projection, encoding, escaping, and security invariants verified.');
 
   console.log('\n3. Testing opaque short-lived export tokens...');
   const now = 1_760_000_000_000;

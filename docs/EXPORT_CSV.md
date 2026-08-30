@@ -19,19 +19,15 @@ Export the authenticated user's transaction history as a UTF-8 CSV from the Larg
 
 Columns, in order:
 
-1. `transaction_id`
-2. `type`
-3. `amount`
-4. `category`
-5. `merchant`
-6. `account`
-7. `description`
-8. `status`
-9. `occurred_at`
-10. `created_at`
-11. `updated_at`
+1. `type`
+2. `amount`
+3. `category`
+4. `merchant`
+5. `account`
+6. `description`
+7. `occurred_at`
 
-All transaction statuses are exported, including `voided`, so the export preserves transaction history.
+Technical and audit fields (`transaction_id`, `status`, `created_at`, `updated_at`) are excluded from the exported user CSV projection.
 
 ## Encoding / spreadsheet safety
 
