@@ -13,6 +13,8 @@ import {
   verifyExportToken,
 } from '../src/services/export-csv.service';
 import { handleWebhookEvent } from '../src/handlers/webhook-event.handler';
+import { handleTextMessage } from '../src/handlers/message.handler';
+import { handleTransactionCsvExport } from '../src/handlers/export.handler';
 
 assertTestDatabaseConnection(env.DATABASE_URL);
 process.env.EXPORT_TOKEN_SECRET = 'test-export-token-secret-2026';
@@ -180,6 +182,101 @@ async function runExportCsvTests(): Promise<void> {
   assert.equal(groupReplies[0].messages[0].type, 'text');
   assert(groupReplies[0].messages[0].text.includes('แชตส่วนตัว'));
   console.log('✅ Group-chat export is blocked to prevent link leakage.');
+
+  console.log('\n7. Testing user with 0 transactions (empty export)...');
+  const userEmpty = await UserRepository.findOrCreateByLineUserId('U_TEST_EXPORT_EMPTY_USER');
+  const emptyRows = await TransactionRepository.findAllByUser(userEmpty.id);
+  assert.equal(emptyRows.length, 0);
+  const emptyCsv = buildTransactionsCsv(emptyRows);
+  assert(emptyCsv.startsWith('\uFEFF'));
+  const emptyLines = emptyCsv.replace(/^\uFEFF/u, '').split('\r\n').filter((l) => l.length > 0);
+  assert.equal(emptyLines.length, 1, 'Empty export must contain exactly the 7-field header line');
+  assert.equal(
+    emptyLines[0],
+    '"type","amount","category","merchant","account","description","occurred_at"',
+    'Header must strictly match 7 fields'
+  );
+  const emptyFlex = buildExportCsvFlexMessage('http://localhost:3000/test', 0) as any;
+  assert(JSON.stringify(emptyFlex).includes('0 รายการ'));
+  console.log('✅ Empty transaction export produces valid 7-field header and 0-count Flex message.');
+
+  console.log('\n8. Testing HTTP /exports/transactions.csv endpoint controller...');
+  let responseStatus = 0;
+  const responseHeaders: Record<string, string> = {};
+  let responseBody: Buffer | string = '';
+
+  const mockRes = {
+    status(code: number) {
+      responseStatus = code;
+      return this;
+    },
+    set(headers: any) {
+      if (typeof headers === 'string') {
+        responseHeaders[headers] = arguments[1];
+      } else {
+        Object.assign(responseHeaders, headers);
+      }
+      return this;
+    },
+    send(body: any) {
+      responseBody = body;
+      return this;
+    },
+  } as any;
+
+  // Valid token request
+  const validToken = createExportToken(userA.id);
+  await handleTransactionCsvExport({ query: { token: validToken } } as any, mockRes);
+  assert.equal(responseStatus, 200);
+  assert.equal(responseHeaders['Content-Type'], 'text/csv; charset=utf-8');
+  assert(responseHeaders['Content-Disposition'].includes('attachment; filename="jodtang-transactions-'));
+  const downloadedCsv = responseBody.toString('utf8');
+  assert(downloadedCsv.startsWith('\uFEFF"type","amount","category","merchant","account","description","occurred_at"'));
+  assert(downloadedCsv.includes('"1250.50"'));
+  assert.equal(downloadedCsv.includes('B-only record'), false);
+
+  // Invalid / Expired token request
+  responseStatus = 0;
+  await handleTransactionCsvExport({ query: { token: 'invalid.tampered.token' } } as any, mockRes);
+  assert.equal(responseStatus, 401);
+  console.log('✅ HTTP Export controller returns 200 with 7-field CSV for valid token and 401 for invalid token.');
+
+  console.log('\n9. Testing direct handleTextMessage dispatch with various Export commands...');
+  for (const cmd of ['📥 Export CSV', 'Export CSV', 'export csv', 'ส่งออก CSV', 'ดาวน์โหลด CSV']) {
+    const textReplies: any[] = [];
+    const mockClient = {
+      replyMessage: async (reply: any) => textReplies.push(reply),
+    } as any;
+    await handleTextMessage(userA.line_user_id, cmd, 'reply-token-test', mockClient);
+    assert.equal(textReplies.length, 1, `Must reply for command: ${cmd}`);
+    assert.equal(textReplies[0].messages[0].type, 'flex', `Must return Flex message for command: ${cmd}`);
+    assert.equal(
+      textReplies[0].messages[0].contents.footer.contents[0].action.type,
+      'uri',
+      `Must contain URI button for command: ${cmd}`
+    );
+  }
+  console.log('✅ All export command aliases trigger the live Flex message via handleTextMessage.');
+
+  console.log('\n10. Testing graceful error handling without crashing...');
+  const errorReplies: any[] = [];
+  const mockErrorClient = {
+    replyMessage: async (reply: any) => errorReplies.push(reply),
+  } as any;
+  // Passing an invalid lineUserId or simulating repository failure
+  const originalFindAll = TransactionRepository.findAllByUser;
+  (TransactionRepository as any).findAllByUser = async () => {
+    throw new Error('Simulated database failure');
+  };
+  try {
+    await handleTextMessage(userA.line_user_id, '📥 Export CSV', 'reply-token-err', mockErrorClient);
+    assert.equal(errorReplies.length, 1);
+    assert.equal(errorReplies[0].messages[0].type, 'text');
+    assert(errorReplies[0].messages[0].text.includes('ยังไม่สามารถเตรียมไฟล์ CSV ให้ได้'));
+    console.log('✅ Export error is gracefully handled with a safe Thai error message.');
+  } finally {
+    TransactionRepository.findAllByUser = originalFindAll;
+  }
 
   console.log('\n🎉 Export CSV Suite: PASS');
 }

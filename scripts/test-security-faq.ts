@@ -209,6 +209,12 @@ const nonSecurityIntentCases = [
   'รายการอาหาร',
   'ค่าใช้จ่ายทั้งหมด',
   'มีเงินเท่าไร',
+  // Export CSV examples (live feature commands, not Security FAQ).
+  '📥 Export CSV',
+  'Export CSV',
+  'export csv',
+  'ส่งออก CSV',
+  'ดาวน์โหลด CSV',
   // Greeting/unrelated examples.
   'สวัสดี',
   'หวัดดี',

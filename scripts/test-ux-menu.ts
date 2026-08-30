@@ -241,20 +241,21 @@ async function runUxMenuTests() {
   console.log('   ✅ Default keyboard typing creates transaction drafts as normal.\n');
 
   // ----------------------------------------------------
-  // 10. Export CSV Upcoming Command Test (M14)
+  // 10. Export CSV Live Command Test
   // ----------------------------------------------------
-  console.log('10. Testing "📥 Export CSV" upcoming command...');
+  console.log('10. Testing "📥 Export CSV" live command...');
   const exportReplies: MockReply[] = [];
   const clientExport = createMockLineClient(exportReplies);
 
   await handleTextMessage(lineUser, '📥 Export CSV', 'TOKEN_EXPORT_1', clientExport);
 
   assert.equal(exportReplies.length, 1);
-  const exportMsg = exportReplies[0].messages[0];
-  assert(exportMsg.text?.includes('ฟังก์ชัน Export CSV (กำลังพัฒนา)'), 'Must return Export CSV coming soon text');
-  assert(exportMsg.text?.includes('M14'), 'Must mention M14 upcoming milestone');
+  const exportMsg = exportReplies[0].messages[0] as any;
+  assert.equal(exportMsg.type, 'flex', 'Must return Flex Message');
+  assert.equal(exportMsg.contents.footer.contents[0].action.type, 'uri');
+  assert(exportMsg.contents.footer.contents[0].action.uri.includes('/exports/transactions.csv?token='));
 
-  console.log('   ✅ "📥 Export CSV" properly informs user of upcoming M14 feature.\n');
+  console.log('   ✅ "📥 Export CSV" seamlessly returns live download Flex Message.\n');
 
   // ----------------------------------------------------
   // 11. Donate / Support Upcoming Command Test

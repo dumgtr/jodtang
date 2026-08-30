@@ -6,6 +6,8 @@
  * classifier before user lookup, conversation state, Query, and Write.
  */
 
+import { isExportCsvCommand } from './export-csv.service';
+
 export type SecurityFaqTopic =
   | 'overview'
   | 'stored_data'
@@ -260,10 +262,8 @@ function matchesDeletionExport(normalized: string): boolean {
     'ลบถาวร',
     'ลบทิ้ง',
     'ขอไฟล์ข้อมูล',
-    'ไฟล์ข้อมูล',
-    'ส่งออกข้อมูล',
-    'ส่งออก',
-    'export',
+    'ช่วยลบรายการ',
+    'ส่งออกข้อมูลได้ไหม',
     'delete data',
   ]);
 }
@@ -367,8 +367,7 @@ export function classifySecurityFaqIntent(text: string): SecurityFaqTopic | null
     !normalized ||
     isStatefulManagementCommand(normalized) ||
     isFinancialWriteBoundary(normalized, text) ||
-    /^(exportcsv|csv|export|ส่งออกcsv|ดาวน์โหลดcsv)$/u.test(normalized) ||
-    normalized.includes('exportcsv')
+    isExportCsvCommand(text)
   ) {
     return null;
   }

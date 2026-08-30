@@ -4,6 +4,7 @@ import { classifySecurityFaqIntent } from '../services/security-faq.service';
 import { buildSecurityFaqText } from '../utils/menu.builder';
 import { TransactionRepository } from '../modules/transaction/transaction.repository';
 import {
+  isExportCsvCommand,
   buildExportCsvFlexMessage,
   buildExportDownloadUrl,
 } from '../services/export-csv.service';
@@ -77,14 +78,7 @@ export async function handleWebhookEvent(
     // webhook boundary so the LINE user identity is available before issuing
     // the short-lived download link. This intentionally bypasses the generic
     // text/AI pipeline and never creates a draft or transaction.
-    const normalizedExport = text
-      .toLowerCase()
-      .replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
-    const isExportCsv =
-      /^(exportcsv|csv|export|ส่งออกcsv|ดาวน์โหลดcsv)$/u.test(normalizedExport) ||
-      normalizedExport.includes('exportcsv');
-
-    if (isExportCsv) {
+    if (isExportCsvCommand(text)) {
       if (event.source.type !== 'user') {
         if (event.replyToken) {
           await dependencies.lineClient.replyMessage({

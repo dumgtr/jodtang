@@ -19,13 +19,17 @@ import { QueryEngineService } from '../services/query-engine.service';
 import { formatQueryResult } from '../services/query-formatter.service';
 import { classifySecurityFaqIntent } from '../services/security-faq.service';
 import {
+  isExportCsvCommand,
+  buildExportCsvFlexMessage,
+  buildExportDownloadUrl,
+} from '../services/export-csv.service';
+import {
   buildQuickSummaryQuickReply,
   buildSlipUploadQuickReply,
   buildSecurityFaqText,
   buildStartRecordGuideText,
   buildHelpGuideText,
   buildRecentTransactionsText,
-  buildComingSoonExportCsvText,
   buildComingSoonDonateText,
 } from '../utils/menu.builder';
 
@@ -104,18 +108,6 @@ function isRecentTransactionsCommand(text: string): boolean {
 }
 
 /**
- * Deterministically checks if input text is an Export CSV request.
- */
-function isExportCsvCommand(text: string): boolean {
-  if (/\d/.test(text)) return false;
-  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
-  return (
-    /^(exportcsv|csv|export|ส่งออกcsv|ดาวน์โหลดcsv)$/u.test(normalized) ||
-    normalized.includes('exportcsv')
-  );
-}
-
-/**
  * Deterministically checks if input text is a Donate / Support request.
  */
 function isDonateCommand(text: string): boolean {
@@ -144,19 +136,32 @@ export async function handleTextMessage(
   try {
     const trimmedText = text.trim();
 
-    // 0. Upcoming Navigation Commands (Export CSV M14, Donate)
-    // Read-only, informative messages, executed before user lookup/state
+    // 0. Export CSV Command (Live user-scoped read flow)
     if (isExportCsvCommand(trimmedText)) {
-      if (replyToken) {
-        await lineClient.replyMessage({
-          replyToken,
-          messages: [
-            {
-              type: 'text',
-              text: buildComingSoonExportCsvText(),
-            },
-          ],
-        });
+      try {
+        const user = await UserRepository.findOrCreateByLineUserId(lineUserId);
+        const transactions = await TransactionRepository.findAllByUser(user.id);
+        const downloadUrl = buildExportDownloadUrl(user.id);
+
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [buildExportCsvFlexMessage(downloadUrl, transactions.length) as any],
+          });
+        }
+      } catch (error) {
+        logInternalError('[Export CSV Message Handler Error]', error);
+        if (replyToken) {
+          await lineClient.replyMessage({
+            replyToken,
+            messages: [
+              {
+                type: 'text',
+                text: '⚠️ ตอนนี้ยังไม่สามารถเตรียมไฟล์ CSV ให้ได้ครับ กรุณาลองใหม่อีกครั้งภายหลัง',
+              },
+            ],
+          });
+        }
       }
       return;
     }

@@ -4,6 +4,22 @@ import type { Transaction } from '../types/database';
 
 export const EXPORT_TOKEN_TTL_MS = 15 * 60 * 1000;
 
+/**
+ * Deterministically checks if input text is an Export CSV command.
+ */
+export function isExportCsvCommand(text: string): boolean {
+  if (!text || typeof text !== 'string' || /\d/.test(text)) return false;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
+  return (
+    /^(exportcsv|csv|export|ส่งออกcsv|ดาวน์โหลดcsv|ขอexportcsv|ขอcsv|ขอไฟล์csv|ขอส่งออกcsv|exportไฟล์|ดาวน์โหลดไฟล์csv)$/u.test(
+      normalized
+    ) ||
+    normalized.includes('exportcsv') ||
+    normalized.includes('ส่งออกcsv') ||
+    normalized.includes('ดาวน์โหลดcsv')
+  );
+}
+
 const CSV_HEADERS = [
   'type',
   'amount',
