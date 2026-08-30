@@ -156,7 +156,7 @@ export function buildExportDownloadUrl(userId: string): string {
   }
 
   const token = createExportToken(userId);
-  return `${baseUrl}/exports/transactions.csv?token=${encodeURIComponent(token)}&openExternalBrowser=1`;
+  return `${baseUrl}/exports/transactions.csv?openExternalBrowser=1&token=${encodeURIComponent(token)}`;
 }
 
 export function buildExportCsvFlexMessage(downloadUrl: string, transactionCount: number): Record<string, unknown> {

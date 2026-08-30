@@ -253,7 +253,7 @@ async function runUxMenuTests() {
   const exportMsg = exportReplies[0].messages[0] as any;
   assert.equal(exportMsg.type, 'flex', 'Must return Flex Message');
   assert.equal(exportMsg.contents.footer.contents[0].action.type, 'uri');
-  assert(exportMsg.contents.footer.contents[0].action.uri.includes('/exports/transactions.csv?token='));
+  assert(exportMsg.contents.footer.contents[0].action.uri.includes('/exports/transactions.csv?openExternalBrowser=1&token='));
 
   console.log('   ✅ "📥 Export CSV" seamlessly returns live download Flex Message.\n');
 

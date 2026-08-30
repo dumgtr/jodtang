@@ -110,8 +110,7 @@ async function runExportCsvTests(): Promise<void> {
 
   console.log('\n4. Testing export download URL and LINE Flex response contract...');
   const url = buildExportDownloadUrl(userA.id);
-  assert(url.startsWith('http://localhost:3000/exports/transactions.csv?token='));
-  assert(url.includes('&openExternalBrowser=1'), 'URL must contain openExternalBrowser=1 parameter to bypass LINE in-app browser download block');
+  assert(url.startsWith('http://localhost:3000/exports/transactions.csv?openExternalBrowser=1&token='));
   const flex = buildExportCsvFlexMessage(url, userARows.length) as any;
   assert.equal(flex.type, 'flex');
   assert.equal(flex.contents.footer.contents[0].action.type, 'uri');
@@ -225,9 +224,13 @@ async function runExportCsvTests(): Promise<void> {
     },
   } as any;
 
-  // Valid token request
+  // Valid token request (Standard Browser)
   const validToken = createExportToken(userA.id);
-  await handleTransactionCsvExport({ query: { token: validToken } } as any, mockRes);
+  const mockStandardReq = {
+    query: { token: validToken },
+    get: (header: string) => (header === 'user-agent' ? 'Mozilla/5.0 Chrome/115.0' : 'localhost:3000'),
+  };
+  await handleTransactionCsvExport(mockStandardReq as any, mockRes);
   assert.equal(responseStatus, 200);
   assert.equal(responseHeaders['Content-Type'], 'text/csv; charset=utf-8');
   assert(responseHeaders['Content-Disposition'].includes('attachment; filename="jodtang-transactions-'));
@@ -236,11 +239,22 @@ async function runExportCsvTests(): Promise<void> {
   assert(downloadedCsv.includes('"1250.50"'));
   assert.equal(downloadedCsv.includes('B-only record'), false);
 
+  // Valid token request (LINE In-App Webview fallback)
+  responseStatus = 0;
+  const mockLineReq = {
+    query: { token: validToken },
+    get: (header: string) => (header === 'user-agent' ? 'Mozilla/5.0 (Linux; Android 13) Line/13.7.1/IAB' : 'jodtang.onrender.com'),
+  };
+  await handleTransactionCsvExport(mockLineReq as any, mockRes);
+  assert.equal(responseStatus, 200);
+  assert.equal(responseHeaders['Content-Type'], 'text/html; charset=utf-8');
+  assert(responseBody.toString().includes('เปิดใน Chrome เพื่อดาวน์โหลด'));
+
   // Invalid / Expired token request
   responseStatus = 0;
-  await handleTransactionCsvExport({ query: { token: 'invalid.tampered.token' } } as any, mockRes);
+  await handleTransactionCsvExport({ query: { token: 'invalid.tampered.token' }, get: () => '' } as any, mockRes);
   assert.equal(responseStatus, 401);
-  console.log('✅ HTTP Export controller returns 200 with 7-field CSV for valid token and 401 for invalid token.');
+  console.log('✅ HTTP Export controller returns 200 with 7-field CSV for standard browsers, HTML fallback for LINE webview, and 401 for invalid tokens.');
 
   console.log('\n9. Testing direct handleTextMessage dispatch with various Export commands...');
   for (const cmd of ['📥 Export CSV', 'Export CSV', 'export csv', 'ส่งออก CSV', 'ดาวน์โหลด CSV']) {
