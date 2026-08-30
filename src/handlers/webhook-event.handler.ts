@@ -33,8 +33,10 @@ export type WebhookEventHandlerDependencies = {
 };
 
 /**
- * Dispatches a validated LINE event. Security FAQ text is classified and
- * answered before any user lookup so that this path remains read-only.
+ * Dispatches a validated LINE event. Export CSV is resolved before Security
+ * FAQ so explicit download requests cannot be captured by deletion/export
+ * FAQ wording. Security FAQ still runs before generic user lookup and remains
+ * strictly read-only.
  */
 export async function handleWebhookEvent(
   event: WebhookEvent,
@@ -51,33 +53,10 @@ export async function handleWebhookEvent(
 
   if (event.type === 'message' && event.message.type === 'text') {
     const text = event.message.text.trim();
-    const securityFaqTopic = classifySecurityFaqIntent(text);
 
-    if (securityFaqTopic) {
-      if (event.replyToken) {
-        await dependencies.lineClient.replyMessage({
-          replyToken: event.replyToken,
-          messages: [
-            {
-              type: 'text',
-              text: buildSecurityFaqText(securityFaqTopic),
-            },
-          ],
-        });
-      }
-      return;
-    }
-  }
-
-  const user = await dependencies.findOrCreateByLineUserId(lineUserId);
-
-  if (event.type === 'message' && event.message.type === 'text') {
-    const text = event.message.text.trim();
-
-    // Export CSV is a user-scoped read path. Handle it at the validated
-    // webhook boundary so the LINE user identity is available before issuing
-    // the short-lived download link. This intentionally bypasses the generic
-    // text/AI pipeline and never creates a draft or transaction.
+    // Export CSV is a user-scoped read path. Resolve it before Security FAQ
+    // and before the generic text/AI pipeline so it cannot create a draft or
+    // transaction. Group chats are rejected before any user lookup.
     if (isExportCsvCommand(text)) {
       if (event.source.type !== 'user') {
         if (event.replyToken) {
@@ -95,6 +74,7 @@ export async function handleWebhookEvent(
       }
 
       try {
+        const user = await dependencies.findOrCreateByLineUserId(lineUserId);
         const transactions = await TransactionRepository.findAllByUser(user.id);
         const downloadUrl = buildExportDownloadUrl(user.id);
 
@@ -120,6 +100,29 @@ export async function handleWebhookEvent(
       }
       return;
     }
+
+    const securityFaqTopic = classifySecurityFaqIntent(text);
+
+    if (securityFaqTopic) {
+      if (event.replyToken) {
+        await dependencies.lineClient.replyMessage({
+          replyToken: event.replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: buildSecurityFaqText(securityFaqTopic),
+            },
+          ],
+        });
+      }
+      return;
+    }
+  }
+
+  const user = await dependencies.findOrCreateByLineUserId(lineUserId);
+
+  if (event.type === 'message' && event.message.type === 'text') {
+    const text = event.message.text.trim();
 
     console.log('[Text Message Received]', { userId: user.id, inputLength: text.length });
     await dependencies.handleTextMessage(lineUserId, text, event.replyToken, dependencies.lineClient);

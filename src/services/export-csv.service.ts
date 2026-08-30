@@ -4,20 +4,145 @@ import type { Transaction } from '../types/database';
 
 export const EXPORT_TOKEN_TTL_MS = 15 * 60 * 1000;
 
+export type ExportCsvIntent = 'EXPORT_CSV';
+
+const EXACT_EXPORT_ALIASES = new Set([
+  // Existing deterministic commands and Rich Menu text.
+  'csv',
+  'exportcsv',
+  'ส่งออกcsv',
+  'ดาวน์โหลดcsv',
+  'ขอexportcsv',
+  'ขอcsv',
+  'ขอไฟล์csv',
+  'ขอส่งออกcsv',
+  'exportไฟล์',
+  'ดาวน์โหลดไฟล์csv',
+
+  // High-confidence natural-language requests whose action and scope are
+  // explicit even without the CSV suffix.
+  'ขอไฟล์รายการ',
+  'ดาวน์โหลดไฟล์',
+  'โหลดไฟล์',
+  'ส่งออกรายการ',
+  'ส่งออกรายการทั้งหมด',
+  'ดาวน์โหลดรายการ',
+  'โหลดรายการ',
+  'ขอรายการทั้งหมด',
+  'ขอข้อมูลทั้งหมด',
+  'เอาข้อมูลทั้งหมด',
+  'ขอประวัติรายการ',
+  'ดาวน์โหลดประวัติรายการ',
+  'โหลดประวัติรายการ',
+  'downloadfile',
+  'exportdata',
+  'exporttransactions',
+  'downloadtransactions',
+  'downloadtransactionhistory',
+  'exporttransactionhistory',
+  'gettransactionhistory',
+]);
+
+function normalizeExportIntentText(text: string): {
+  compact: string;
+  englishTokens: Set<string>;
+} {
+  const normalized = text.normalize('NFKC').toLowerCase();
+  const englishWords = normalized
+    .replace(/[^a-z0-9]+/gu, ' ')
+    .trim()
+    .split(/\s+/u)
+    .filter(Boolean);
+
+  return {
+    compact: normalized.replace(/[^a-z0-9\u0E00-\u0E7F]/gu, ''),
+    englishTokens: new Set(englishWords),
+  };
+}
+
+function containsAny(value: string, candidates: readonly string[]): boolean {
+  return candidates.some((candidate) => value.includes(candidate));
+}
+
 /**
- * Deterministically checks if input text is an Export CSV command.
+ * Classifies high-confidence natural-language requests for a CSV export.
+ *
+ * This intentionally runs without an LLM: command routing must be fast and
+ * deterministic before the generic Query/Write pipeline. Contextual matches
+ * require both an export/download action and an export object or CSV format;
+ * broad words such as "ข้อมูล", "รายการ", "ไฟล์", and "ดาวน์โหลด" do not
+ * trigger on their own.
+ */
+export function classifyExportCsvIntent(text: string): ExportCsvIntent | null {
+  if (!text || typeof text !== 'string' || /\p{N}/u.test(text)) return null;
+
+  const { compact: normalized, englishTokens } = normalizeExportIntentText(text);
+  if (!normalized) return null;
+  if (EXACT_EXPORT_ALIASES.has(normalized)) return 'EXPORT_CSV';
+
+  const hasUploadAction =
+    containsAny(normalized, ['อัปโหลด', 'อัพโหลด']) || englishTokens.has('upload');
+  const hasThaiDownloadAction =
+    normalized.includes('ดาวน์โหลด') ||
+    (normalized.includes('โหลด') && !hasUploadAction);
+  const hasEnglishDownloadAction = englishTokens.has('download');
+  const hasExplicitExportAction = normalized.includes('ส่งออก') || englishTokens.has('export');
+  const hasThaiRequestAction =
+    normalized.startsWith('ขอ') ||
+    normalized.startsWith('เอา') ||
+    normalized.startsWith('ช่วยขอ') ||
+    normalized.startsWith('ช่วยส่ง') ||
+    normalized.includes('อยากได้');
+  const hasRequestAction = hasThaiRequestAction || englishTokens.has('get');
+
+  const hasCsvFormat = englishTokens.has('csv');
+  const hasFileObject = normalized.includes('ไฟล์') || englishTokens.has('file');
+  const hasThaiTransactionObject = containsAny(normalized, ['ประวัติรายการ', 'รายการ']);
+  const hasEnglishTransactionObject =
+    englishTokens.has('transactions') ||
+    englishTokens.has('data') ||
+    normalized.includes('transactionhistory');
+
+  // Explicit CSV format plus a request/export action is the strongest signal
+  // and supports polite or filler wording around the intent.
+  if (
+    hasCsvFormat &&
+    (hasThaiDownloadAction ||
+      hasEnglishDownloadAction ||
+      hasExplicitExportAction ||
+      hasRequestAction)
+  ) {
+    return 'EXPORT_CSV';
+  }
+
+  // File requests still require a download action, or a request action plus
+  // a transaction/data object. "ไฟล์" and "download" alone stay negative.
+  if (
+    hasFileObject &&
+    (hasThaiDownloadAction ||
+      hasEnglishDownloadAction ||
+      (hasRequestAction &&
+        (hasThaiTransactionObject || hasEnglishTransactionObject)))
+  ) {
+    return 'EXPORT_CSV';
+  }
+
+  // Natural requests for transaction/history data without saying CSV.
+  if (
+    (hasThaiTransactionObject || hasEnglishTransactionObject) &&
+    (hasThaiDownloadAction || hasEnglishDownloadAction || hasExplicitExportAction)
+  ) {
+    return 'EXPORT_CSV';
+  }
+
+  return null;
+}
+
+/**
+ * Backward-compatible boolean command guard used by existing routing code.
  */
 export function isExportCsvCommand(text: string): boolean {
-  if (!text || typeof text !== 'string' || /\d/.test(text)) return false;
-  const normalized = text.toLowerCase().replace(/[^a-z0-9\u0E00-\u0E7F]/gu, '');
-  return (
-    /^(exportcsv|csv|export|ส่งออกcsv|ดาวน์โหลดcsv|ขอexportcsv|ขอcsv|ขอไฟล์csv|ขอส่งออกcsv|exportไฟล์|ดาวน์โหลดไฟล์csv)$/u.test(
-      normalized
-    ) ||
-    normalized.includes('exportcsv') ||
-    normalized.includes('ส่งออกcsv') ||
-    normalized.includes('ดาวน์โหลดcsv')
-  );
+  return classifyExportCsvIntent(text) === 'EXPORT_CSV';
 }
 
 const CSV_HEADERS = [

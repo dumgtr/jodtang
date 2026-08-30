@@ -9,15 +9,91 @@ import {
   buildExportCsvFlexMessage,
   buildExportDownloadUrl,
   buildTransactionsCsv,
+  classifyExportCsvIntent,
   createExportToken,
+  isExportCsvCommand,
   verifyExportToken,
 } from '../src/services/export-csv.service';
 import { handleWebhookEvent } from '../src/handlers/webhook-event.handler';
 import { handleTextMessage } from '../src/handlers/message.handler';
 import { handleTransactionCsvExport } from '../src/handlers/export.handler';
+import { classifySecurityFaqIntent } from '../src/services/security-faq.service';
+import { query } from '../src/db/client';
 
 assertTestDatabaseConnection(env.DATABASE_URL);
 process.env.EXPORT_TOKEN_SECRET = 'test-export-token-secret-2026';
+
+const naturalExportIntentCases = [
+  // Thai
+  'โหลด csv',
+  'ดาวน์โหลด csv',
+  'ขอ csv',
+  'ขอไฟล์ csv',
+  'ขอไฟล์รายการ',
+  'ดาวน์โหลดไฟล์',
+  'โหลดไฟล์',
+  'เอาไฟล์ csv',
+  'เอา csv',
+  'ขอข้อมูลเป็น csv',
+  'ขอรายการเป็น csv',
+  'ส่งออกเป็น csv',
+  'ส่งออกรายการ',
+  'ส่งออกรายการทั้งหมด',
+  'ดาวน์โหลดรายการ',
+  'โหลดรายการ',
+  'ขอรายการทั้งหมด',
+  'ขอข้อมูลทั้งหมด',
+  'เอาข้อมูลทั้งหมด',
+  'ขอประวัติรายการ',
+  'ดาวน์โหลดประวัติรายการ',
+  'โหลดประวัติรายการ',
+  'ช่วยส่งรายการทั้งหมดเป็น csv ให้หน่อย',
+  'ดาวน์โหลดข้อมูลของฉันเป็น CSV',
+  'โหลด  csv',
+  'EXPORT CSV',
+
+  // English
+  'export csv',
+  'download csv',
+  'download the csv',
+  'download file',
+  'get csv',
+  'get the csv',
+  'get csv file',
+  'export data',
+  'export transactions',
+  'download transactions',
+  'download transaction history',
+  'export transaction history',
+  'get transaction history',
+] as const;
+
+const nonExportIntentCases = [
+  'ข้อมูล',
+  'รายการ',
+  'ประวัติ',
+  'ส่งออก',
+  'export',
+  'ไฟล์',
+  'ดาวน์โหลด',
+  'download',
+  'ดูรายการวันนี้',
+  'ดูรายการทั้งหมด',
+  'ยอดใช้จ่ายเดือนนี้',
+  'รายการล่าสุดมีอะไรบ้าง',
+  'ข้อมูลของฉันปลอดภัยไหม',
+  'ลบข้อมูลของฉันได้ไหม',
+  'ขอข้อมูลทั้งหมดของเดือนนี้',
+  'ขอรายการทั้งหมดวันนี้',
+  'อัปโหลดไฟล์',
+  'อัปโหลดไฟล์ csv',
+  'CSV ของฉันปลอดภัยไหม',
+  'ข้อมูล CSV ที่ส่งไปปลอดภัยไหม',
+  'budget csv',
+  'download profile',
+  'download database',
+  'กินข้าว 80',
+] as const;
 
 async function createConfirmedTransaction(
   userId: string,
@@ -47,6 +123,38 @@ async function runExportCsvTests(): Promise<void> {
   console.log('====================================================');
   console.log('🧪 Testing Export CSV Suite');
   console.log('====================================================');
+
+  console.log('\n0. Testing natural-language EXPORT_CSV intent precision and priority...');
+  for (const phrase of naturalExportIntentCases) {
+    assert.equal(
+      classifyExportCsvIntent(phrase),
+      'EXPORT_CSV',
+      `Expected EXPORT_CSV for: ${phrase}`
+    );
+    assert.equal(isExportCsvCommand(phrase), true, `Expected export command for: ${phrase}`);
+  }
+
+  for (const phrase of nonExportIntentCases) {
+    assert.equal(
+      classifyExportCsvIntent(phrase),
+      null,
+      `Must not classify as EXPORT_CSV: ${phrase}`
+    );
+    assert.equal(isExportCsvCommand(phrase), false, `Must not export for: ${phrase}`);
+  }
+
+  const exportBeforeSecurityPhrase = 'ดาวน์โหลดข้อมูลของฉันเป็น CSV';
+  assert.equal(classifyExportCsvIntent(exportBeforeSecurityPhrase), 'EXPORT_CSV');
+  assert.equal(
+    classifySecurityFaqIntent(exportBeforeSecurityPhrase),
+    null,
+    'Explicit CSV download must resolve before Security FAQ deletion_export'
+  );
+  assert.notEqual(classifySecurityFaqIntent('ข้อมูลของฉันปลอดภัยไหม'), null);
+  assert.notEqual(classifySecurityFaqIntent('ลบข้อมูลของฉันได้ไหม'), null);
+  console.log(
+    `✅ ${naturalExportIntentCases.length} positive and ${nonExportIntentCases.length} negative intent cases passed.`
+  );
 
   const userA = await UserRepository.findOrCreateByLineUserId('U_TEST_EXPORT_CSV_AAA');
   const userB = await UserRepository.findOrCreateByLineUserId('U_TEST_EXPORT_CSV_BBB');
@@ -117,9 +225,16 @@ async function runExportCsvTests(): Promise<void> {
   assert.equal(flex.contents.footer.contents[0].action.uri, url);
   console.log('✅ Download URL and Flex URI action verified.');
 
-  console.log('\n5. Testing real webhook dispatch bypasses generic AI/text pipeline...');
+  console.log('\n5. Testing natural-language webhook dispatch bypasses Security FAQ and generic AI/text pipeline...');
   const replies: any[] = [];
   let genericHandlerCalled = false;
+  const financialRowsBefore = await query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM transaction_drafts WHERE user_id = $1) AS drafts,
+       (SELECT COUNT(*)::int FROM transactions WHERE user_id = $1) AS transactions,
+       (SELECT COUNT(*)::int FROM audit_logs WHERE user_id = $1) AS audit_logs`,
+    [userA.id]
+  );
   const event = {
     type: 'message',
     mode: 'active',
@@ -129,7 +244,7 @@ async function runExportCsvTests(): Promise<void> {
     message: {
       type: 'text',
       id: 'export-test-message-id',
-      text: '📥 Export CSV',
+      text: 'ดาวน์โหลดข้อมูลของฉันเป็น CSV',
     },
   } as WebhookEvent;
 
@@ -149,7 +264,19 @@ async function runExportCsvTests(): Promise<void> {
   assert.equal(replies.length, 1);
   assert.equal(replies[0].messages[0].type, 'flex');
   assert.equal(replies[0].messages[0].contents.footer.contents[0].action.type, 'uri');
-  console.log('✅ Export command is dispatched as a user-scoped read-only path.');
+  const financialRowsAfter = await query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM transaction_drafts WHERE user_id = $1) AS drafts,
+       (SELECT COUNT(*)::int FROM transactions WHERE user_id = $1) AS transactions,
+       (SELECT COUNT(*)::int FROM audit_logs WHERE user_id = $1) AS audit_logs`,
+    [userA.id]
+  );
+  assert.deepEqual(
+    financialRowsAfter.rows[0],
+    financialRowsBefore.rows[0],
+    'Export routing must not create drafts, transactions, or audit logs'
+  );
+  console.log('✅ Natural-language Export is dispatched before Security/AI with no financial mutation.');
 
   console.log('\n6. Testing group-chat privacy guard...');
   const groupReplies: any[] = [];
@@ -162,7 +289,7 @@ async function runExportCsvTests(): Promise<void> {
     message: {
       type: 'text',
       id: 'export-group-message-id',
-      text: 'Export CSV',
+      text: 'ดาวน์โหลดประวัติรายการ',
     },
   } as WebhookEvent;
 
@@ -256,8 +383,15 @@ async function runExportCsvTests(): Promise<void> {
   assert.equal(responseStatus, 401);
   console.log('✅ HTTP Export controller returns 200 with 7-field CSV for standard browsers, HTML fallback for LINE webview, and 401 for invalid tokens.');
 
-  console.log('\n9. Testing direct handleTextMessage dispatch with various Export commands...');
-  for (const cmd of ['📥 Export CSV', 'Export CSV', 'export csv', 'ส่งออก CSV', 'ดาวน์โหลด CSV']) {
+  console.log('\n9. Testing direct handleTextMessage dispatch with natural Export commands...');
+  const directDispatchBefore = await query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM transaction_drafts WHERE user_id = $1) AS drafts,
+       (SELECT COUNT(*)::int FROM transactions WHERE user_id = $1) AS transactions,
+       (SELECT COUNT(*)::int FROM audit_logs WHERE user_id = $1) AS audit_logs`,
+    [userA.id]
+  );
+  for (const cmd of naturalExportIntentCases) {
     const textReplies: any[] = [];
     const mockClient = {
       replyMessage: async (reply: any) => textReplies.push(reply),
@@ -271,7 +405,19 @@ async function runExportCsvTests(): Promise<void> {
       `Must contain URI button for command: ${cmd}`
     );
   }
-  console.log('✅ All export command aliases trigger the live Flex message via handleTextMessage.');
+  const directDispatchAfter = await query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM transaction_drafts WHERE user_id = $1) AS drafts,
+       (SELECT COUNT(*)::int FROM transactions WHERE user_id = $1) AS transactions,
+       (SELECT COUNT(*)::int FROM audit_logs WHERE user_id = $1) AS audit_logs`,
+    [userA.id]
+  );
+  assert.deepEqual(
+    directDispatchAfter.rows[0],
+    directDispatchBefore.rows[0],
+    'Natural export aliases must not create drafts, transactions, or audit logs'
+  );
+  console.log('✅ All natural Export aliases return the live Flex message without financial mutation.');
 
   console.log('\n10. Testing graceful error handling without crashing...');
   const errorReplies: any[] = [];
