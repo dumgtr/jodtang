@@ -363,7 +363,15 @@ export function classifySecurityFaqIntent(text: string): SecurityFaqTopic | null
   if (!text || typeof text !== 'string') return null;
 
   const normalized = normalizeSecurityFaqIntentText(text);
-  if (!normalized || isStatefulManagementCommand(normalized) || isFinancialWriteBoundary(normalized, text)) return null;
+  if (
+    !normalized ||
+    isStatefulManagementCommand(normalized) ||
+    isFinancialWriteBoundary(normalized, text) ||
+    /^(exportcsv|csv|export|ส่งออกcsv|ดาวน์โหลดcsv)$/u.test(normalized) ||
+    normalized.includes('exportcsv')
+  ) {
+    return null;
+  }
 
   // More specific profiles run first so a phrase such as "AI เอาไปเทรนไหม"
   // is not reduced to the broader AI-processing topic.
