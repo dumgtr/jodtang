@@ -3,6 +3,13 @@ export type SlipVerificationStatus =
   | 'DUPLICATE'
   | 'NOT_FOUND'
   | 'INVALID_IMAGE'
+  | 'FRAUD'
+  | 'RECIPIENT_MISMATCH'
+  | 'AMOUNT_MISMATCH'
+  | 'DATE_MISMATCH'
+  | 'BANK_ERROR'
+  | 'TEMPORARY_CONFLICT'
+  | 'QUEUED'
   | 'QUOTA_EXCEEDED'
   | 'PROVIDER_ERROR';
 

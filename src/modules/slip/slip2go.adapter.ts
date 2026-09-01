@@ -69,8 +69,8 @@ export class Slip2GoAdapter implements ISlipProvider {
       const code = String(responseJson?.code ?? response.status);
       const message = String(responseJson?.message ?? '');
 
-      // 1. Success (200000)
-      if (code === '200000' && responseJson?.data) {
+      // 1. Success / Valid (200000 / 200200 / 200001)
+      if ((code === '200000' || code === '200200' || code === '200001') && responseJson?.data) {
         const d = responseJson.data;
         const amount = typeof d.amount === 'number' ? d.amount : parseFloat(d.amount);
         const transRef = String(d.transRef ?? '');
@@ -100,8 +100,26 @@ export class Slip2GoAdapter implements ISlipProvider {
         };
       }
 
-      // 2. Duplicate Slip (400004 or duplicate message)
-      if (code === '400004' || message.includes('already been used') || message.includes('สลิปซ้ำ')) {
+      const lowerMsg = message.toLowerCase();
+
+      // 2. Queued / Processing (200202)
+      if (code === '200202' || lowerMsg.includes('queue')) {
+        return {
+          status: 'QUEUED',
+          rawCode: code,
+          errorMessage: message || 'Slip is queued for processing.',
+        };
+      }
+
+      // 3. Duplicate Slip (200501 / 400004 or specific duplicate message)
+      if (
+        code === '200501' ||
+        code === '400004' ||
+        lowerMsg.includes('slip is duplicated') ||
+        lowerMsg.includes('already been used') ||
+        lowerMsg.includes('สลิปซ้ำ') ||
+        (lowerMsg.includes('duplicate') && (code.startsWith('200') || code.startsWith('400')))
+      ) {
         return {
           status: 'DUPLICATE',
           rawCode: code,
@@ -109,8 +127,23 @@ export class Slip2GoAdapter implements ISlipProvider {
         };
       }
 
-      // 3. Slip Not Found in Bank System (400001 or not found)
-      if (code === '400001' || message.toLowerCase().includes('not found') || message.includes('ไม่พบสลิป')) {
+      // 4. Temporary Conflict / Concurrency Rate Lock (400409)
+      // Must NOT be mapped to DUPLICATE, FRAUD, or general PROVIDER_ERROR
+      if (code === '400409' || lowerMsg.includes('conflicted') || lowerMsg.includes('conflict')) {
+        return {
+          status: 'TEMPORARY_CONFLICT',
+          rawCode: code,
+          errorMessage: message || 'Request is conflicted, please retry in a moment.',
+        };
+      }
+
+      // 5. Slip Not Found in Bank System (200404 / 400001)
+      if (
+        code === '200404' ||
+        code === '400001' ||
+        lowerMsg.includes('not found') ||
+        lowerMsg.includes('ไม่พบสลิป')
+      ) {
         return {
           status: 'NOT_FOUND',
           rawCode: code,
@@ -118,30 +151,73 @@ export class Slip2GoAdapter implements ISlipProvider {
         };
       }
 
-      // 4. Invalid Image / Unreadable QR / Fraudulent slip (400002 / 400003 / 200500)
+      // 6. Recipient Account Not Match (200401)
+      if (code === '200401' || lowerMsg.includes('recipient account not match')) {
+        return {
+          status: 'RECIPIENT_MISMATCH',
+          rawCode: code,
+          errorMessage: message || 'Recipient account does not match condition.',
+        };
+      }
+
+      // 7. Transfer Amount Not Match (200402)
+      if (code === '200402' || lowerMsg.includes('transfer amount not match')) {
+        return {
+          status: 'AMOUNT_MISMATCH',
+          rawCode: code,
+          errorMessage: message || 'Transfer amount does not match condition.',
+        };
+      }
+
+      // 8. Transfer Date Not Match (200403)
+      if (code === '200403' || lowerMsg.includes('transfer date not match')) {
+        return {
+          status: 'DATE_MISMATCH',
+          rawCode: code,
+          errorMessage: message || 'Transfer date does not match condition.',
+        };
+      }
+
+      // 9. Fraudulent Slip (200500)
+      if (code === '200500' || lowerMsg.includes('fraud')) {
+        return {
+          status: 'FRAUD',
+          rawCode: code,
+          errorMessage: message || 'Slip is fraud or invalid.',
+        };
+      }
+
+      // 10. Bank Error / Retryable (200502)
+      if (code === '200502' || lowerMsg.includes('bank error')) {
+        return {
+          status: 'BANK_ERROR',
+          rawCode: code,
+          errorMessage: message || 'Bank system error, please retry.',
+        };
+      }
+
+      // 11. Invalid Image / Unreadable QR (400002 / 400003)
       if (
         code === '400002' ||
         code === '400003' ||
-        code === '200500' ||
-        message.toLowerCase().includes('fraud') ||
-        message.toLowerCase().includes('unreadable') ||
-        message.toLowerCase().includes('qr') ||
-        message.includes('ภาพไม่ชัด')
+        lowerMsg.includes('unreadable') ||
+        lowerMsg.includes('qr') ||
+        lowerMsg.includes('ภาพไม่ชัด')
       ) {
         return {
           status: 'INVALID_IMAGE',
           rawCode: code,
-          errorMessage: message || 'Cannot decode QR code from slip image or slip is invalid.',
+          errorMessage: message || 'Cannot decode QR code from slip image.',
         };
       }
 
-      // 5. Quota / Token Exhausted (400005, 429)
+      // 12. Quota / Token Exhausted (400005, 429)
       if (
         code === '400005' ||
         code === '429' ||
-        message.toLowerCase().includes('quota') ||
-        message.toLowerCase().includes('token') ||
-        message.includes('โควต้า')
+        lowerMsg.includes('quota') ||
+        lowerMsg.includes('token') ||
+        lowerMsg.includes('โควต้า')
       ) {
         console.warn('[Slip2GoAdapter] Slip2Go quota exhausted or rate limit hit', { code });
         return {
@@ -151,7 +227,7 @@ export class Slip2GoAdapter implements ISlipProvider {
         };
       }
 
-      // 6. Authentication Error (401)
+      // 13. Authentication Error (401)
       if (response.status === 401 || code === '401') {
         console.error('[Slip2GoAdapter] Authentication failed with Slip2Go (401 Unauthorized)');
         return {
@@ -161,7 +237,7 @@ export class Slip2GoAdapter implements ISlipProvider {
         };
       }
 
-      // 7. General / Unknown Provider Error
+      // 14. General / Unknown Provider Error
       console.warn('[Slip2GoAdapter] Unhandled response code from Slip2Go', { code, message });
       return {
         status: 'PROVIDER_ERROR',
@@ -170,6 +246,66 @@ export class Slip2GoAdapter implements ISlipProvider {
       };
     } catch (error: any) {
       console.error('[Slip2GoAdapter] Network or unexpected error during verification:', error.message);
+      return {
+        status: 'PROVIDER_ERROR',
+        errorMessage: error.message || 'NETWORK_ERROR',
+      };
+    }
+  }
+
+  /**
+   * Check account info & verify secret (GET /api/account/info -> code 200001)
+   */
+  async getAccountInfo(): Promise<{
+    status: 'SUCCESS' | 'PROVIDER_ERROR';
+    rawCode?: string;
+    data?: any;
+    errorMessage?: string;
+  }> {
+    if (!this.secret) {
+      return {
+        status: 'PROVIDER_ERROR',
+        errorMessage: 'SLIP2GO_API_SECRET_MISSING',
+      };
+    }
+
+    try {
+      const response = await this.fetchFn(`${this.baseUrl}/api/account/info`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.secret}`,
+        },
+      });
+
+      const responseText = await response.text();
+      let responseJson: any;
+
+      try {
+        responseJson = JSON.parse(responseText);
+      } catch {
+        return {
+          status: 'PROVIDER_ERROR',
+          errorMessage: 'INVALID_JSON_RESPONSE',
+        };
+      }
+
+      const code = String(responseJson?.code ?? response.status);
+      const message = String(responseJson?.message ?? '');
+
+      if (code === '200001' && responseJson?.data) {
+        return {
+          status: 'SUCCESS',
+          rawCode: code,
+          data: responseJson.data,
+        };
+      }
+
+      return {
+        status: 'PROVIDER_ERROR',
+        rawCode: code,
+        errorMessage: message || `Provider returned status ${code}`,
+      };
+    } catch (error: any) {
       return {
         status: 'PROVIDER_ERROR',
         errorMessage: error.message || 'NETWORK_ERROR',

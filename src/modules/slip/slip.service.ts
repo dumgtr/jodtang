@@ -19,7 +19,19 @@ export interface ProcessSlipSuccess {
 
 export interface ProcessSlipFailure {
   success: false;
-  reason: 'DUPLICATE' | 'NOT_FOUND' | 'INVALID_IMAGE' | 'QUOTA_EXCEEDED' | 'PROVIDER_ERROR';
+  reason:
+    | 'DUPLICATE'
+    | 'NOT_FOUND'
+    | 'INVALID_IMAGE'
+    | 'FRAUD'
+    | 'RECIPIENT_MISMATCH'
+    | 'AMOUNT_MISMATCH'
+    | 'DATE_MISMATCH'
+    | 'BANK_ERROR'
+    | 'TEMPORARY_CONFLICT'
+    | 'QUEUED'
+    | 'QUOTA_EXCEEDED'
+    | 'PROVIDER_ERROR';
   message: string;
 }
 
@@ -141,7 +153,15 @@ export class SlipService {
       return {
         success: false,
         reason: 'DUPLICATE',
-        message: '⚠️ สลิปนี้ถูกบันทึก/ใช้งานไปแล้วครับ',
+        message: '⚠️ สลิปนี้ถูกตรวจสอบหรือใช้งานไปแล้วครับ\nกรุณาส่งสลิปใบใหม่ครับ',
+      };
+    }
+
+    if (verification.status === 'FRAUD') {
+      return {
+        success: false,
+        reason: 'FRAUD',
+        message: '⚠️ ไม่สามารถยืนยันสลิปนี้ได้ เนื่องจากระบบตรวจพบว่าสลิปไม่ถูกต้องหรืออาจเป็นสลิปปลอมครับ',
       };
     }
 
@@ -150,6 +170,54 @@ export class SlipService {
         success: false,
         reason: 'NOT_FOUND',
         message: '⚠️ ไม่พบข้อมูลสลิปนี้ในระบบธนาคารครับ กรุณาตรวจสอบว่าเป็นสลิปที่โอนเงินสำเร็จหรือไม่ หรือพิมพ์บอกรายการแทนได้ครับ ✨',
+      };
+    }
+
+    if (verification.status === 'RECIPIENT_MISMATCH') {
+      return {
+        success: false,
+        reason: 'RECIPIENT_MISMATCH',
+        message: '⚠️ บัญชีผู้รับเงินไม่ตรงตามเงื่อนไขที่กำหนดครับ กรุณาตรวจสอบสลิปอีกครั้งครับ',
+      };
+    }
+
+    if (verification.status === 'AMOUNT_MISMATCH') {
+      return {
+        success: false,
+        reason: 'AMOUNT_MISMATCH',
+        message: '⚠️ ยอดเงินในสลิปไม่ตรงตามเงื่อนไขที่กำหนดครับ กรุณาตรวจสอบสลิปอีกครั้งครับ',
+      };
+    }
+
+    if (verification.status === 'DATE_MISMATCH') {
+      return {
+        success: false,
+        reason: 'DATE_MISMATCH',
+        message: '⚠️ วันที่โอนในสลิปไม่ตรงตามเงื่อนไขที่กำหนดครับ กรุณาตรวจสอบสลิปอีกครั้งครับ',
+      };
+    }
+
+    if (verification.status === 'BANK_ERROR') {
+      return {
+        success: false,
+        reason: 'BANK_ERROR',
+        message: '⚠️ ธนาคารปลายทางขัดข้องชั่วคราว กรุณารอสักครู่แล้วลองส่งใหม่อีกครั้งครับ ✨',
+      };
+    }
+
+    if (verification.status === 'TEMPORARY_CONFLICT') {
+      return {
+        success: false,
+        reason: 'TEMPORARY_CONFLICT',
+        message: '⚠️ ระบบกำลังตรวจสอบรายการหรือมีคำขอซ้อนกัน กรุณารอสักครู่แล้วลองใหม่อีกครั้งครับ ✨',
+      };
+    }
+
+    if (verification.status === 'QUEUED') {
+      return {
+        success: false,
+        reason: 'QUEUED',
+        message: '⏳ ระบบกำลังประมวลผลสลิปของคุณ กรุณารอสักครู่ครับ ✨',
       };
     }
 
@@ -185,7 +253,7 @@ export class SlipService {
       return {
         success: false,
         reason: 'DUPLICATE',
-        message: `⚠️ สลิปนี้ถูกบันทึก/ใช้งานไปแล้วครับ (รหัสอ้างอิง: ${transRef})`,
+        message: `⚠️ สลิปนี้ถูกตรวจสอบหรือใช้งานไปแล้วครับ (รหัสอ้างอิง: ${transRef})`,
       };
     }
 
