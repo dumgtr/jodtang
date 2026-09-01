@@ -109,10 +109,10 @@ async function runUxMenuTests() {
   await query(`DELETE FROM transactions WHERE user_id = $1;`, [user.id]);
   await query(`DELETE FROM audit_logs WHERE user_id = $1;`, [user.id]);
 
-  // Insert fixture transactions for August 2026
+  // Insert fixture transactions for current month
   await query(
     `INSERT INTO transactions (user_id, type, amount, category_id, merchant_id, description, occurred_at, status)
-     VALUES ($1, 'expense', 780, 'อาหารและเครื่องดื่ม', 'MK', 'กินข้าว MK', '2026-08-21 12:00:00+07', 'confirmed');`,
+     VALUES ($1, 'expense', 780, 'อาหารและเครื่องดื่ม', 'MK', 'กินข้าว MK', NOW(), 'confirmed');`,
     [user.id]
   );
   console.log('   ✅ Fixture data loaded.\n');

@@ -17,8 +17,13 @@ const lineClient = new messagingApi.MessagingApiClient({
   channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
 });
 
+const lineBlobClient = new messagingApi.MessagingApiBlobClient({
+  channelAccessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
+});
+
 const webhookEventDependencies = {
   lineClient,
+  lineBlobClient,
   findOrCreateByLineUserId: (lineUserId: string) =>
     UserRepository.findOrCreateByLineUserId(lineUserId),
   handleTextMessage,

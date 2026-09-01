@@ -11,6 +11,7 @@ import {
 
 export type WebhookEventHandlerDependencies = {
   lineClient: messagingApi.MessagingApiClient;
+  lineBlobClient?: messagingApi.MessagingApiBlobClient;
   findOrCreateByLineUserId: (lineUserId: string) => Promise<User>;
   handleTextMessage: (
     lineUserId: string,
@@ -22,7 +23,8 @@ export type WebhookEventHandlerDependencies = {
     lineUserId: string,
     messageId: string,
     replyToken: string | undefined,
-    lineClient: messagingApi.MessagingApiClient
+    lineClient: messagingApi.MessagingApiClient,
+    lineBlobClient?: messagingApi.MessagingApiBlobClient
   ) => Promise<void>;
   handlePostbackEvent: (
     user: User,
@@ -130,12 +132,28 @@ export async function handleWebhookEvent(
   }
 
   if (event.type === 'message' && event.message.type === 'image') {
+    if (event.source.type !== 'user') {
+      if (event.replyToken) {
+        await dependencies.lineClient.replyMessage({
+          replyToken: event.replyToken,
+          messages: [
+            {
+              type: 'text',
+              text: '🔒 เพื่อความเป็นส่วนตัวและความปลอดภัย ระบบตรวจสอบสลิปใช้ได้เฉพาะในแชตส่วนตัวกับจดตังครับ',
+            },
+          ],
+        });
+      }
+      return;
+    }
+
     console.log('[Image Message Received]', { userId: user.id, messageId: event.message.id });
     await dependencies.handleImageMessage(
       lineUserId,
       event.message.id,
       event.replyToken,
-      dependencies.lineClient
+      dependencies.lineClient,
+      dependencies.lineBlobClient
     );
     return;
   }

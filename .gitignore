@@ -8,6 +8,7 @@ dist/
 .env
 .env.*
 !.env.example
+jodtang.env
 
 # Database persistence (Docker)
 postgres_data/
@@ -31,3 +32,10 @@ Thumbs.db
 coverage/
 .nyc_output/
 benchmark-results/
+
+# Temporary artifacts & mockups
+*.png
+*.jpg
+*.jpeg
+*.csv
+.richmenu-id*.txt

@@ -287,7 +287,9 @@ async function runTransactionManagementTests() {
   );
   const txProdAfterDay19 = await TransactionRepository.findByIdAndUser(txProd.id, userA.id);
   assert(txProdAfterDay19);
-  assert.equal(new Date(txProdAfterDay19.occurred_at).toISOString().startsWith('2026-08-19'), true, 'Date must be 2026-08-19');
+  const currentMonthStr = String(new Date().getMonth() + 1).padStart(2, '0');
+  const expectedDay19 = `${new Date().getFullYear()}-${currentMonthStr}-19`;
+  assert.equal(new Date(txProdAfterDay19.occurred_at).toISOString().startsWith(expectedDay19), true, `Date must be ${expectedDay19}`);
   assert.equal(Number(txProdAfterDay19.amount), 777, 'Amount must remain 777');
   assert.equal(txProdAfterDay19.category_id, 'โอนเงิน/ทั่วไป', 'Category must remain โอนเงิน/ทั่วไป');
   assert.equal(txProdAfterDay19.description, 'ทดสอบ', 'Description must remain ทดสอบ');

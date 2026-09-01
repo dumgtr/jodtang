@@ -32,6 +32,8 @@ const envSchema = z.object({
     .transform((value) => value === 'true'),
   SLIPOK_API_KEY: z.string().optional(),
   SLIPOK_BRANCH_ID: z.string().optional(),
+  SLIP2GO_API_SECRET: optionalNonEmptyString,
+  SLIP2GO_BASE_URL: optionalUrl.default('https://connect.slip2go.com'),
   PUBLIC_BASE_URL: optionalUrl,
   EXPORT_TOKEN_SECRET: optionalNonEmptyString.refine(
     (value) => value === undefined || value.length >= 16,
