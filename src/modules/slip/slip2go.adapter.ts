@@ -75,8 +75,25 @@ export class Slip2GoAdapter implements ISlipProvider {
         const amount = typeof d.amount === 'number' ? d.amount : parseFloat(d.amount);
         const transRef = String(d.transRef ?? '');
         const occurredAt = d.dateTime ? new Date(d.dateTime).toISOString() : new Date().toISOString();
-        const merchant = d.receiver?.account?.name || d.receiver?.name || 'ร้านค้า/ผู้รับเงิน';
-        const senderName = d.sender?.account?.name || d.sender?.name;
+        const extractAccountName = (target: any): string => {
+          if (!target) return '';
+          const val = target.name ?? target;
+          if (typeof val === 'string') return val.trim();
+          if (typeof val === 'object' && val !== null) {
+            const candidate = val.th || val.en || val.displayName || '';
+            if (typeof candidate === 'string') return candidate.trim();
+          }
+          return '';
+        };
+
+        const merchant =
+          extractAccountName(d.receiver?.account) ||
+          extractAccountName(d.receiver) ||
+          'ร้านค้า/ผู้รับเงิน';
+        const senderName =
+          extractAccountName(d.sender?.account) ||
+          extractAccountName(d.sender) ||
+          undefined;
 
         if (!amount || isNaN(amount) || amount <= 0) {
           return {

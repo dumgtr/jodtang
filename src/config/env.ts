@@ -39,6 +39,14 @@ const envSchema = z.object({
     (value) => value === undefined || value.length >= 16,
     'EXPORT_TOKEN_SECRET must be at least 16 characters when provided',
   ),
+  RECEIPT_OCR_ENABLED: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+  RECEIPT_OCR_PROVIDER: z.string().default('typhoon'),
+  TYPHOON_API_KEY: optionalNonEmptyString,
+  TYPHOON_BASE_URL: optionalUrl.default('https://api.opentyphoon.ai/v1'),
+  GOOGLE_VISION_API_KEY: optionalNonEmptyString,
 });
 
 export const env = envSchema.parse(process.env);

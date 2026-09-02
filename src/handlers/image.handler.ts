@@ -2,12 +2,14 @@ import { messagingApi } from '@line/bot-sdk';
 import { env } from '../config/env';
 import { UserRepository } from '../modules/user/user.repository';
 import { SlipService } from '../modules/slip/slip.service';
+import { ReceiptService } from '../modules/receipt/receipt.service';
 import { buildDraftConfirmBubble } from '../utils/flex.builder';
 import { GENERIC_USER_ERROR_MESSAGE, logInternalError } from '../utils/errors';
 
 /**
  * Handles incoming LINE image message events.
  * Streams the image directly in-memory, verifies via SlipService,
+ * falls back to ReceiptService if no bank QR code is found,
  * protects against duplicates, and replies with a Draft Confirmation Card.
  * 
  * STRICT INVARIANT: Does NOT create a permanent transaction!
@@ -18,7 +20,8 @@ export async function handleImageMessage(
   replyToken: string | undefined,
   lineClient: messagingApi.MessagingApiClient,
   lineBlobClient?: messagingApi.MessagingApiBlobClient,
-  slipService: SlipService = new SlipService()
+  slipService: SlipService = new SlipService(),
+  receiptService: ReceiptService = new ReceiptService()
 ): Promise<void> {
   console.log('[Image Handler] Processing image message', { lineUserId, messageId });
 
@@ -92,18 +95,62 @@ export async function handleImageMessage(
           },
         ],
       });
-    } else {
-      // 4. Verification failed or duplicate detected
+      return;
+    }
+
+    // 4. Receipt OCR Fallback: Triggered ONLY when no bank QR was found on image (INVALID_IMAGE)
+    // STRICT INVARIANTS:
+    // - DUPLICATE slips NEVER fallback to OCR
+    // - FRAUD slips NEVER fallback to OCR
+    // - NOT_FOUND / BANK_ERROR slips NEVER fallback to OCR
+    if (result.reason === 'INVALID_IMAGE' && receiptService.isConfigured()) {
+      console.log('[Image Handler] No bank QR found; falling back to Receipt OCR...');
+      const receiptResult = await receiptService.processReceipt(user.id, imageBuffer);
+
+      if (receiptResult.success) {
+        const flexBubble = buildDraftConfirmBubble(
+          receiptResult.draft.id,
+          receiptResult.receiptData.amount,
+          receiptResult.receiptData.category,
+          receiptResult.receiptData.merchant
+        );
+
+        await lineClient.replyMessage({
+          replyToken,
+          messages: [
+            {
+              type: 'flex',
+              altText: `🧾 ใบเสร็จรอยืนยัน: ฿${receiptResult.receiptData.amount.toFixed(2)} - ${receiptResult.receiptData.merchant}`,
+              contents: flexBubble,
+            },
+          ],
+        });
+        return;
+      }
+
+      // Receipt OCR was attempted but failed/unreadable/no amount
       await lineClient.replyMessage({
         replyToken,
         messages: [
           {
             type: 'text',
-            text: result.message,
+            text: receiptResult.message,
           },
         ],
       });
+      return;
     }
+
+    // 5. Verification failed, duplicate detected, or OCR unconfigured
+    await lineClient.replyMessage({
+      replyToken,
+      messages: [
+        {
+          type: 'text',
+          text: result.message,
+        },
+      ],
+    });
   } catch (error) {
     logInternalError('[Image Handler Error]', error);
     try {
