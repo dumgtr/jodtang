@@ -1,0 +1,187 @@
+{
+  "version": "1.0.0",
+  "description": "Mock OCR raw text dataset representing Truth Table branches (C1-C12) for Bank-Slip Likelihood Guard calibration",
+  "generatedAt": "2026-09-02T22:27:00.000Z",
+  "testCases": [
+    {
+      "id": "TC-ATM-01",
+      "name": "ATM Paper Slip (Policy A)",
+      "archetype": "PHYSICAL_ATM_SLIP",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: ATM Paper Slip",
+      "rawText": "ATM TRANSFER\nธนาคารกรุงไทย ATM\nตู้ ATM ลำดับที่ 4821 สาขาสยามสแควร์\nวันที่ 01/09/2569 เวลา 14:22:10\nจากบัญชี 123-4-56789-0\nไปยังบัญชี 987-6-54321-0\nจำนวนเงิน 2,000.00 บาท\nค่าธรรมเนียม 0.00 บาท\nทำรายการสำเร็จ\nรหัสอ้างอิง ATM-KTB-984122",
+      "characteristics": {
+        "hasAtmKeywords": true,
+        "hasTransferVerb": true,
+        "hasDirectionalAccounts": true,
+        "hasBankName": true,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-CROP-01",
+      "name": "Cropped Bank Slip (KBank)",
+      "archetype": "CROPPED_BANK_SLIP",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "โอนเงินสำเร็จ\n28 ส.ค. 2569 11:45 น.\nนาย สมชาย มีทรัพย์\nธ.กสิกรไทย\nxxx-2-34567-8\nนาย สมศักดิ์ มั่งคั่ง\nธ.ไทยพาณิชย์\nxxx-4-56789-1\nจำนวนเงิน 1,500.00 บาท\nค่าธรรมเนียม 0.00 บาท\nรหัสอ้างอิง KB0098712345",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": true,
+        "hasDirectionalAccounts": true,
+        "hasBankName": true,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-CROP-02",
+      "name": "Cropped SCB Slip (SCB Easy)",
+      "archetype": "CROPPED_BANK_SLIP",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "SCB EASY\nโอนสำเร็จ\nจาก xxx-x-x9999-1\nไปยัง xxx-x-x8888-2\nน.ส. วิภาดา เจริญ\nจำนวนเงิน 450.00 บาท\nวันที่ทำรายการ 30 ส.ค. 2569 - 18:20\nเลขที่รายการ 20260830SCB44518",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": true,
+        "hasDirectionalAccounts": true,
+        "hasBankName": true,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-RCPT-01",
+      "name": "7-Eleven Retail Receipt",
+      "archetype": "RETAIL_RECEIPT",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt",
+      "rawText": "ซีพี ออลล์ บมจ. (7-Eleven)\nสาขา 04812 สุขุมวิท 71\nใบเสร็จรับเงิน/ใบกำกับภาษีอย่างย่อ\nTAX ID: 0107542000011 POS ID: 03 Cashier: 0092\n1. แซนวิชแฮมชีส 1 ชิ้น 35.00 บาท\n2. โออิชิ ชาเขียว 500ml 1 ขวด 20.00 บาท\nรวมทั้งสิ้น 55.00 บาท\n(VAT Included 7% 3.60 บาท)\nชำระด้วย: PromptPay\nเงินสด/เงินทอน: 0.00 บาท\nขอบคุณที่ใช้บริการ",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasBankName": false,
+        "hasRetailSignals": true
+      }
+    },
+    {
+      "id": "TC-RCPT-02",
+      "name": "Restaurant EDC Card Slip",
+      "archetype": "RETAIL_RECEIPT",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt",
+      "rawText": "SALE SLIP / CUSTOMER COPY\nMERCHANT: GOURMET ITALIAN BISTRO\nBANGKOK THAILAND\nTID: 88102941  MID: 002948172635\nDATE: 01/09/2026 TIME: 19:40:12\nCARD TYPE: VISA\nCARD NO: ************4821\nBATCH: 001 TRACE: 004819\nAUTH CODE: 884122\nAMOUNT: THB 890.00\nTOTAL: THB 890.00\nSIGNATURE NOT REQUIRED",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasBankName": false,
+        "hasRetailSignals": true
+      }
+    },
+    {
+      "id": "TC-EWAL-01",
+      "name": "Pao Tang G-Wallet (Policy B)",
+      "archetype": "E_WALLET_PAYMENT",
+      "expectedAction": "ALLOW_UNVERIFIED_EWALLET",
+      "policyBranch": "Policy B: Non-Slip2Go e-Wallet",
+      "rawText": "ไทยช่วยไทย พลัส 60/40\nเป๋าตัง\nทำรายการสำเร็จ\nรหัสอ้างอิง b2844c0f2b554b528baa1bad8f06eacc\n1 ก.ย. 2569 18:53 น.\nฐานิสร์ จ***\nG-Wallet ID: **** ******* 6198\n↓\nตงล้ง\nอาหาร ของหวาน เครื่องดื่ม\nค่าสินค้า/บริการ 80 บาท\nสิทธิไทยช่วยไทยพลัส -48 บาท\nจำนวนเงินที่ชำระ 32 บาท\n*รายการนี้ มีการเติมเงินผ่านบัญชีกรุงไทยที่ผูกไว้กับ 'เป๋าตัง'",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasEWalletSignals": true,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-BILL-01",
+      "name": "KTC Bill Payment (Policy B)",
+      "archetype": "BILL_PAYMENT",
+      "expectedAction": "ALLOW_UNVERIFIED_BILL",
+      "policyBranch": "Policy B: Bill Payment",
+      "rawText": "Krungthai กรุงไทย\nจ่ายบิลสำเร็จ\nรหัสอ้างอิง mKTB3929216647\nนายฐานิสร์ จ * * *\nกรุงไทย XXX-X-XX940-3\n↓\nบริษัท บัตรกรุงไทย จำกัด (มหาชน)\n(KTC)\nเลขที่บัตรเครดิต 16 หลัก 356342XXXXXX2896\nจำนวนเงิน 8,715.89 บาท\nค่าธรรมเนียม 0.00 บาท\nวันที่ทำรายการ 23 ส.ค. 2569 - 09:29",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasBillPaymentSignals": true,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-STAND-01",
+      "name": "Store QR Signboard Stand",
+      "archetype": "STANDALONE_QR_SIGNBOARD",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Ambiguous / Standalone QR",
+      "rawText": "สแกนจ่ายที่นี่ ยินดีรับเงินโอน\nPromptPay พร้อมเพย์\nID: 081-234-5678\nชื่อบัญชี: นาย สมชาย ขายดี\nธนาคารกสิกรไทย",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasTransactionAmount": false,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-NOTE-01",
+      "name": "Adversarial Fake Note",
+      "archetype": "MANUAL_NOTE_PHISHING",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Unsubstantiated Text",
+      "rawText": "โอนเงินแล้วนะ 500 บาท เมื่อกี้นี้เอง\nขอบคุณมากครับพี่ เดี๋ยวพรุ่งนี้แวะไปรับของ",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasBankMetadata": false,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-EDGE-01",
+      "name": "Retail Receipt with Bank/Payment Channel Mention",
+      "archetype": "RETAIL_EDGE_CASE",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt (Edge Case)",
+      "rawText": "บิ๊กซี ซูเปอร์เซ็นเตอร์ (สาขา รัชดาภิเษก)\nใบกำกับภาษีอย่างย่อ / ใบเสร็จรับเงิน\nTAX INVOICE (ABB)\nเลขประจำตัวผู้เสียภาษี 0107536000129\nรายการสินค้า:\n- ข้าวหอมมะลิ 5 กก. 199.00 บาท\n- นมสดพาสเจอร์ไรส์ 2 ขวด 92.00 บาท\n- น้ำตาลทราย 1 ถุง 29.00 บาท\nยอดรวมทั้งสิ้น 320.00 บาท\nภาษีมูลค่าเพิ่ม 7% (20.93 บาท)\nช่องทางการชำระเงิน: KBank Mobile Banking (ธนาคารกสิกรไทย)\nแคชเชียร์: นันทนา\nขอบคุณที่ใช้บริการบิ๊กซี",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasBankName": true,
+        "hasRetailSignals": true
+      }
+    },
+    {
+      "id": "TC-EWAL-02",
+      "name": "ShopeePay e-Wallet Payment (Policy B)",
+      "archetype": "E_WALLET_PAYMENT",
+      "expectedAction": "ALLOW_UNVERIFIED_EWALLET",
+      "policyBranch": "Policy B: Non-Slip2Go e-Wallet",
+      "rawText": "ShopeePay\nชำระเงินสำเร็จ\nร้านค้า: Flash Express สาขาอารีย์\nหมายเลขคำสั่งซื้อ: SPP994827110\nวันที่ 02/09/2569 13:10 น.\nชำระจาก: ShopeePay Wallet\nยอดเงินที่ชำระ: 65.00 บาท\nสถานะ: สำเร็จ",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasEWalletSignals": true,
+        "hasRetailSignals": false
+      }
+    },
+    {
+      "id": "TC-BILL-02",
+      "name": "MEA Electricity Bill Payment (Policy B)",
+      "archetype": "BILL_PAYMENT",
+      "expectedAction": "ALLOW_UNVERIFIED_BILL",
+      "policyBranch": "Policy B: Bill Payment",
+      "rawText": "K PLUS\nชำระบิลสำเร็จ\nการไฟฟ้านครหลวง (MEA)\nรหัสอ้างอิง: 20260901KP884719\nวันที่ทำรายการ: 01 ก.ย. 2569 08:30 น.\nจากบัญชี: xxx-2-99182-3\nไปยัง: การไฟฟ้านครหลวง\nRef 1: 012938471029\nRef 2: 09202611\nจำนวนเงิน: 1,420.50 บาท\nค่าธรรมเนียม: 0.00 บาท",
+      "characteristics": {
+        "hasAtmKeywords": false,
+        "hasTransferVerb": false,
+        "hasDirectionalAccounts": false,
+        "hasBillPaymentSignals": true,
+        "hasRetailSignals": false
+      }
+    }
+  ]
+}

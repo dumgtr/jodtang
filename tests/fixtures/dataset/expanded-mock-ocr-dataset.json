@@ -1,0 +1,257 @@
+{
+  "version": "2.0.0",
+  "description": "Expanded mock OCR perturbation dataset covering 24 stress dimensions across 25 scenarios for Bank-Slip Likelihood Guard calibration",
+  "generatedAt": "2026-09-02T22:45:00.000Z",
+  "testCases": [
+    {
+      "id": "TC-01-BASELINE-ATM",
+      "name": "ATM Paper Slip (Policy A)",
+      "archetype": "PHYSICAL_ATM_SLIP",
+      "dimension": "18. ATM-like transfer evidence",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: ATM Paper Slip",
+      "rawText": "ATM TRANSFER\nธนาคารกรุงไทย ATM\nตู้ ATM ลำดับที่ 4821 สาขาสยามสแควร์\nวันที่ 01/09/2569 เวลา 14:22:10\nจากบัญชี 123-4-56789-0\nไปยังบัญชี 987-6-54321-0\nจำนวนเงิน 2,000.00 บาท\nค่าธรรมเนียม 0.00 บาท\nทำรายการสำเร็จ\nรหัสอ้างอิง ATM-KTB-984122",
+      "rationale": "ATM physical paper slips lack verifiable 2D QR codes; Policy A enforces fail-closed hard stop to prevent forged paper submissions."
+    },
+    {
+      "id": "TC-02-BASELINE-CROP-KBANK",
+      "name": "Cropped Bank Slip (KBank)",
+      "archetype": "CROPPED_BANK_SLIP",
+      "dimension": "19. Cropped bank-slip text",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "โอนเงินสำเร็จ\n28 ส.ค. 2569 11:45 น.\nนาย สมชาย มีทรัพย์\nธ.กสิกรไทย\nxxx-2-34567-8\nนาย สมศักดิ์ มั่งคั่ง\nธ.ไทยพาณิชย์\nxxx-4-56789-1\nจำนวนเงิน 1,500.00 บาท\nค่าธรรมเนียม 0.00 บาท\nรหัสอ้างอิง KB0098712345",
+      "rationale": "Co-occurrence of transfer execution verb + directional account clearing between two banks confirms a bank slip without QR; must fail closed."
+    },
+    {
+      "id": "TC-03-BASELINE-CROP-SCB",
+      "name": "Cropped SCB Slip (SCB Easy)",
+      "archetype": "CROPPED_BANK_SLIP",
+      "dimension": "19. Cropped bank-slip text",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "SCB EASY\nโอนสำเร็จ\nจาก xxx-x-x9999-1\nไปยัง xxx-x-x8888-2\nน.ส. วิภาดา เจริญ\nจำนวนเงิน 450.00 บาท\nวันที่ทำรายการ 30 ส.ค. 2569 - 18:20\nเลขที่รายการ 20260830SCB44518",
+      "rationale": "SCB digital transfer confirmation lacking Mini-QR; must fail closed under Policy A."
+    },
+    {
+      "id": "TC-04-BASELINE-7ELEVEN",
+      "name": "7-Eleven Retail Receipt",
+      "archetype": "RETAIL_RECEIPT",
+      "dimension": "10. PromptPay mention on receipt",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt",
+      "rawText": "ซีพี ออลล์ บมจ. (7-Eleven)\nสาขา 04812 สุขุมวิท 71\nใบเสร็จรับเงิน/ใบกำกับภาษีอย่างย่อ\nTAX ID: 0107542000011 POS ID: 03 Cashier: 0092\n1. แซนวิชแฮมชีส 1 ชิ้น 35.00 บาท\n2. โออิชิ ชาเขียว 500ml 1 ขวด 20.00 บาท\nรวมทั้งสิ้น 55.00 บาท\n(VAT Included 7% 3.60 บาท)\nชำระด้วย: PromptPay\nเงินสด/เงินทอน: 0.00 บาท\nขอบคุณที่ใช้บริการ",
+      "rationale": "PromptPay is cited merely as a payment tender note inside a valid fiscal receipt with line items and VAT."
+    },
+    {
+      "id": "TC-05-BASELINE-EDC",
+      "name": "Restaurant EDC Card Slip",
+      "archetype": "RETAIL_RECEIPT",
+      "dimension": "16. EDC receipt",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt",
+      "rawText": "SALE SLIP / CUSTOMER COPY\nMERCHANT: GOURMET ITALIAN BISTRO\nBANGKOK THAILAND\nTID: 88102941  MID: 002948172635\nDATE: 01/09/2026 TIME: 19:40:12\nCARD TYPE: VISA\nCARD NO: ************4821\nBATCH: 001 TRACE: 004819\nAUTH CODE: 884122\nAMOUNT: THB 890.00\nTOTAL: THB 890.00\nSIGNATURE NOT REQUIRED",
+      "rationale": "POS card transaction draft for dining merchant; contains EDC terminal metadata and no bank transfer verbs."
+    },
+    {
+      "id": "TC-06-BASELINE-EWAL-PAOTANG",
+      "name": "Pao Tang G-Wallet (Policy B)",
+      "archetype": "E_WALLET_PAYMENT",
+      "dimension": "14. e-Wallet with explicit success wording",
+      "expectedAction": "ALLOW_UNVERIFIED_EWALLET",
+      "policyBranch": "Policy B: Non-Slip2Go e-Wallet",
+      "rawText": "ไทยช่วยไทย พลัส 60/40\nเป๋าตัง\nทำรายการสำเร็จ\nรหัสอ้างอิง b2844c0f2b554b528baa1bad8f06eacc\n1 ก.ย. 2569 18:53 น.\nฐานิสร์ จ***\nG-Wallet ID: **** ******* 6198\n↓\nตงล้ง\nอาหาร ของหวาน เครื่องดื่ม\nค่าสินค้า/บริการ 80 บาท\nสิทธิไทยช่วยไทยพลัส -48 บาท\nจำนวนเงินที่ชำระ 32 บาท\n*รายการนี้ มีการเติมเงินผ่านบัญชีกรุงไทยที่ผูกไว้กับ 'เป๋าตัง'",
+      "rationale": "Government subsidy / G-Wallet payment screenshot lacking Mini-QR; routes to Policy B Unverified Draft requiring confirmation."
+    },
+    {
+      "id": "TC-07-BASELINE-BILL-KTC",
+      "name": "KTC Bill Payment (Policy B)",
+      "archetype": "BILL_PAYMENT",
+      "dimension": "13. Paid bill",
+      "expectedAction": "ALLOW_UNVERIFIED_BILL",
+      "policyBranch": "Policy B: Bill Payment",
+      "rawText": "Krungthai กรุงไทย\nจ่ายบิลสำเร็จ\nรหัสอ้างอิง mKTB3929216647\nนายฐานิสร์ จ * * *\nกรุงไทย XXX-X-XX940-3\n↓\nบริษัท บัตรกรุงไทย จำกัด (มหาชน)\n(KTC)\nเลขที่บัตรเครดิต 16 หลัก 356342XXXXXX2896\nจำนวนเงิน 8,715.89 บาท\nค่าธรรมเนียม 0.00 บาท\nวันที่ทำรายการ 23 ส.ค. 2569 - 09:29",
+      "rationale": "Credit card bill payment confirmation to KTC biller; routes to Policy B Unverified Draft requiring confirmation."
+    },
+    {
+      "id": "TC-08-BASELINE-STAND",
+      "name": "Store QR Signboard Stand",
+      "archetype": "STANDALONE_QR_SIGNBOARD",
+      "dimension": "11. 'Mobile Banking' acceptance sign / store sign",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Ambiguous / Standalone QR",
+      "rawText": "สแกนจ่ายที่นี่ ยินดีรับเงินโอน\nPromptPay พร้อมเพย์\nID: 081-234-5678\nชื่อบัญชี: นาย สมชาย ขายดี\nธนาคารกสิกรไทย",
+      "rationale": "Merchant payment prompt sign lacks transaction amount and execution proof; fails closed to prevent phantom transactions."
+    },
+    {
+      "id": "TC-09-BASELINE-MEMO",
+      "name": "Adversarial Fake Note",
+      "archetype": "MANUAL_NOTE_PHISHING",
+      "dimension": "21. adversarial fake memo",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Unsubstantiated Text",
+      "rawText": "โอนเงินแล้วนะ 500 บาท เมื่อกี้นี้เอง\nขอบคุณมากครับพี่ เดี๋ยวพรุ่งนี้แวะไปรับของ",
+      "rationale": "Casual text note claiming money was transferred lacks bank or fiscal proof; fails closed as ambiguous."
+    },
+    {
+      "id": "TC-10-BASELINE-EDGE-BIGC",
+      "name": "Retail Receipt with Bank/Payment Terminology",
+      "archetype": "RETAIL_EDGE_CASE",
+      "dimension": "8. Bank name appearing in ordinary receipt & 17. Retail receipt with bank terminology",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt (Edge Case)",
+      "rawText": "บิ๊กซี ซูเปอร์เซ็นเตอร์ (สาขา รัชดาภิเษก)\nใบกำกับภาษีอย่างย่อ / ใบเสร็จรับเงิน\nTAX INVOICE (ABB)\nเลขประจำตัวผู้เสียภาษี 0107536000129\nรายการสินค้า:\n- ข้าวหอมมะลิ 5 กก. 199.00 บาท\n- นมสดพาสเจอร์ไรส์ 2 ขวด 92.00 บาท\n- น้ำตาลทราย 1 ถุง 29.00 บาท\nยอดรวมทั้งสิ้น 320.00 บาท\nภาษีมูลค่าเพิ่ม 7% (20.93 บาท)\nช่องทางการชำระเงิน: KBank Mobile Banking (ธนาคารกสิกรไทย)\nแคชเชียร์: นันทนา\nขอบคุณที่ใช้บริการบิ๊กซี",
+      "rationale": "Dominant retail signals (TAX INVOICE, line items, VAT, Cashier) neutralize the isolated bank name mention."
+    },
+    {
+      "id": "TC-11-SHUFFLE-CROP",
+      "name": "OCR Line-Order Shuffle on Cropped Slip",
+      "archetype": "CROPPED_BANK_SLIP",
+      "dimension": "1. OCR line-order shuffle",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "ไปยังบัญชี: xxx-4-56789-1\nรหัสอ้างอิง: KB0098712345\nจากบัญชี: xxx-2-34567-8\nจำนวนเงิน 1,500.00 บาท\nโอนเงินสำเร็จ\nธ.กสิกรไทย\n28 ส.ค. 2569 11:45 น.",
+      "rationale": "Multi-signal co-occurrence is unordered; despite shuffled lines, transfer verb, directional accounts, and bank name co-exist."
+    },
+    {
+      "id": "TC-12-TYPO-VOWEL-CROP",
+      "name": "OCR Typo & Thai Vowel Corruption",
+      "archetype": "CROPPED_BANK_SLIP",
+      "dimension": "2. OCR typo / character corruption & 7. Thai OCR vowel/character corruption",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "โอนเงนสำเรจ\nวนททำรายการ: 30 ส.ค. 2569 - 18:20\nจากบญช: xxx-x-x9999-1\nไปยงบญช: xxx-x-x8888-2\nธ.ไทยพาณชย\nจำนวนเงน: 450.00 บาท\nเลขทรายการ: 20260830SCB44518",
+      "rationale": "Even with missing tone marks and corrupted vowels, transfer context and directional account clearing remain detectable."
+    },
+    {
+      "id": "TC-13-MISSING-REF-CROP",
+      "name": "Cropped Slip with Missing Ref No",
+      "archetype": "CROPPED_BANK_SLIP",
+      "dimension": "3. Missing Ref No.",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "โอนเงินสำเร็จ\nวันที่ 25 ส.ค. 2569 14:10 น.\nจาก: นาย ประสิทธิ์ (ธ.กรุงเทพ xxx-1-23456-7)\nไปยัง: น.ส. อารียา (ธ.กสิกรไทย xxx-2-98765-4)\nจำนวนเงิน: 3,200.00 บาท\nค่าธรรมเนียม: 0.00 บาท",
+      "rationale": "Even with Ref No cropped out, transfer verb + directional account pair across banks proves this is an unverified bank slip."
+    },
+    {
+      "id": "TC-14-PARTIAL-ACCOUNT-CROP",
+      "name": "Cropped Slip with Partial Account Masking",
+      "archetype": "CROPPED_BANK_SLIP",
+      "dimension": "4. Partial account number",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "โอนสำเร็จ\n20 ส.ค. 2569 09:15 น.\nจาก: xxx-x-x4567\nไปยัง: xxx-x-x8901\nจำนวน: 500.00 บาท\nธนาคารกรุงไทย\nRef: KTB98124019",
+      "rationale": "Standard interbank masking syntax with directional indicators confirms financial transfer context."
+    },
+    {
+      "id": "TC-15-MISSING-BANK-CROP",
+      "name": "Cropped Slip with Missing Bank Name",
+      "archetype": "CROPPED_BANK_SLIP",
+      "dimension": "5. Missing bank name",
+      "expectedAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "policyBranch": "Policy A: Cropped Bank Slip",
+      "rawText": "โอนเงินสำเร็จ\nวันที่ทำรายการ: 15 ส.ค. 2569 16:40 น.\nจากบัญชี: xxx-1-99887-2\nไปยังบัญชี: xxx-3-11223-4\nจำนวนเงิน: 1,200.00 บาท\nรหัสอ้างอิง: TXN20260815998",
+      "rationale": "Interbank transfer verb and directional account roles are sufficient proof of a transfer slip even if bank logo was cropped out."
+    },
+    {
+      "id": "TC-16-MISSING-VERB-BANK",
+      "name": "Bank Details Lacking Transfer Execution Verb",
+      "archetype": "AMBIGUOUS_BANK_TEXT",
+      "dimension": "6. Missing transfer verb & 20. ambiguous bank-like text",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Ambiguous Financial Text",
+      "rawText": "นาย สมชาย มั่งมี (ธนาคารกสิกรไทย บัญชี xxx-2-34567-8)\nนาย สมศักดิ์ ร่ำรวย (ธนาคารกรุงไทย บัญชี xxx-6-78901-2)\nยอดเงิน 5,000.00 บาท\nวันที่ 10 ส.ค. 2569",
+      "rationale": "Account lists without transfer execution verbs cannot be verified as executed transfers; fails closed as ambiguous."
+    },
+    {
+      "id": "TC-17-STORE-ACCEPTANCE-SIGN",
+      "name": "Store Payment Acceptance Notice Signboard",
+      "archetype": "STORE_ACCEPTANCE_SIGN",
+      "dimension": "9. 'โอนเงิน' appearing in store/payment context & 11. Store sign",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Ambiguous / Store Sign",
+      "rawText": "ยินดีรับโอนเงินผ่าน Mobile Banking ทุกธนาคาร\nและพร้อมเพย์ (PromptPay)\nไม่มีขั้นต่ำในการชำระเงิน\nร้านกาแฟชาวดอย สาขาประชาชื่น",
+      "rationale": "'โอนเงิน' is used in payment option marketing, not as a transaction execution record; fails closed."
+    },
+    {
+      "id": "TC-18-UNPAID-INVOICE",
+      "name": "Unpaid Utility Bill Invoice",
+      "archetype": "UNPAID_BILL_INVOICE",
+      "dimension": "12. Unpaid invoice / bill",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Unpaid Bill",
+      "rawText": "การไฟฟ้านครหลวง (MEA)\nใบแจ้งค่าไฟฟ้าประจำเดือน สิงหาคม 2569\nบัญชีแสดงสัญญาเลขที่: 020019284710\nยอดที่ต้องชำระ: 1,840.50 บาท\nโปรดชำระเงินภายในวันที่: 18 ก.ย. 2569\n(เอกสารนี้ยังไม่ใช่ใบเสร็จรับเงิน)",
+      "rationale": "An unpaid invoice is a demand for payment, not an expense deduction receipt; fails closed."
+    },
+    {
+      "id": "TC-19-EWAL-CORRUPTED",
+      "name": "e-Wallet Confirmation with Partial OCR Noise",
+      "archetype": "E_WALLET_PAYMENT",
+      "dimension": "15. e-Wallet with partial OCR corruption",
+      "expectedAction": "ALLOW_UNVERIFIED_EWALLET",
+      "policyBranch": "Policy B: Non-Slip2Go e-Wallet",
+      "rawText": "เป๋าตง\nชำระเงนสำเรจ\n1 ก.ย. 2569\nรหสอางอง: EW981240182\nถงเงน: รานขายยาไทยเจรญ\nยอดเงนทชำระ 150.00 บาท",
+      "rationale": "e-Wallet payment signals remain dominant despite minor character errors; routes to Policy B Unverified Draft."
+    },
+    {
+      "id": "TC-20-RCPT-REF-NO",
+      "name": "Retail Receipt with Internal Reference Number",
+      "archetype": "RETAIL_RECEIPT",
+      "dimension": "22. receipt with Reference No. but clearly retail context",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt",
+      "rawText": "Lotus's Hypermarket (เอกมัย-รามอินทรา)\nใบเสร็จรับเงิน/ใบกำกับภาษีอย่างย่อ\nTAX ID: 0107536000218 POS: 04 Cashier: 012\nRef No: LOT-2026-98124419\n1. ผงซักฟอกบรีส 1 ถุง 119.00 บาท\n2. น้ำยาล้างจาน 1 ถุง 45.00 บาท\nยอดรวม: 164.00 บาท (VAT Included)\nเงินสด: 200.00 บาท เงินทอน: 36.00 บาท",
+      "rationale": "Store invoice ref number within fiscal receipt lines does not constitute a bank slip."
+    },
+    {
+      "id": "TC-21-RCPT-ACCOUNT-LIKE-NUMBER",
+      "name": "Retail Store Receipt with Member ID Looking Like Bank Account",
+      "archetype": "RETAIL_RECEIPT",
+      "dimension": "23. receipt with account-like numbers",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt",
+      "rawText": "โฮมโปร (HomePro สาขาพระราม 9)\nใบเสร็จรับเงิน / TAX INVOICE\nเลขประจำตัวผู้เสียภาษี: 0107538000037\nเลขสมาชิกโฮมการ์ด: 123-4-56789-0\nรายการ: หลอดไฟ LED 9W x 4 ชิ้น 280.00 บาท\nยอดชำระ: 280.00 บาท (VAT 7% รวมแล้ว)\nชำระด้วย: บัตรเครดิต\nแคชเชียร์: นพดล",
+      "rationale": "Member card digits formatted like bank accounts are accompanied by dominant retail headers, item lines, and POS data."
+    },
+    {
+      "id": "TC-22-TRANSFER-VERB-IN-STORE-TEXT",
+      "name": "Book Store Receipt with Book Title Containing 'โอนเงิน'",
+      "archetype": "RETAIL_RECEIPT",
+      "dimension": "9. 'โอนเงิน' appearing in store/payment context",
+      "expectedAction": "ALLOW_RECEIPT",
+      "policyBranch": "Canonical: Retail Receipt",
+      "rawText": "ซีเอ็ดบุ๊คเซ็นเตอร์ (SE-ED Book)\nใบเสร็จรับเงินอย่างย่อ TAX ABB: 0107536000301\n1. หนังสือ: คู่มือโอนเงินและลงทุนหุ้นออนไลน์ 1 เล่ม 250.00 บาท\nยอดรวมทั้งสิ้น 250.00 บาท\nVAT 7%: 16.36 บาท\nเงินสด: 500.00 บาท เงินทอน: 250.00 บาท\nแคชเชียร์: มณีรัตน์",
+      "rationale": "'โอนเงิน' appears as part of an itemized book title, surrounded by retail sale signals."
+    },
+    {
+      "id": "TC-23-PAID-BILL-UTILITY",
+      "name": "Provincial Electricity Authority (PEA) Paid Bill",
+      "archetype": "BILL_PAYMENT",
+      "dimension": "13. Paid bill",
+      "expectedAction": "ALLOW_UNVERIFIED_BILL",
+      "policyBranch": "Policy B: Bill Payment",
+      "rawText": "K PLUS\nชำระบิลสำเร็จ\nการไฟฟ้าส่วนภูมิภาค (PEA)\nรหัสอ้างอิง: 20260901KP884719\nวันที่ทำรายการ: 01 ก.ย. 2569 08:30 น.\nจากบัญชี: xxx-2-99182-3\nไปยัง: การไฟฟ้าส่วนภูมิภาค\nRef 1: 012938471029\nRef 2: 09202611\nจำนวนเงิน: 1,420.50 บาท\nค่าธรรมเนียม: 0.00 บาท",
+      "rationale": "Completed utility payment to PEA biller; routes to Policy B Unverified Draft requiring confirmation."
+    },
+    {
+      "id": "TC-24-EWAL-TRANSFER-CONTEXT",
+      "name": "TrueMoney Wallet P2P Transfer Confirmation",
+      "archetype": "E_WALLET_PAYMENT",
+      "dimension": "14. e-Wallet with explicit success wording",
+      "expectedAction": "ALLOW_UNVERIFIED_EWALLET",
+      "policyBranch": "Policy B: Non-Slip2Go e-Wallet",
+      "rawText": "TrueMoney Wallet\nโอนเงินสำเร็จ\nวันที่ 02 ก.ย. 2569 15:45 น.\nโอนไปยัง: 089-123-4567 (คุณ สุภัทรา)\nหมายเลขรายการ: TMW882910491\nจำนวนเงิน: 200.00 บาท\nค่าธรรมเนียม: 0.00 บาท",
+      "rationale": "e-Wallet peer-to-peer transfer confirmation lacking Mini-QR; routes to Policy B Unverified Draft requiring confirmation."
+    },
+    {
+      "id": "TC-25-CONFLICTING-MIXED-EVIDENCE",
+      "name": "Conflicting Mixed Evidence (Retail Header Spliced with Transfer Body)",
+      "archetype": "CONFLICTING_MIXED_EVIDENCE",
+      "dimension": "24. mixed/conflicting OCR evidence",
+      "expectedAction": "HARD_STOP (AMBIGUOUS)",
+      "policyBranch": "Canonical: Hard Stop on Conflicting Mixed Signals",
+      "rawText": "ใบเสร็จรับเงิน/ใบกำกับภาษีอย่างย่อ TAX ID: 0107542000011\nโอนเงินสำเร็จ จาก xxx-1-23456-7 ไปยัง xxx-2-98765-4\nจำนวนเงิน: 1,500.00 บาท\nรหัสอ้างอิง: TXN998877\nยอดรวม: 1,500.00 บาท\nแคชเชียร์: 001",
+      "rationale": "Contradictory document containing both strong fiscal retail headers AND interbank transfer execution lines cannot be safely verified; fails closed."
+    }
+  ]
+}

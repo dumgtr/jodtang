@@ -1,0 +1,66 @@
+{
+  "description": "Production and regression fixtures for QR router and guard calibration validation",
+  "updatedAt": "2026-09-02T22:45:00.000Z",
+  "fixtures": [
+    {
+      "id": "case-001",
+      "fileName": "case-001-pao-tang-32thb.jpg",
+      "sha256": "11E4245466CAEAEDCA546AE9C8574AE7301429679E9D0DB5F8CCFE348BB6EA07",
+      "provenance": "Original LINE user upload (2026-09-02 13:38:00+07:00). Byte-immutable.",
+      "description": "เป๋าตัง / G-Wallet payment 32.00 THB to ตงล้ง",
+      "amount": 32.00,
+      "referenceId": "b2844c0f2b554b528baa1bad8f06eacc",
+      "type": "e-Wallet Payment",
+      "historicalSlip2GoBehavior": "200500 FRAUD (Misclassified)",
+      "expectedRouterClassification": "NO_QR",
+      "expectedGuardAction": "ALLOW_UNVERIFIED_EWALLET",
+      "expectedTargetPipeline": "Typhoon OCR -> Unverified Draft",
+      "expectedBadge": "[Unverified e-Wallet ⚠️]"
+    },
+    {
+      "id": "case-002",
+      "fileName": "case-002-ktc-bill-8715thb.jpg",
+      "sha256": "4E2D432B7E0E5977F682E56CB3562FF28A9AD25175BE73263F05C2261AFA4154",
+      "provenance": "Original LINE user upload (2026-09-02 13:41:00+07:00). Byte-immutable.",
+      "description": "Krungthai NEXT Bill Payment 8,715.89 THB to KTC (บัตรกรุงไทย)",
+      "amount": 8715.89,
+      "referenceId": "mKTB3929216647",
+      "type": "Bill Payment",
+      "historicalSlip2GoBehavior": "200500 FRAUD (Misclassified)",
+      "expectedRouterClassification": "NO_QR",
+      "expectedGuardAction": "ALLOW_UNVERIFIED_BILL",
+      "expectedTargetPipeline": "Typhoon OCR -> Unverified Draft",
+      "expectedBadge": "[Unverified Bill Payment ⚠️]"
+    },
+    {
+      "id": "case-003",
+      "fileName": "case-003-ktb-slip-genuine.jpg",
+      "sha256": "D4EC85BA6BD4F2650400484FAFDEE8687346C1B60EC338E4748CECB6D75C7BA8",
+      "provenance": "Original user production upload (media_1788247359485.jpg). Byte-immutable copy.",
+      "description": "Genuine Krungthai Bank Transfer Slip with intact Mini-QR (000001 / KTB 006)",
+      "amount": 200.00,
+      "referenceId": "C20260831624315752774",
+      "type": "Genuine Interbank Transfer Slip",
+      "historicalSlip2GoBehavior": "Verified via Mini-QR (Slip2Go eligible)",
+      "expectedRouterClassification": "BANK_SLIP_QR",
+      "expectedGuardAction": "BYPASS_GUARD (Slip2Go Direct)",
+      "expectedTargetPipeline": "Slip2Go Verifier",
+      "expectedBadge": "Verified Slip"
+    },
+    {
+      "id": "case-004",
+      "fileName": "case-004-ktb-slip-cropped.jpg",
+      "sha256": "FCE1D1637F44B2B87F37E97AF50E85E846E3394C386D447F63B7384958555998",
+      "provenance": "Derivative fixture generated from case-003-ktb-slip-genuine.jpg. Cropped at top=320, height=704 to remove Mini-QR while preserving interbank transfer details.",
+      "description": "Cropped Krungthai Bank Transfer Slip lacking Mini-QR (Adversarial C7)",
+      "amount": 200.00,
+      "referenceId": "C20260831624315752774",
+      "type": "Cropped Bank Transfer Slip",
+      "historicalSlip2GoBehavior": "N/A (Would fail or flag fraud if submitted without QR)",
+      "expectedRouterClassification": "NO_QR",
+      "expectedGuardAction": "HARD_STOP (SUSPECTED_SLIP)",
+      "expectedTargetPipeline": "Typhoon OCR -> Bank-Slip Likelihood Guard -> HARD STOP",
+      "expectedBadge": "N/A (Rejected)"
+    }
+  ]
+}
