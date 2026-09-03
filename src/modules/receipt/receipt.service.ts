@@ -19,6 +19,8 @@ export interface ProcessReceiptSuccess {
     category: string;
     occurredAt: string;
     receiptNumber?: string;
+    badge?: string;
+    isVerified?: boolean;
   };
 }
 
@@ -59,6 +61,10 @@ export class ReceiptService {
     return this.provider.isConfigured();
   }
 
+  getProvider(): IReceiptOcrProvider {
+    return this.provider;
+  }
+
   /**
    * Orchestrator for Receipt OCR Fallback.
    * Extracts data from a receipt image, validates amount, categorizes,
@@ -69,9 +75,15 @@ export class ReceiptService {
   async processReceipt(
     userId: string,
     imageBuffer: Buffer,
-    contentType: string = 'image/jpeg'
+    contentType: string = 'image/jpeg',
+    options?: {
+      badge?: string;
+      isVerified?: boolean;
+      source?: string;
+      preExtractedResult?: NormalizedReceiptResult;
+    }
   ): Promise<ProcessReceiptResult> {
-    if (!this.isConfigured()) {
+    if (!this.isConfigured() && !options?.preExtractedResult) {
       return {
         success: false,
         reason: 'NOT_CONFIGURED',
@@ -80,24 +92,29 @@ export class ReceiptService {
     }
 
     try {
-      // Execute OCR with hard timeout guard
-      const extractionPromise = this.provider.extractReceipt(imageBuffer, contentType);
-      const timeoutPromise = new Promise<NormalizedReceiptResult>((_, reject) =>
-        setTimeout(() => reject(new Error('RECEIPT_OCR_TIMEOUT')), this.timeoutMs)
-      );
-
       let result: NormalizedReceiptResult;
-      try {
-        result = await Promise.race([extractionPromise, timeoutPromise]);
-      } catch (err: any) {
-        if (err?.message === 'RECEIPT_OCR_TIMEOUT') {
-          return {
-            success: false,
-            reason: 'TIMEOUT',
-            message: '⏳ ระบบอ่านใบเสร็จใช้เวลานานกว่าปกติ กรุณาลองส่งใหม่อีกครั้ง หรือพิมพ์จดรายการได้เลยครับ ✨',
-          };
+
+      if (options?.preExtractedResult) {
+        result = options.preExtractedResult;
+      } else {
+        // Execute OCR with hard timeout guard
+        const extractionPromise = this.provider.extractReceipt(imageBuffer, contentType);
+        const timeoutPromise = new Promise<NormalizedReceiptResult>((_, reject) =>
+          setTimeout(() => reject(new Error('RECEIPT_OCR_TIMEOUT')), this.timeoutMs)
+        );
+
+        try {
+          result = await Promise.race([extractionPromise, timeoutPromise]);
+        } catch (err: any) {
+          if (err?.message === 'RECEIPT_OCR_TIMEOUT') {
+            return {
+              success: false,
+              reason: 'TIMEOUT',
+              message: '⏳ ระบบอ่านใบเสร็จใช้เวลานานกว่าปกติ กรุณาลองส่งใหม่อีกครั้ง หรือพิมพ์จดรายการได้เลยครับ ✨',
+            };
+          }
+          throw err;
         }
-        throw err;
       }
 
       if (result.status === 'TIMEOUT') {
@@ -152,22 +169,35 @@ export class ReceiptService {
         userId,
       });
 
+      const draftSource =
+        options?.source ||
+        (options?.badge
+          ? options.badge.includes('e-Wallet')
+            ? 'ewallet'
+            : 'bill_payment'
+          : 'receipt');
+      const draftPrefix = options?.badge ? `${options.badge} ` : 'ใบเสร็จ: ';
+      const descriptionPrefix = options?.badge ? `${options.badge} ` : 'ใบเสร็จ ';
+      const isVerified = options?.isVerified ?? (options?.badge ? false : true);
+
       // 4. Create TransactionDraft (pending_confirmation)
       const draft = await DraftRepository.createDraft({
         userId,
-        source: 'receipt',
-        rawInput: `ใบเสร็จ: ${cleanMerchant} ฿${Number(amount).toFixed(2)}`,
+        source: draftSource,
+        rawInput: `${draftPrefix}${cleanMerchant} ฿${Number(amount).toFixed(2)}`,
         extractedData: {
           type: 'expense',
           amount,
           merchant_id: cleanMerchant,
           category_id: category,
-          description: `ใบเสร็จ ${cleanMerchant}`,
+          description: `${descriptionPrefix}${cleanMerchant}`,
           occurred_at: occurredAt || new Date().toISOString(),
           confidence: confidence ?? 0.85,
+          is_verified: isVerified,
           ...({
             receiptNumber,
             items,
+            badge: options?.badge,
             ocrProvider: this.provider.name,
           } as any),
         },
@@ -183,6 +213,8 @@ export class ReceiptService {
           category,
           occurredAt: occurredAt || new Date().toISOString(),
           receiptNumber,
+          badge: options?.badge,
+          isVerified,
         },
       };
     } catch (error) {

@@ -15,12 +15,16 @@ export function buildDraftConfirmBubble(
   draftId: string,
   amount: number,
   category: string,
-  merchant: string
+  merchant: string,
+  badge?: string
 ): messagingApi.FlexBubble {
   const formattedAmount = Number(amount).toLocaleString('th-TH', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+
+  const headerText = badge ? `📝 รายการรอยืนยัน ${badge}` : '📝 รายการรอยืนยัน';
+  const headerColor = badge ? '#E65100' : '#1DB446';
 
   return {
     type: 'bubble',
@@ -31,9 +35,9 @@ export function buildDraftConfirmBubble(
       contents: [
         {
           type: 'text',
-          text: '📝 รายการรอยืนยัน',
+          text: headerText,
           weight: 'bold',
-          color: '#1DB446',
+          color: headerColor,
           size: 'sm',
         },
         {

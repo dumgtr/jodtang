@@ -32,13 +32,18 @@ export function sanitizeReceiptText(rawText: string): string {
  * Extracts monetary amount deterministically from receipt text using standard Thai/English receipt keywords.
  */
 export function extractReceiptAmount(text: string): number {
-  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  // Normalize markdown bold/italic formatting and HTML table tags
+  const normalizedText = text
+    .replace(/<\/?(?:td|tr|table|tbody|th)[^>]*>/gi, ' ')
+    .replace(/\*{1,3}/g, '');
+
+  const lines = normalizedText.split('\n').map((l) => l.trim()).filter(Boolean);
 
   const priorityTotalPatterns = [
-    /(?:ยอดรวมทั้งสิ้น|รวมเงินทั้งสิ้น|จำนวนเงินทั้งสิ้น|ยอดสุทธิ|รวมสุทธิ|ยอดชำระ|Grand\s*Total|Net\s*Total|Total\s*Amount|Amount\s*Due)\s*[:\s=]?\s*฿?\s*([0-9,]+\.[0-9]{2})/i,
-    /(?:ยอดรวมทั้งสิ้น|รวมเงินทั้งสิ้น|จำนวนเงินทั้งสิ้น|ยอดสุทธิ|รวมสุทธิ|ยอดชำระ|Grand\s*Total|Net\s*Total|Total\s*Amount|Amount\s*Due)\s*[:\s=]?\s*฿?\s*([0-9,]+)(?:\s*(?:บาท|THB))?/i,
-    /(?:รวมเงิน|ยอดรวม|Total)\s*[:\s=]?\s*฿?\s*([0-9,]+\.[0-9]{2})/i,
-    /(?:รวมเงิน|ยอดรวม|Total)\s*[:\s=]?\s*฿?\s*([0-9,]+)(?:\s*(?:บาท|THB))/i,
+    /(?:ยอดรวมทั้งสิ้น|รวมเงินทั้งสิ้น|จำนวนเงินทั้งสิ้น|ยอดสุทธิ|รวมสุทธิ|จำนวนเงินที่ชำระ|ยอดชำระ|Grand\s*Total|Net\s*Total|Total\s*Amount|Amount\s*Due)\s*[:\s=]?\s*฿?\s*([0-9,]+\.[0-9]{2})/i,
+    /(?:ยอดรวมทั้งสิ้น|รวมเงินทั้งสิ้น|จำนวนเงินทั้งสิ้น|ยอดสุทธิ|รวมสุทธิ|จำนวนเงินที่ชำระ|ยอดชำระ|Grand\s*Total|Net\s*Total|Total\s*Amount|Amount\s*Due)\s*[:\s=]?\s*฿?\s*([0-9,]+)(?:\s*(?:บาท|THB))?/i,
+    /(?:รวมเงิน|ยอดรวม|Total|จำนวนเงิน|ยอดเงิน)\s*[:\s=]?\s*฿?\s*([0-9,]+\.[0-9]{2})/i,
+    /(?:รวมเงิน|ยอดรวม|Total|จำนวนเงิน|ยอดเงิน)\s*[:\s=]?\s*฿?\s*([0-9,]+)(?:\s*(?:บาท|THB))/i,
     /([0-9]{1,3}(?:,[0-9]{3})*\.[0-9]{2})\s*(?:บาท|THB)/i,
   ];
 
@@ -58,7 +63,7 @@ export function extractReceiptAmount(text: string): number {
 
   // Fallback: search across entire text
   for (const pattern of priorityTotalPatterns) {
-    const match = text.match(pattern);
+    const match = normalizedText.match(pattern);
     if (match && match[1]) {
       const val = parseCleanAmount(match[1]);
       if (isValidPositiveAmount(val)) {
@@ -75,6 +80,20 @@ export function extractReceiptAmount(text: string): number {
  * Strips common receipt headers (e.g. "ใบเสร็จรับเงิน", "TAX INVOICE").
  */
 export function extractReceiptMerchant(text: string): string {
+  // Check for biller entity / destination recipient first (e-Wallet / Bill Payment)
+  const billerMatch = text.match(/(บริษัท\s*บัตรกรุงไทย\s*จำกัด\s*\(มหาชน\)|KTC|การไฟฟ้านครหลวง|การไฟฟ้าส่วนภูมิภาค|การประปานครหลวง|การประปาส่วนภูมิภาค)/i);
+  if (billerMatch && billerMatch[1]) {
+    return billerMatch[1].trim();
+  }
+
+  const destinationMatch = text.match(/(?:↓|ไปยัง:?|ชำระให้:?)\s*(?:\*\*(?:ถุงเงิน|G-Wallet)\*\*\s*)?(?:\*\*)?([^\n*#]{2,40})/i);
+  if (destinationMatch && destinationMatch[1]) {
+    const candidate = destinationMatch[1].trim();
+    if (candidate && !/^(?:อาหาร|ของหวาน|เครื่องดื่ม|ยอด|ค่า)/i.test(candidate)) {
+      return candidate;
+    }
+  }
+
   const genericHeaders = [
     'ใบเสร็จรับเงิน',
     'ใบกำกับภาษี',
@@ -89,6 +108,13 @@ export function extractReceiptMerchant(text: string): string {
     'welcome',
     'thank you',
     'ขอบคุณที่ใช้บริการ',
+    'เป๋าตัง',
+    'g-wallet',
+    'ไทยช่วยไทย',
+    'แพ็คช่วยไทย',
+    'krungthai',
+    'กรุงไทย',
+    'krungthai next',
   ];
 
   const lines = text
