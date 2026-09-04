@@ -225,10 +225,10 @@ export function evaluateOcrText(rawText: string): GuardEvaluationResult & { assi
   }
 
   // GATE 5: Completed Bill Payment -> Policy B (TC-07 & TC-23)
-  // Requires biller entity / card combined with confirmed settlement verb
+  // Requires biller entity combined with confirmed settlement verb
   if (
-    (hasBillerEntity || hasBillPaymentKeyword) &&
-    (hasSettlementConfirmation || hasBillPaymentKeyword) &&
+    hasBillerEntity &&
+    hasSettlementConfirmation &&
     !hasCommercialBankDirectionalPair
   ) {
     return buildResult(
