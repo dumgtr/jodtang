@@ -363,6 +363,25 @@ async function runTyphoonOcrTests() {
   assert(!p29.sanitizedRawText.includes('5412-7512-3412-3456'));
   console.log('   ✅ Card PII masking verified.');
 
+  // 30. Case 5 e-Wallet Plain Text & Table Amount Extraction (JT-PARSER-01)
+  console.log('30. Testing Case 5 e-Wallet Plain Text & Table Amount Extraction (JT-PARSER-01)...');
+  const paoTangRawPayload = `คนละครึ่ง\nไทยช่วยไทยพลัส 60/40\n\nร้าน หมึกย่าง\nค่าสินค้า/บริการ 150 บาท\nสิทธิไทยช่วยไทยพลัส -90 บาท\nจำนวนเงินที่ชำระ 60 บาท\n\n05 ก.ย. 2569 - 11:25`;
+  const p30 = parseReceiptRawText(paoTangRawPayload);
+  assert.equal(p30.amount, 60.0, `Expected 60.0 from target plain text payload but got ${p30.amount}`);
+
+  // Decimal variant
+  const p30Decimal = parseReceiptRawText('จำนวนเงินที่ชำระ 60.00 บาท');
+  assert.equal(p30Decimal.amount, 60.0, `Expected 60.0 from decimal variant but got ${p30Decimal.amount}`);
+
+  // Markdown table variant
+  const p30Table = parseReceiptRawText('| รายการ | ยอด |\n| ค่าสินค้า | 150 บาท |\n| จำนวนเงินที่ชำระ | 60 บาท |');
+  assert.equal(p30Table.amount, 60.0, `Expected 60.0 from markdown table variant but got ${p30Table.amount}`);
+
+  // Negative/adversarial case
+  const p30Adversarial = parseReceiptRawText('สิทธิไทยช่วยไทยพลัส -90 บาท\nจำนวนเงินที่ชำระ -90 บาท');
+  assert.equal(p30Adversarial.amount, 0, `Expected 0 from negative adversarial case but got ${p30Adversarial.amount}`);
+  console.log('   ✅ Case 5 e-Wallet amount extraction verified.');
+
   // ----------------------------------------------------
   // Provider Switch / Composition Test (Section 11)
   // ----------------------------------------------------

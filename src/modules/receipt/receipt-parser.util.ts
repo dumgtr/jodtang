@@ -32,14 +32,17 @@ export function sanitizeReceiptText(rawText: string): string {
  * Extracts monetary amount deterministically from receipt text using standard Thai/English receipt keywords.
  */
 export function extractReceiptAmount(text: string): number {
-  // Normalize markdown bold/italic formatting and HTML table tags
+  // Normalize markdown bold/italic formatting, HTML table tags, and markdown table delimiters
   const normalizedText = text
     .replace(/<\/?(?:td|tr|table|tbody|th)[^>]*>/gi, ' ')
-    .replace(/\*{1,3}/g, '');
+    .replace(/\*{1,3}/g, '')
+    .replace(/\|/g, ' ');
 
   const lines = normalizedText.split('\n').map((l) => l.trim()).filter(Boolean);
 
   const priorityTotalPatterns = [
+    // Dedicated strict pattern for completed payment settlement (e.g. e-Wallet / G-Wallet / Bill payment)
+    /(?:จำนวนเงินที่ชำระ)\s*[:\s=]?\s*฿?\s*([0-9,]+(?:\.[0-9]{2})?)(?:\s*(?:บาท|THB))?/i,
     /(?:ยอดรวมทั้งสิ้น|รวมเงินทั้งสิ้น|จำนวนเงินทั้งสิ้น|ยอดสุทธิ|รวมสุทธิ|จำนวนเงินที่ชำระ|ยอดชำระ|Grand\s*Total|Net\s*Total|Total\s*Amount|Amount\s*Due)\s*[:\s=]?\s*฿?\s*([0-9,]+\.[0-9]{2})/i,
     /(?:ยอดรวมทั้งสิ้น|รวมเงินทั้งสิ้น|จำนวนเงินทั้งสิ้น|ยอดสุทธิ|รวมสุทธิ|จำนวนเงินที่ชำระ|ยอดชำระ|Grand\s*Total|Net\s*Total|Total\s*Amount|Amount\s*Due)\s*[:\s=]?\s*฿?\s*([0-9,]+)(?:\s*(?:บาท|THB))?/i,
     /(?:รวมเงิน|ยอดรวม|Total|จำนวนเงิน|ยอดเงิน)\s*[:\s=]?\s*฿?\s*([0-9,]+\.[0-9]{2})/i,
